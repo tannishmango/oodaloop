@@ -155,6 +155,24 @@ From external plugins, these patterns are absorbed into OODALOOP (without runtim
 
 ---
 
+## Cross-Environment Portability
+
+OODALOOP is host-agnostic. The core (skills, doctrine, state model, templates) works identically everywhere. Thin adapter layers map OODALOOP's components to each host's discovery paths.
+
+### Portable layer (unchanged across hosts)
+- **Skills** (`skills/*/SKILL.md`): Agent Skills open standard, supported by 27+ tools.
+- **State** (`.oodaloop/`): CONTEXT.md + task files. Pure markdown, no host dependencies.
+- **Doctrine** (`foundation/`): Principles and systems reference.
+- **Templates** (`templates/`): State templates for target projects.
+
+### Adapter layer (thin, per-host)
+Each adapter maps five surfaces: commands (install path), skills (discovery path), agents (definition format), rules (file format), and manifest (if required). See `adapters/README.md` for the full capability matrix.
+
+### Install
+`install.sh` detects the host environment and applies the matching adapter. Manual setup is documented in `adapters/<host>/install.md`.
+
+---
+
 ## Anti-Patterns
 
 Reject these explicitly:
@@ -178,6 +196,7 @@ Reject these explicitly:
 | M2: Working Observe/Orient | Functional research + planning pipeline, skill enrichment, local testing | Complete |
 | M2.5: State Architecture | Persistent/ephemeral separation, CONTEXT.md + task files, multi-task design, convention memory | Complete |
 | M3: Full Loop | End-to-end OODA cycle with sentinel verdicts and adaptive rigor in practice | Current |
+| M3.1: Adapter Architecture | Cross-environment portability, install script, host detection, adapter layer | Current |
 
 ---
 
@@ -185,21 +204,24 @@ Reject these explicitly:
 
 ```
 oodaloop/
-  plugin manifest               ← metadata and component paths
+  .cursor-plugin/plugin.json    ← Cursor manifest (host-specific)
   .oodaloop/                    ← self-tracking state (committed)
+  adapters/                     ← per-host install instructions and mappings
+    cursor/
+    claude-code/
+    opencode/
   foundation/                   ← permanent doctrine
     PRINCIPLES.md
     SYSTEMS-REFERENCE.md
-  commands/                     ← 8 thin command invocations
-  skills/                       ← 7 procedural skills (the real substance)
+  commands/                     ← 8 thin command invocations (portable)
+  skills/                       ← 7 procedural skills (portable, Agent Skills standard)
   agents/                       ← 5 specialized agents
   rules/                        ← 3 boundary rules
   templates/oodaloop/           ← 1 state template (CONTEXT.md)
+  install.sh                    ← host-detecting install script
   ARCHITECTURE.md               ← this document
   README.md
   LICENSE
 ```
 
-Commands are thin wrappers that invoke skills. Skills contain the actual procedure.
-
-All component paths in `plugin.json` are relative and resolve to existing directories.
+Commands are thin wrappers that invoke skills. Skills contain the actual procedure. The install script detects the host environment and places components where the host can discover them.

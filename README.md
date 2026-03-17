@@ -47,23 +47,44 @@ Process depth scales with task complexity. Trivial tasks get a fast path; comple
 - **Compression**: minimal, high-signal process primitives.
 - **Every artifact earns its existence**: if it doesn't improve outcomes, delete it.
 
+## Install
+
+```bash
+git clone <repo-url> && cd oodaloop
+./install.sh
+```
+
+The install script detects your environment (Cursor, Claude Code, OpenCode) and places components where the host can discover them. To specify a host explicitly:
+
+```bash
+./install.sh cursor
+./install.sh claude-code
+./install.sh opencode
+```
+
+Then in any project: run `/oodaloop-init` to start.
+
+For manual setup or other hosts, see `adapters/<host>/install.md`.
+
 ## Structure
 
 ```
-plugin.json                  manifest
+.cursor-plugin/plugin.json   Cursor manifest
+adapters/                    per-host install instructions
 foundation/                  permanent doctrine
 commands/                    8 entry-point commands
-skills/                      7 procedural skills
+skills/                      7 procedural skills (Agent Skills standard)
 agents/                      5 specialized agents
 rules/                       3 boundary rules (always active)
 templates/oodaloop/          state templates for target projects
+install.sh                   host-detecting installer
 ```
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for design details and deconfliction status.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for design details, portability model, and deconfliction status.
 
 ## Status
 
-**Milestone 2** (current): functional init/observe/orient commands with enriched skills. Commands are thin invocations; skills contain executable procedures. Symlinked for local testing.
+**Milestone 3.1** (current): cross-environment adapter architecture. Skills are portable via the Agent Skills open standard. Install script handles Cursor, Claude Code, and OpenCode.
 
 ## License
 

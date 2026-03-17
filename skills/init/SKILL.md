@@ -23,7 +23,14 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
    Report as a table: `| Plugin | Risk | Recommendation | Reason |`
    Let the user decide. Do not disable anything automatically.
 
-4. **Scan repo conventions.** For each category, check for known config files and extract key facts. If nothing found for a category, record "None detected."
+4. **Detect host environment.** Determine which agent environment is running OODALOOP by checking for host-specific markers:
+   - `.cursor-plugin/` or `~/.cursor/` → Cursor
+   - `.claude/` or `~/.claude/` → Claude Code
+   - `.opencode/` or `~/.config/opencode/` → OpenCode
+   - If ambiguous, ask the user.
+   Record the detected host in the Workspace Tooling section of CONTEXT.md. This informs convention scanning and future command references.
+
+5. **Scan repo conventions.** For each category, check for known config files and extract key facts. If nothing found for a category, record "None detected."
 
    **Git**: `.gitattributes`, recent commit messages (sample 5 for format patterns), branch naming from `git branch -a`, any `CONTRIBUTING.md`.
    **Code Quality**: `.pre-commit-config.yaml` (list hooks), linter configs (`ruff.toml`, `.eslintrc*`, `.prettierrc*`, `pyproject.toml [tool.ruff]`, `pyproject.toml [tool.black]`, `.flake8`).
@@ -32,9 +39,9 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
    **Dependencies**: manifest (`pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `requirements.txt`), lockfiles (`poetry.lock`, `uv.lock`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `Cargo.lock`).
    **Workspace Tooling**: workspace rule files, `AGENTS.md`, and local agent/tooling settings files.
 
-5. Create the `.oodaloop/` directory.
+6. Create the `.oodaloop/` directory.
 
-6. Create `.oodaloop/CONTEXT.md` with the following content, substituting project name, today's date, convention scan findings, and deconfliction findings:
+7. Create `.oodaloop/CONTEXT.md` with the following content, substituting project name, today's date, convention scan findings, host environment, and deconfliction findings:
 
 ```markdown
 # Context: <project_name>
@@ -62,6 +69,7 @@ To be defined during Observe phase.
 <findings or "None detected.">
 
 ### Workspace Tooling
+Host: <detected host environment>
 <findings or "None detected.">
 
 ## Architecture
@@ -74,7 +82,7 @@ No decisions recorded.
 <for each plugin: name, risk, decision>
 ```
 
-7. Confirm initialization: project name, file created, convention summary, deconfliction summary, current state ("ready for observe"), recommended next step (`/oodaloop-observe`).
+8. Confirm initialization: project name, host environment, file created, convention summary, deconfliction summary, current state ("ready for observe"), recommended next step (`/oodaloop-observe`).
 
 ## Output
 

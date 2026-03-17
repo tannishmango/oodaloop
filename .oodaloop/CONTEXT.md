@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-03-17
+> Last refreshed: 2026-03-17 (M3.1 adapter architecture complete)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -51,6 +51,13 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-16: Self-bootstrapping mandatory -- plugin must build itself
 - 2026-03-16: All 7 skills + status command + 3 agents + 1 rule + ARCHITECTURE.md updated to new model
 - 2026-03-16: Self-migration completed -- own `.oodaloop/` now uses new model (first successful bootstrap cycle)
+
+### M3.1 (adapter architecture)
+- 2026-03-17: Skills already portable via Agent Skills standard (SKILL.md) -- no changes needed
+- 2026-03-17: Adapter layer maps 5 surfaces per host: commands, skills, agents, rules, manifest
+- 2026-03-17: install.sh detects host (Cursor, Claude Code, OpenCode) and applies matching adapter
+- 2026-03-17: Init skill enhanced to detect and record host environment in CONTEXT.md
+- 2026-03-17: Adapters are install docs + symlink setup, not behavioral forks
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level
