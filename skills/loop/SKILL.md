@@ -31,7 +31,12 @@ Exactly one of:
 - **REFINE**: some tasks need adjustment. Specify which tasks to re-plan or re-execute. Re-enter decide.
 - **RESCOPE**: fundamental assumptions changed. Re-enter observe with new evidence.
 
-Each verdict must include: evidence, rationale, confidence level, and next recommended command.
+Each verdict must include:
+- **Proof references**: cite specific proof artifacts from the cycle (test output, diffs, verification results). Do not issue verdicts backed only by narrative summaries.
+- **Rationale**: why this verdict and not the alternatives.
+- **Falsifiability**: state what evidence would disprove this verdict. If you cannot articulate what would make the verdict wrong, the verdict is not rigorous enough.
+- **Confidence level**: and what would increase it.
+- **Next recommended command**.
 
 ### 4. Absorb learnings into CONTEXT.md
 Extract knowledge from this cycle that future tasks would need. Update CONTEXT.md:

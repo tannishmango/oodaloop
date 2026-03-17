@@ -26,6 +26,7 @@ For each batch in the execution strategy:
   - Code logic changes → unit tests at minimum.
   - Integration points (APIs, databases, external services, data pipelines) → integration tests that hit real systems. If the repo has existing integration test infrastructure, use it. If running real integration tests requires credentials, environment setup, or could incur costs, ask the user before proceeding -- but do not silently skip.
   - If the repo's CONTEXT.md Testing conventions describe specific test patterns, follow them.
+- **The executor must surface raw evidence to the user during execution.** Paste actual test output, actual command results, actual key diffs in the conversation as they are produced. Do not summarize evidence into narrative -- the user is the judge of sufficiency.
 - After each task: record what changed, what was tested (including test type and output), any side effects.
 
 ### 3. Handle mid-execution discoveries
@@ -56,7 +57,8 @@ After each batch, append to the task file:
 ### T1: <title>
 **Status**: done | blocked | escalated
 **Changes**: <files modified, created, deleted>
-**Evidence**: <tests run, commands executed, output>
+**Proof**: <raw output -- paste actual test results, command output, diffs. Not descriptions of them. If output is long, paste the critical portion and state what was truncated.>
+**Gaps**: <anything skipped, untested, uncertain, or where a lower evidence tier was used and why>
 **Notes**: <side effects, discoveries, blockers>
 **Backlog additions**: <items added to BACKLOG.md, if any>
 

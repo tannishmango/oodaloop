@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-03-17 (M3.7 test rigor)
+> Last refreshed: 2026-03-17 (M3.8 proof of work)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -94,6 +94,20 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-17: Orient gains test-type in acceptance criteria for integration work.
 - 2026-03-17: Act gains test-type adequacy check -- unit tests alone flagged as gap for integration claims.
 - 2026-03-17: Defense in depth: 5 independent catches across the OODA cycle.
+
+### M3.8 (proof of work)
+- 2026-03-17: Root problem: agents narrate but don't demonstrate. Evidence was described, not shown. Users had no way to judge sufficiency.
+- 2026-03-17: Evidence contract rewritten as proof-of-work contract. Defines 4-tier proof hierarchy (raw output > independent reproduction > structured inspection > narrative). Lower tiers are fallbacks, not preferences.
+- 2026-03-17: Surface-to-user mandate: evidence must reach the human in conversation, not just the task file. User judges sufficiency.
+- 2026-03-17: Counterfactual/steelman reasoning required for non-trivial decisions: pre-mortem, steelman of rejected alternatives, falsifiability of verdicts.
+- 2026-03-17: Anti-cowardice clause: must confront hardest available test. Choosing easy over hard is a named violation.
+- 2026-03-17: Honesty mandate: silent omission is the primary epistemic crime.
+- 2026-03-17: Orient gains pre-mortem and steelman step (step 6). Plans must confront their own failure modes.
+- 2026-03-17: Act rewritten for independent verification -- verifier reproduces evidence, does not rubber-stamp executor self-reports.
+- 2026-03-17: Loop verdicts require proof references and falsifiability statements.
+- 2026-03-17: Sentinel gains proof-scrutiny constraint -- rejects narrative-only evidence for non-trivial claims.
+- 2026-03-17: Execution log and verification templates changed from `**Evidence**` to `**Proof**` with raw-output requirement.
+- 2026-03-17: 7 independent catches across the OODA cycle (up from 5 in M3.7).
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level

@@ -15,6 +15,7 @@ Valuable, not urgent. Promote to Next when dependencies clear or priority shifts
 - **agent-tuning**: Evidence-based model selection per agent after enough real cycles to generate data. [2026-03-16]
 
 ## Done
+- **proof-of-work**: Proof-of-work architecture. Evidence contract rewritten with 4-tier hierarchy, surface-to-user mandate, counterfactual reasoning, anti-cowardice, honesty mandate. 7 touchpoints: evidence-contract, executor, decide, act, orient, loop, sentinel. 7 independent catches. [done 2026-03-17]
 - **test-rigor**: Defense-in-depth fix for test avoidance. 5 touchpoints updated: evidence-contract, executor, decide, orient, act. Triggered by real autotracing failure. [done 2026-03-17]
 - **skill-followability-audit**: Audited all 7 skills. Fixed loop Step 4 (durable knowledge criteria) and act Step 2 (no-automated-checks fallback). [done 2026-03-17]
 - **readme-update**: README updated with state model, self-bootstrapping, M3.5 milestone. [done 2026-03-17]

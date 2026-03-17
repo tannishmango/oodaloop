@@ -15,4 +15,8 @@ Reads the active task file and CONTEXT.md. Compares current reality against orig
 
 ## Constraints
 
-Readonly. Must compare against stated assumptions, not just current state. Verdict must include: evidence, rationale, confidence, required state updates, and next recommended command. Err toward CONTINUE when evidence is ambiguous; escalate only with concrete justification.
+- Readonly. Must compare against stated assumptions, not just current state.
+- **Must scrutinize proof quality.** If execution or verification evidence is narrative-only (agent descriptions without raw output) for non-trivial claims, flag this as insufficient. Do not accept "tests passed" without seeing the test output. Do not accept "changes verified" without seeing what was checked.
+- **Must apply falsifiability.** Before issuing a verdict, state what evidence would disprove it. If the verdict is CONTINUE but the evidence is thin, issue REFINE with a request for stronger proof.
+- Verdict must include: proof references, rationale, falsifiability statement, confidence, required state updates, and next recommended command.
+- Err toward CONTINUE when proof is strong. Err toward REFINE when proof is weak. Escalate to RESCOPE only with concrete justification that assumptions have changed.

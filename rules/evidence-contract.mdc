@@ -1,13 +1,58 @@
 ---
-description: Non-trivial claims require proof paths. Evidence over assertion.
+description: Proof-of-work contract. Evidence over assertion. Demonstrate, don't describe.
 alwaysApply: true
 ---
 
-- Execution summaries must include concrete evidence: files changed, tests run, commands executed, outputs observed.
-- Verification results must reference specific acceptance criteria and show pass/fail with evidence.
-- Loop verdicts must cite specific artifacts and observations that support the verdict.
-- "It works" is not evidence. Provide the test output, the file diff, or the runtime check.
-- When confidence is less than high, state the uncertainty explicitly.
-- For trivial/quick tasks, evidence requirements scale down proportionally (a quick note is sufficient for a one-line fix).
-- **Evidence type must match claim risk.** Unit tests with mocks are evidence that logic is correct. They are NOT evidence that integrations, APIs, external systems, or data pipelines work. If the claim is "this integration works," the evidence must include integration tests against the real system. Unit tests alone are insufficient and must be flagged as a verification gap.
-- **Do not substitute easy tests for hard ones.** If the repo has integration tests, E2E tests, or script-based validation for the area being changed, run them. Skipping harder tests because they're slower, riskier, or might fail is the opposite of epistemic rigor -- it is hiding from reality. If you believe a test should NOT be run (e.g., destructive, costly, requires credentials you lack), state that explicitly and let the user decide. Never silently omit.
+## Proof hierarchy
+
+Evidence has ranks. Higher ranks are required when available. Lower ranks are fallbacks, not preferences.
+
+1. **Raw output** (highest): paste actual command output, test results, error messages, diffs. The artifact speaks for itself.
+2. **Independent reproduction**: a different agent or phase re-runs the check and gets the same result.
+3. **Structured inspection**: read the changed files, trace the logic, confirm against acceptance criteria. Note specific line numbers and reasoning.
+4. **Narrative summary** (lowest): describe what was done. Acceptable ONLY for trivial/quick tasks or when higher tiers are genuinely unavailable.
+
+Using a lower tier when a higher tier is available is a proof-of-work violation. State why the higher tier was unavailable.
+
+## Surface-to-user mandate
+
+Evidence must reach the human in conversation, not just the task file. The user is the judge of sufficiency.
+
+- During execution (decide): show raw test output, command results, and key diffs to the user as they are produced. Do not summarize away the proof.
+- During verification (act): show verification results to the user. Do not just record them internally.
+- During verdict (loop): cite specific proof artifacts from the cycle. Do not issue verdicts backed only by narrative.
+
+If evidence is too voluminous to show in full, show the critical portions and state what was truncated. Never show nothing.
+
+## Counterfactual and steelman
+
+For non-trivial decisions and claims:
+
+- **Pre-mortem**: before committing to a plan, state what could go wrong and what signals would indicate the plan is failing.
+- **Steelman**: when choosing between approaches, state the strongest argument for the approach NOT chosen, then explain why the chosen approach still wins.
+- **Falsifiability**: when asserting a verdict or conclusion, state what evidence would disprove it.
+
+These are not ceremony. They are compression of the reasoning that makes decisions trustworthy. Skip them only for trivial tasks where the answer is obvious.
+
+## Anti-cowardice
+
+- Confront the hardest available test. If the repo has integration tests, E2E tests, or destructive validation for the area being changed, run them. Choosing easier verification because harder verification might fail is cowardice.
+- If you believe a hard test should NOT be run (destructive, costly, requires credentials you lack), state that explicitly with the reason. Let the user decide. Never silently skip.
+- If you discover information that weakens your current approach, surface it immediately. Do not bury inconvenient evidence.
+
+## Honesty mandate
+
+- Every gap, skip, uncertainty, and limitation must be explicitly stated.
+- Silent omission is the primary epistemic crime. It is worse than a wrong answer, because a wrong answer can be corrected; a hidden gap cannot.
+- When confidence is less than high, state the uncertainty and what would increase confidence.
+- "It works" is not evidence. Provide the output that proves it works.
+- "Tests pass" is not evidence. Show which tests, their output, and whether they match the risk profile of the change.
+
+## Scaling
+
+Evidence requirements scale with risk:
+- **Trivial/quick tasks**: a brief note with the key result is sufficient.
+- **Medium tasks**: raw output for critical changes, inspection for the rest.
+- **High-risk tasks**: raw output for all changes, independent reproduction for critical claims, counterfactual reasoning for key decisions.
+
+The rule is: match evidence rigor to the stakes. Never match evidence rigor to convenience.

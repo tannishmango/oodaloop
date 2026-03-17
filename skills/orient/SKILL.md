@@ -64,15 +64,27 @@ Batch 2: <next tasks>
 ...
 ```
 
-### 6. Review
+### 6. Pre-mortem and steelman
+Before finalizing, confront the plan's weaknesses:
+- **Pre-mortem**: assume the plan fails. What are the most likely failure modes? For each, state what signal would reveal it during execution and what the fallback is. Append to the plan:
+  ```markdown
+  ### Failure modes
+  - <failure mode>: signal = <what you'd see>, fallback = <what to do>
+  ```
+- **Steelman**: if an alternative approach was considered and rejected, state the strongest argument for it and why the chosen approach still wins. If no alternative was considered, state that explicitly -- it may indicate the orient phase was too shallow.
+
+Skip this step only for trivial tasks where the plan is obvious and the risk is negligible.
+
+### 7. Review
 Check before finalizing:
 - Every requirement covered by at least one task
 - No ambiguous acceptance criteria
 - Dependencies form a valid DAG (no cycles)
 - Plan is executable without reinterpretation
 - Convention constraints from CONTEXT.md are reflected in relevant tasks
+- Failure modes identified for non-trivial plans
 
-### 7. Update task file phase
+### 8. Update task file phase
 Set the task file phase to `decide`. Update the timestamp.
 
 ## Output
