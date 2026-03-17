@@ -42,17 +42,27 @@ Extract durable knowledge from this task cycle and update CONTEXT.md:
 
 Update the "Last refreshed" timestamp.
 
-### 5. Handle task file lifecycle
+### 5. Update backlog
+Read `.oodaloop/BACKLOG.md`. Update it:
+- **Add**: any discoveries from this cycle that represent future work (non-blocking issues found, improvement ideas, deferred scope items).
+- **Promote**: if this cycle's results make a Later item urgent, move it to Next.
+- **Complete**: if this cycle finished a backlog item, move it to Done.
+- **Prune**: if any item is now obsolete or absorbed, remove it.
+
+When recommending next steps to the user, reference the top items from the Next section.
+
+### 6. Handle task file lifecycle
 - If verdict is **CONTINUE** and all work is complete: append the verdict to the task file, then **delete the task file**. The learnings now live in CONTEXT.md.
 - If verdict is **REFINE**: append verdict, keep task file, update phase to `decide`.
 - If verdict is **RESCOPE**: append verdict, keep task file, update phase to `observe`.
 
-### 6. Report
+### 7. Report
 Report verdict, absorbed learnings, and next step to the user.
 
 ## Output
 
 - Verdict appended to task file
 - `.oodaloop/CONTEXT.md` updated with absorbed learnings
+- `.oodaloop/BACKLOG.md` updated with discoveries, promotions, completions
 - Task file deleted (CONTINUE) or phase updated (REFINE/RESCOPE)
-- Verdict and next-step recommendation reported to user
+- Verdict and next-step recommendation reported to user (referencing top backlog items)

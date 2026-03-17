@@ -6,6 +6,7 @@ alwaysApply: true
 ## File types
 
 - **CONTEXT.md** is persistent. It survives across tasks and is never deleted. It is updated incrementally by observe (convention drift), loop (learning absorption), and init (creation). Never overwrite wholesale -- update sections.
+- **BACKLOG.md** is persistent. It tracks future work, ideas, and deferred items across conversations. Updated by loop (discoveries, completions, promotions) and decide (mid-execution discoveries). Curated, not accumulated -- prune stale items.
 - **<slug>.task.md** files are ephemeral. They are created by observe, filled through the OODA cycle, and deleted by loop on CONTINUE verdict. They represent active work, not permanent records.
 
 ## Rules

@@ -23,6 +23,10 @@ Read-only. No side effects.
 
 4. If no active tasks exist, report "No active tasks."
 
-5. Report blockers if any are mentioned in task files.
+5. If `.oodaloop/BACKLOG.md` exists, report:
+   - **Backlog**: count of Next items, count of Later items
+   - **Top Next item**: first item from the Next section
+
+6. Report blockers if any are mentioned in task files.
 
 Format as a concise structured summary. Do not modify any files.

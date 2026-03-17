@@ -82,11 +82,29 @@ No decisions recorded.
 <for each plugin: name, risk, decision>
 ```
 
-8. Confirm initialization: project name, host environment, file created, convention summary, deconfliction summary, current state ("ready for observe"), recommended next step (`/oodaloop-observe`).
+8. Create `.oodaloop/BACKLOG.md` with:
+
+```markdown
+# Backlog
+
+Items discovered during OODA cycles and conversations. Curated by loop phase.
+
+## Next
+No items yet.
+
+## Later
+No items yet.
+
+## Done
+No completed items.
+```
+
+9. Confirm initialization: project name, host environment, files created (CONTEXT.md, BACKLOG.md), convention summary, deconfliction summary, current state ("ready for observe"), recommended next step (`/oodaloop-observe`).
 
 ## Output
 
 - Plugin conflict assessment table reported to user
 - Convention scan findings reported to user
 - `.oodaloop/CONTEXT.md` initialized with conventions and deconfliction
+- `.oodaloop/BACKLOG.md` initialized empty
 - Confirmation with next-step recommendation

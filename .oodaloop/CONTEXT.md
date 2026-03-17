@@ -52,6 +52,10 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-16: All 7 skills + status command + 3 agents + 1 rule + ARCHITECTURE.md updated to new model
 - 2026-03-16: Self-migration completed -- own `.oodaloop/` now uses new model (first successful bootstrap cycle)
 
+### M3 (full loop)
+- 2026-03-17: BACKLOG.md added as third persistent file type (what SHOULD BE). Updated decide, loop, init, status, state-hygiene, ARCHITECTURE.md.
+- 2026-03-17: Decide skill gains mid-execution discovery assessment (trivial/notable/blocking triage)
+
 ### M3.1 (adapter architecture)
 - 2026-03-17: Skills already portable via Agent Skills standard (SKILL.md) -- no changes needed
 - 2026-03-17: Adapter layer maps 5 surfaces per host: commands, skills, agents, rules, manifest

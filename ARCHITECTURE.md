@@ -88,15 +88,16 @@ This enforces separation of concerns: read-heavy analysis is isolated from write
 
 ## State Management
 
-Project state lives in `.oodaloop/` within the target project. Two file types, cleanly separated:
+Project state lives in `.oodaloop/` within the target project. Three file types:
 
 ```
 .oodaloop/
-  CONTEXT.md             ← persistent repo memory (survives across tasks)
-  <slug>.task.md          ← ephemeral per-task state (one per active OODA cycle)
+  CONTEXT.md             ← persistent: what IS (repo state, survives across tasks)
+  BACKLOG.md             ← persistent: what SHOULD BE (future work, survives across conversations)
+  <slug>.task.md          ← ephemeral: what's HAPPENING (one per active OODA cycle)
 ```
 
-### CONTEXT.md (persistent)
+### CONTEXT.md (persistent -- repo state)
 
 One file holds everything that survives across tasks: project identity, repo conventions (6 categories: git, code quality, testing, CI/CD, dependencies, workspace tooling), architecture patterns, active decisions, and plugin deconfliction.
 
@@ -105,21 +106,29 @@ One file holds everything that survives across tasks: project identity, repo con
 - Updated incrementally -- sections change, file is never rewritten wholesale.
 - "Last refreshed" timestamp enables targeted staleness detection.
 
+### BACKLOG.md (persistent -- future work)
+
+Tracks roadmap items, deferred work, discovered improvements, and ideas across conversations. Prevents roadmap loss when conversations end.
+
+- Three tiers: **Next** (prioritized, ready), **Later** (valuable, not urgent), **Done** (completed, pruned periodically).
+- Updated by loop (discoveries, promotions, completions) and decide (mid-execution notable discoveries).
+- Read when choosing next work or when loop recommends next steps. NOT read during every phase -- stays out of hot context.
+- Curated, not accumulated. Stale items pruned by loop.
+
 ### Task files (ephemeral)
 
 Each OODA cycle creates one `<slug>.task.md` file. It contains the full lifecycle: phase tracking, objective, requirements, observations, scope, plan, execution log, verification, and verdict. All in one file per task.
 
 - Created by observe, filled through orient/decide/act/loop.
-- On CONTINUE verdict, learnings are absorbed into CONTEXT.md and the task file is **deleted**.
+- On CONTINUE verdict, learnings are absorbed into CONTEXT.md, backlog updated, and the task file is **deleted**.
 - Multiple task files can coexist for concurrent work. Each is independent.
-- No separate PLAN.md, SUMMARY.md, or VERIFICATION.md. Those are sections within the task file.
 
 ### Design rationale
-- **Two types, not five files**: the old model (STATE.md + PROJECT.md + PLAN.md + SUMMARY.md + VERIFICATION.md) mixed persistent and ephemeral concerns. Persistent data got overwritten when tasks changed. This is deletion, not addition.
+- **Three types, clean separation**: CONTEXT.md = what IS, BACKLOG.md = what SHOULD BE, task files = what's HAPPENING. Each concept has one home.
 - **Flat structure**: everything lives at `.oodaloop/` root. No nested directories.
 - **Multi-task ready**: task files are per-cycle, not singleton. `ls .oodaloop/*.task.md` shows all active work.
-- **Anti-stale by design**: CONTEXT.md uses targeted refresh (check config file changes, not full re-scan). Task files are ephemeral and deleted on completion.
-- **Single source of truth per concept**: persistent repo context has exactly one home (CONTEXT.md). Task state has exactly one home (its task file).
+- **Anti-stale by design**: CONTEXT.md uses targeted refresh. Task files are ephemeral. BACKLOG.md curated by loop.
+- **Context hygiene**: BACKLOG.md is NOT part of hot context. Only CONTEXT.md is read every phase. Backlog is referenced on-demand.
 
 ---
 
