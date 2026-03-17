@@ -2,6 +2,8 @@
 
 OODA-loop orchestration for adaptive project delivery in Cursor.
 
+Private/internal plugin. This repository is intended for local use or private GitHub only, and is not for marketplace publication.
+
 ## What it does
 
 OODALOOP structures project/feature work into an adaptive cycle:
@@ -65,4 +67,4 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for design details, GSD transfer analysis
 
 ## License
 
-MIT
+UNLICENSED (internal use only)

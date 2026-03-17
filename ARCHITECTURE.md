@@ -114,7 +114,7 @@ These files exist at the repo root during initial development:
 | File | Status | Lifecycle |
 |------|--------|-----------|
 | `PROMPT.md` | Bootstrap | Hard input for plugin design. Archive or delete after v1 stable. |
-| `START.md` | Bootstrap | Build kickoff instructions. Delete after milestone 1. |
+| ~~`START.md`~~ | Deleted | Absorbed after M1. |
 | `PLUGIN-AUDIT.md` | Bootstrap | Plugin interference findings. Collapse into this document's Deconfliction section after v1. |
 | `DECONFLICTION-CHECKLIST.md` | Bootstrap | Build gates. Collapse into this document after v1. |
 
@@ -128,7 +128,7 @@ These files exist at the repo root during initial development:
 
 | Plugin | Decision | Rationale |
 |--------|----------|-----------|
-| `superpowers` | Acknowledged interference; OODALOOP rules take precedence within plugin scope | Cannot disable from code; session hook injects mandatory context. User should disable at workspace level for focused OODALOOP development. |
+| `superpowers` | Disabled at workspace level | Session hook was injecting mandatory context. Removed to eliminate interference. |
 | `continual-learning` | Keep enabled, deprioritized | Low interference for structural work. |
 | `create-plugin` | Keep enabled | `plugin-quality-gates` rule directly supports correctness. |
 | `cursor-team-kit` | Keep enabled (selective) | Code-quality rules are non-conflicting. |
@@ -167,8 +167,8 @@ Reject these explicitly:
 
 | Milestone | Scope | Status |
 |-----------|-------|--------|
-| M1: Ground Breaking | Plugin scaffold, component skeletons, architecture baseline, doctrine home | Current |
-| M2: Working Observe/Orient | Functional research + planning pipeline with real agent orchestration | Next |
+| M1: Ground Breaking | Plugin scaffold, component skeletons, architecture baseline, doctrine home | Complete |
+| M2: Working Observe/Orient | Functional research + planning pipeline with real agent orchestration | Current |
 | M3: Full Loop | End-to-end OODA cycle with sentinel verdicts and adaptive rigor in practice | Future |
 
 ### M1 non-goals
