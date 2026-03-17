@@ -3,23 +3,25 @@ name: oodaloop-status
 description: Report current OODALOOP project state and phase.
 ---
 
-## Workflow
+Read-only. No side effects.
 
-Reads `.oodaloop/` state files. Outputs current phase, task progress, open decisions, recent verdicts, and blockers. No side effects — read-only.
+1. Check if `.oodaloop/` exists. If not, report "No OODALOOP state found. Run `/oodaloop-init` first." and stop.
 
-## Inputs
+2. Read `.oodaloop/STATE.md`. Extract and report:
+   - **Phase**: current phase and last updated date
+   - **Milestone**: if present
+   - **Task progress**: summary line from Task Progress section
 
-- `.oodaloop/STATE.md`
-- `.oodaloop/PLAN.md`, `.oodaloop/VERIFICATION.md`, `.oodaloop/SUMMARY.md` (if present)
+3. If `.oodaloop/PLAN.md` exists, count tasks and report:
+   - Total tasks
+   - Completed / in-progress / pending (if the plan uses status markers)
 
-## Outputs
+4. If `.oodaloop/VERIFICATION.md` exists, summarize:
+   - Pass/fail counts
+   - Any open gaps
 
-- Current phase
-- Task progress (completed, in-flight, blocked)
-- Open decisions
-- Recent verdicts
-- Blockers (if any)
+5. Report the most recent entry from Decisions Log and Loop Verdicts (if any).
 
-## Notes
+6. Report blockers if any are mentioned in state files.
 
-Read-only command. No corresponding skill -- status reporting is self-contained.
+Format the output as a concise structured summary. Do not modify any files.

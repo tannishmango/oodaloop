@@ -63,7 +63,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for design details, GSD transfer analysis
 
 ## Status
 
-**Milestone 1** (current): scaffold, skeletons, architecture baseline. Components define behavioral contracts but do not yet contain orchestration logic.
+**Milestone 2** (current): functional init/observe/orient commands with enriched skills. Commands are thin invocations; skills contain executable procedures. Symlinked for local testing.
 
 ## License
 

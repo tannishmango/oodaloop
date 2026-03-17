@@ -94,15 +94,14 @@ Project state lives in `.oodaloop/` within the target project:
 .oodaloop/
   STATE.md          ← phase tracking, decisions, verdicts
   PROJECT.md        ← requirements, scope, constraints
-  phases/<phase>/
-    PLAN.md         ← created by orient skill
-    SUMMARY.md      ← created by decide skill
-    VERIFICATION.md ← created by act skill
+  PLAN.md           ← created by orient skill
+  SUMMARY.md        ← created by decide skill
+  VERIFICATION.md   ← created by act skill
 ```
 
 Design choices:
-- **Two templates, not eight**: STATE.md and PROJECT.md are initialized by `/oodaloop-init`. Phase files (PLAN.md, SUMMARY.md, VERIFICATION.md) are created dynamically by skills during execution.
-- **Fewer files = less stale state**: files only exist when they earn existence.
+- **Flat structure**: all state files live at `.oodaloop/` root. No nested `phases/` directories. Simpler to reference, harder to go stale.
+- **Two templates, five dynamic**: STATE.md and PROJECT.md are initialized by `/oodaloop-init`. PLAN.md, SUMMARY.md, and VERIFICATION.md are created by skills during execution.
 - **Decisions log is a section in STATE.md**, not a separate file.
 
 ---
@@ -186,17 +185,20 @@ Reject these explicitly:
 ```
 oodaloop/
   .cursor-plugin/plugin.json    ← manifest
+  .oodaloop/                    ← self-tracking state (committed)
   foundation/                   ← permanent doctrine
     PRINCIPLES.md
     SYSTEMS-REFERENCE.md
-  commands/                     ← 8 entry points
-  skills/                       ← 7 procedural skills
+  commands/                     ← 8 thin command invocations
+  skills/                       ← 7 procedural skills (the real substance)
   agents/                       ← 5 specialized agents
   rules/                        ← 3 boundary rules
-  templates/oodaloop/           ← 2 state templates
+  templates/oodaloop/           ← 2 state templates (reference only)
   ARCHITECTURE.md               ← this document
   README.md
   LICENSE
 ```
+
+Commands are thin wrappers that invoke skills. Skills contain the actual procedure. This mirrors the pattern used by reference plugins (cursor-team-kit, superpowers).
 
 All component paths in `plugin.json` are relative and resolve to existing directories.
