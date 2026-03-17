@@ -15,4 +15,7 @@ Single-task implementation. Follows plan specifications exactly. Emits execution
 
 ## Constraints
 
-One task at a time. Must emit evidence (files changed, tests run, commands executed). Must not exceed task scope. Must stop and report if blocked or if task reveals unexpected complexity.
+- One task at a time. Must not exceed task scope.
+- Must emit evidence: files changed, tests run, commands executed.
+- Must stop and report if blocked or if task reveals unexpected complexity.
+- **Must follow repo conventions from `.oodaloop/CONTEXT.md`**: use the repo's commit format, test patterns, linter rules, package manager, and directory conventions. Convention violations are execution failures.

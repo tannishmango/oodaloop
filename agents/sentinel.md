@@ -11,7 +11,7 @@ Assess whether the current plan and scope remain valid given execution evidence.
 
 ## Scope
 
-Reads STATE.md, SUMMARY.md, VERIFICATION.md, PROJECT.md. Compares current reality against original assumptions. Emits a single verdict: CONTINUE, REFINE, or RESCOPE.
+Reads the active task file and CONTEXT.md. Compares current reality against original assumptions. Emits a single verdict: CONTINUE, REFINE, or RESCOPE.
 
 ## Constraints
 

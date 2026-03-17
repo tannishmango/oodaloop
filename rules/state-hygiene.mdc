@@ -1,10 +1,19 @@
 ---
-description: Keep .oodaloop/ state current and consistent. No stale artifacts.
+description: Keep .oodaloop/ state current and consistent. Enforce persistent vs ephemeral lifecycle.
 alwaysApply: true
 ---
 
-- After any phase transition, update STATE.md with current phase, timestamp, and summary.
-- Never leave STATE.md in an inconsistent state (e.g., phase says "decide" but no PLAN.md exists).
-- Phase files (PLAN.md, SUMMARY.md, VERIFICATION.md) are created by the relevant skill, not manually.
-- Delete or archive stale phase files when scope changes invalidate them.
-- If .oodaloop/ doesn't exist and a command needs it, prompt for /oodaloop-init first.
+## File types
+
+- **CONTEXT.md** is persistent. It survives across tasks and is never deleted. It is updated incrementally by observe (convention drift), loop (learning absorption), and init (creation). Never overwrite wholesale -- update sections.
+- **<slug>.task.md** files are ephemeral. They are created by observe, filled through the OODA cycle, and deleted by loop on CONTINUE verdict. They represent active work, not permanent records.
+
+## Rules
+
+- After any phase transition within a task, update the task file's phase and timestamp.
+- Never leave a task file in an inconsistent state (e.g., phase says "decide" but no Plan section exists).
+- CONTEXT.md must always have a valid "Last refreshed" timestamp.
+- When loop absorbs learnings, add to CONTEXT.md -- do not duplicate in both files.
+- Delete completed task files promptly. Do not accumulate finished task files.
+- If `.oodaloop/` doesn't exist and a command needs it, prompt for `/oodaloop-init`.
+- Multiple task files may coexist for concurrent work. Each is independent.

@@ -15,67 +15,70 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
    - If it exists: warn the user and **stop**. Do not overwrite existing state.
    - If it does not exist: proceed.
 
-3. **Scan for plugin conflicts.** Check which Cursor plugins are active in this workspace. For each, assess interference risk against OODALOOP using these criteria:
-   - **High risk** (recommend disable): plugin injects mandatory context via hooks, enforces unconditional hard gates on all tasks, or overrides workflow autonomy. Example: `superpowers` -- its session hook injects "EXTREMELY_IMPORTANT" context and forces rigid skill-first behavior that conflicts with adaptive rigor.
-   - **Medium risk** (recommend deprioritize): plugin runs background processes or follow-up loops that add noise during focused work. Example: `continual-learning` -- its stop hook triggers autonomous memory updates.
-   - **Low risk** (keep): plugin provides scoped, opt-in capabilities that don't conflict. Examples: `create-plugin` (quality gates), `cursor-team-kit` (CI/review tools), domain-specific skills (database, etc.).
+3. **Scan for plugin conflicts.** Check which Cursor plugins are active in this workspace. For each, assess interference risk against OODALOOP:
+   - **High risk** (recommend disable): injects mandatory context via hooks, enforces unconditional hard gates, or overrides workflow autonomy.
+   - **Medium risk** (recommend deprioritize): runs background processes or follow-up loops that add noise.
+   - **Low risk** (keep): provides scoped, opt-in capabilities that don't conflict.
 
-   Report findings to the user as a concise table:
-   ```
-   | Plugin | Risk | Recommendation | Reason |
-   ```
-   Let the user decide what to disable. Do not disable anything automatically.
+   Report as a table: `| Plugin | Risk | Recommendation | Reason |`
+   Let the user decide. Do not disable anything automatically.
 
-4. Create the `.oodaloop/` directory.
+4. **Scan repo conventions.** For each category, check for known config files and extract key facts. If nothing found for a category, record "None detected."
 
-5. Create `.oodaloop/STATE.md` with this content, substituting the project name, today's date, and deconfliction findings:
+   **Git**: `.gitattributes`, recent commit messages (sample 5 for format patterns), branch naming from `git branch -a`, any `CONTRIBUTING.md`.
+   **Code Quality**: `.pre-commit-config.yaml` (list hooks), linter configs (`ruff.toml`, `.eslintrc*`, `.prettierrc*`, `pyproject.toml [tool.ruff]`, `pyproject.toml [tool.black]`, `.flake8`).
+   **Testing**: test runner config (`pytest.ini`, `pyproject.toml [tool.pytest]`, `jest.config.*`, `vitest.config.*`), test directories (`tests/`, `__tests__/`, `test/`, `spec/`), coverage config.
+   **CI/CD**: `.github/workflows/` (list files), `.gitlab-ci.yml`, `Jenkinsfile`, `.circleci/`.
+   **Dependencies**: manifest (`pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `requirements.txt`), lockfiles (`poetry.lock`, `uv.lock`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `Cargo.lock`).
+   **Cursor**: `.cursor/rules/` (list files), `AGENTS.md`, `.cursorrules`.
 
-```markdown
-# OODALOOP State: <project_name>
+5. Create the `.oodaloop/` directory.
 
-## Current Phase
-- **Phase**: ready
-- **Started**: <today's date YYYY-MM-DD>
-- **Last Updated**: <today's date YYYY-MM-DD>
-
-## Task Progress
-No active tasks.
-
-## Decisions Log
-No decisions recorded.
-
-## Loop Verdicts
-No loop assessments performed.
-
-## Deconfliction
-<for each plugin scanned, record: plugin name, risk level, decision (keep/disable/deprioritize)>
-```
-
-6. Create `.oodaloop/PROJECT.md` with this content, substituting the project name:
+6. Create `.oodaloop/CONTEXT.md` with the following content, substituting project name, today's date, convention scan findings, and deconfliction findings:
 
 ```markdown
-# Project: <project_name>
+# Context: <project_name>
+
+> Last refreshed: <today YYYY-MM-DD>
 
 ## Objective
-To be defined.
+To be defined during Observe phase.
 
-## Requirements
+## Conventions
+
+### Git
+<findings or "None detected.">
+
+### Code Quality
+<findings or "None detected.">
+
+### Testing
+<findings or "None detected.">
+
+### CI/CD
+<findings or "None detected.">
+
+### Dependencies
+<findings or "None detected.">
+
+### Cursor
+<findings or "None detected.">
+
+## Architecture
 To be populated during Observe phase.
 
-## Constraints
-To be populated during Observe phase.
+## Decisions
+No decisions recorded.
 
-## Scope Boundaries
-- **In scope**: TBD
-- **Out of scope**: TBD
-- **Deferred**: TBD
+## Deconfliction
+<for each plugin: name, risk, decision>
 ```
 
-7. Confirm initialization by reporting: project name, files created, deconfliction summary, current phase ("ready"), and recommended next step (`/oodaloop-observe`).
+7. Confirm initialization: project name, file created, convention summary, deconfliction summary, current state ("ready for observe"), recommended next step (`/oodaloop-observe`).
 
 ## Output
 
 - Plugin conflict assessment table reported to user
-- `.oodaloop/STATE.md` -- initialized with project name, date, phase "ready", deconfliction decisions
-- `.oodaloop/PROJECT.md` -- initialized with project name, empty sections
-- Confirmation message with next-step recommendation
+- Convention scan findings reported to user
+- `.oodaloop/CONTEXT.md` initialized with conventions and deconfliction
+- Confirmation with next-step recommendation

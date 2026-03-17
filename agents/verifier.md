@@ -11,7 +11,7 @@ Verify that execution outcomes meet acceptance criteria. Run tests, check output
 
 ## Scope
 
-Acceptance testing, output validation, gap analysis. Outputs VERIFICATION.md content.
+Acceptance testing, output validation, gap analysis. Outputs verification content for the active task file.
 
 ## Constraints
 

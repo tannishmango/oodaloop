@@ -88,21 +88,38 @@ This enforces separation of concerns: read-heavy analysis is isolated from write
 
 ## State Management
 
-Project state lives in `.oodaloop/` within the target project:
+Project state lives in `.oodaloop/` within the target project. Two file types, cleanly separated:
 
 ```
 .oodaloop/
-  STATE.md          ← phase tracking, decisions, verdicts
-  PROJECT.md        ← requirements, scope, constraints
-  PLAN.md           ← created by orient skill
-  SUMMARY.md        ← created by decide skill
-  VERIFICATION.md   ← created by act skill
+  CONTEXT.md             ← persistent repo memory (survives across tasks)
+  <slug>.task.md          ← ephemeral per-task state (one per active OODA cycle)
 ```
 
-Design choices:
-- **Flat structure**: all state files live at `.oodaloop/` root. No nested `phases/` directories. Simpler to reference, harder to go stale.
-- **Two templates, five dynamic**: STATE.md and PROJECT.md are initialized by `/oodaloop-init`. PLAN.md, SUMMARY.md, and VERIFICATION.md are created by skills during execution.
-- **Decisions log is a section in STATE.md**, not a separate file.
+### CONTEXT.md (persistent)
+
+One file holds everything that survives across tasks: project identity, repo conventions (6 categories: git, code quality, testing, CI/CD, dependencies, Cursor), architecture patterns, active decisions, and plugin deconfliction.
+
+- Created by `/oodaloop-init` with automated convention scan.
+- Enriched by observe (convention drift check) and loop (learning absorption).
+- Updated incrementally -- sections change, file is never rewritten wholesale.
+- "Last refreshed" timestamp enables targeted staleness detection.
+
+### Task files (ephemeral)
+
+Each OODA cycle creates one `<slug>.task.md` file. It contains the full lifecycle: phase tracking, objective, requirements, observations, scope, plan, execution log, verification, and verdict. All in one file per task.
+
+- Created by observe, filled through orient/decide/act/loop.
+- On CONTINUE verdict, learnings are absorbed into CONTEXT.md and the task file is **deleted**.
+- Multiple task files can coexist for concurrent work. Each is independent.
+- No separate PLAN.md, SUMMARY.md, or VERIFICATION.md. Those are sections within the task file.
+
+### Design rationale
+- **Two types, not five files**: the old model (STATE.md + PROJECT.md + PLAN.md + SUMMARY.md + VERIFICATION.md) mixed persistent and ephemeral concerns. Persistent data got overwritten when tasks changed. This is deletion, not addition.
+- **Flat structure**: everything lives at `.oodaloop/` root. No nested directories.
+- **Multi-task ready**: task files are per-cycle, not singleton. `ls .oodaloop/*.task.md` shows all active work.
+- **Anti-stale by design**: CONTEXT.md uses targeted refresh (check config file changes, not full re-scan). Task files are ephemeral and deleted on completion.
+- **Single source of truth per concept**: persistent repo context has exactly one home (CONTEXT.md). Task state has exactly one home (its task file).
 
 ---
 
@@ -167,16 +184,9 @@ Reject these explicitly:
 | Milestone | Scope | Status |
 |-----------|-------|--------|
 | M1: Ground Breaking | Plugin scaffold, component skeletons, architecture baseline, doctrine home | Complete |
-| M2: Working Observe/Orient | Functional research + planning pipeline with real agent orchestration | Current |
+| M2: Working Observe/Orient | Functional research + planning pipeline, skill enrichment, local testing | Complete |
+| M2.5: State Architecture | Persistent/ephemeral separation, CONTEXT.md + task files, multi-task design, convention memory | Current |
 | M3: Full Loop | End-to-end OODA cycle with sentinel verdicts and adaptive rigor in practice | Future |
-
-### M1 non-goals
-- Full OODA orchestration logic
-- Hook scripts or MCP servers
-- Symlink to `~/.cursor/plugins/local/`
-- Publishing or marketplace submission
-- Sentinel loop verdict engine implementation
-- Dynamic phase file creation (described in skills, not yet executable)
 
 ---
 
@@ -193,7 +203,7 @@ oodaloop/
   skills/                       ← 7 procedural skills (the real substance)
   agents/                       ← 5 specialized agents
   rules/                        ← 3 boundary rules
-  templates/oodaloop/           ← 2 state templates (reference only)
+  templates/oodaloop/           ← 1 state template (CONTEXT.md)
   ARCHITECTURE.md               ← this document
   README.md
   LICENSE

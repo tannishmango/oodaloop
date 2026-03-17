@@ -9,79 +9,74 @@ description: Decompose observations into a sequenced, executable plan.
 
 ## Preconditions
 
-- `.oodaloop/PROJECT.md` must have populated Requirements and Observations sections.
-- `.oodaloop/STATE.md` phase should be `orient` (set by observe skill).
-- If PROJECT.md lacks requirements, recommend returning to `/oodaloop-observe`.
+- An active task file (`.oodaloop/<slug>.task.md`) must exist with populated Requirements and Observations.
+- `.oodaloop/CONTEXT.md` must exist.
+- If the task file lacks requirements, recommend returning to `/oodaloop-observe`.
 
 ## Workflow
 
-### 1. Read observations
-Read `.oodaloop/PROJECT.md`. Identify:
-- All requirements (R1, R2, ...)
-- Constraints
-- Scope boundaries (in/out/deferred)
-- Risks and open questions from observations
+### 1. Read task observations
+Read the active task file. Identify all requirements, constraints, scope boundaries, risks, and open questions.
+
+Read `.oodaloop/CONTEXT.md` for repo conventions that constrain implementation.
 
 ### 2. Identify work streams
 Group related requirements into logical streams. Look for:
-- Natural clusters (e.g., "data layer tasks" vs "UI tasks")
+- Natural clusters (e.g., "data layer" vs "UI")
 - Shared dependencies between requirements
 - Independent streams that can be parallelized
 
 ### 3. Decompose into atomic tasks
-For each work stream, break down into tasks where each task:
+For each stream, break into tasks where each task:
 - Has a single concern (one thing changes)
 - Can be verified independently
 - Has clear acceptance criteria
-- Takes no more than one focused session to complete
+- Takes no more than one focused session
 
 ### 4. Define dependencies and parallelism
 For each task, identify:
-- Which tasks must complete before it can start
-- Which tasks can run in parallel
-- Draw or describe the dependency graph
+- Which tasks must complete first
+- Which can run in parallel
+- The dependency graph
 
-### 5. Write PLAN.md
-Create `.oodaloop/PLAN.md` using this format:
+### 5. Write plan into task file
+Append the plan section to the existing task file:
 
 ```markdown
-# Plan: <milestone or feature name>
+## Plan
 
-## Tasks
-
-### T1: <task title>
-**Depends on**: <task IDs or "none">
+### T1: <title>
+**Depends on**: none
 **Acceptance**: <concrete, verifiable criteria>
 
-### T2: <task title>
+### T2: <title>
 **Depends on**: T1
 **Acceptance**: <criteria>
 
 ...
 
-## Dependency Graph
-<ASCII diagram or description showing task ordering>
+### Dependency Graph
+<ASCII diagram or description>
 
-## Execution Strategy
-Batch 1: <tasks that can run in parallel>
-Batch 2: <next tasks after batch 1 completes>
+### Execution Strategy
+Batch 1: <parallel tasks>
+Batch 2: <next tasks>
 ...
 ```
 
-### 6. Review the plan
-Before finalizing, check:
-- Every requirement from PROJECT.md is covered by at least one task
-- No task has ambiguous acceptance criteria
+### 6. Review
+Check before finalizing:
+- Every requirement covered by at least one task
+- No ambiguous acceptance criteria
 - Dependencies form a valid DAG (no cycles)
-- The plan is executable without reinterpretation
+- Plan is executable without reinterpretation
+- Convention constraints from CONTEXT.md are reflected in relevant tasks
 
-If gaps exist, add tasks or flag them.
-
-### 7. Update state
-Set `.oodaloop/STATE.md` phase to `decide`. Update Task Progress with task count and batch count.
+### 7. Update task file phase
+Set the task file phase to `decide`. Update the timestamp.
 
 ## Output
 
-- `.oodaloop/PLAN.md` with atomic tasks, dependencies, acceptance criteria, and execution strategy
-- `.oodaloop/STATE.md` phase advanced to `decide`
-- Summary reported to user with recommendation to proceed to `/oodaloop-decide`
+- Plan section appended to `.oodaloop/<slug>.task.md`
+- Task file phase set to `decide`
+- Summary reported with recommendation to proceed to `/oodaloop-decide`

@@ -5,81 +5,84 @@ description: Research and gather requirements through structured discovery.
 
 ## Trigger
 
-`/oodaloop-observe` or entering Observe phase after init.
+`/oodaloop-observe` or entering Observe phase.
 
 ## Preconditions
 
-- `.oodaloop/` must exist. If not, prompt for `/oodaloop-init` first.
-- `.oodaloop/STATE.md` must show phase `ready` or `observe` (re-entry from loop RESCOPE is valid).
+- `.oodaloop/` must exist. If not, prompt for `/oodaloop-init`.
+- `.oodaloop/CONTEXT.md` must exist.
 
 ## Workflow
 
-### 1. Read current state
-Read `.oodaloop/STATE.md` and `.oodaloop/PROJECT.md` for existing context. If PROJECT.md already has observations from a prior run, build on them rather than starting from scratch.
+### 1. Read persistent context
+Read `.oodaloop/CONTEXT.md` for repo conventions, architecture patterns, and active decisions. This is the baseline -- do not rediscover what is already captured.
 
-### 2. Clarify scope
-If the user hasn't provided a task description or objective:
-- Ask what they want to accomplish.
-- Update the Objective section in `PROJECT.md`.
+### 2. Check for convention drift
+Compare CONTEXT.md's conventions against what is currently on disk. For each convention category: if the config files mentioned have been added, removed, or meaningfully changed since the last refresh date, update that section in CONTEXT.md and bump the refresh timestamp. If nothing changed, skip. This keeps context current without redundant re-scanning.
 
-If the user has provided a clear task, proceed directly.
+### 3. Clarify scope
+If the user has not provided a task description or objective, ask. Otherwise, proceed.
 
-### 3. Research the codebase
-Use the researcher agent (readonly) to explore. Focus on:
+Determine a **task slug**: short, kebab-case, descriptive (e.g., `add-auth`, `fix-deploy`, `state-revision`). This names the task file.
+
+### 4. Check for existing task files
+List any `*.task.md` files in `.oodaloop/`. If the user is resuming work on an existing task (slug matches), read that task file and build on it. If starting new work, create a new task file.
+
+### 5. Research the codebase
+Use the researcher agent (readonly). Focus on:
 - **Structure**: directory layout, key files, entry points, configuration
 - **Dependencies**: package manifests, imports, external services
-- **Existing documentation**: READMEs, inline docs, architecture notes
-- **Patterns**: conventions, naming, testing approach, state management
+- **Patterns**: naming conventions, testing approach, state management, error handling
 - **Risks**: complexity hotspots, missing tests, tight coupling, stale code
 
-Aim for breadth first, then depth on areas relevant to the objective.
+Breadth first, then depth on areas relevant to the objective.
 
-### 4. Gather requirements
+### 6. Gather requirements
 From user input + codebase research, identify:
-- **Functional requirements**: what must the deliverable do
+- **Functional requirements**: what the deliverable must do
 - **Constraints**: technology, performance, compatibility, time
-- **Assumptions**: what we're taking as given (mark confidence level)
-- **Open questions**: things we don't know yet (mark as uncertain)
+- **Assumptions**: what we take as given (mark confidence level)
+- **Open questions**: unknowns (mark as uncertain)
 
-### 5. Write findings to PROJECT.md
-Update `.oodaloop/PROJECT.md` with structured sections:
+### 7. Create or update task file
+Create `.oodaloop/<slug>.task.md`:
 
 ```markdown
+# Task: <slug>
+
+## Phase: observe
+Started: <date>
+Updated: <date>
+
+## Objective
+<what we are accomplishing>
+
 ## Requirements
-### R1: <requirement title>
+### R1: <title>
 <description>
 
 ### R2: ...
 
-## Constraints
-- <constraint>
-
 ## Observations
-### O1: <observation title>
+### O1: <title>
 <finding with evidence -- file paths, patterns, concrete examples>
 
 ### O2: ...
 
-## Scope Boundaries
-- **In scope**: <what we will do>
-- **Out of scope**: <what we won't do>
-- **Deferred**: <what we'll do later>
+## Scope
+- **In**: <what we will do>
+- **Out**: <what we will not do>
+- **Deferred**: <what we will do later>
 ```
 
-### 6. Assess sufficiency
-Observations are sufficient when:
-- The objective is clear
-- Key requirements are identified (even if some are uncertain)
-- Scope boundaries are defined
-- Major risks or unknowns are surfaced
+### 8. Assess sufficiency
+Sufficient when: objective is clear, key requirements identified, scope defined, major risks surfaced. If gaps remain, state them explicitly in the task file and ask the user whether to research further or proceed with known uncertainty.
 
-If gaps remain, state them explicitly in PROJECT.md and ask the user whether to research further or proceed with known uncertainty.
-
-### 7. Update state
-Set `.oodaloop/STATE.md` phase to `orient`. Update the Task Progress and Last Updated fields.
+### 9. Report
+Summarize findings to user. Recommend `/oodaloop-orient` to create the plan.
 
 ## Output
 
-- `.oodaloop/PROJECT.md` populated with requirements, constraints, observations, and scope
-- `.oodaloop/STATE.md` phase advanced to `orient`
-- Summary of findings reported to the user with recommendation to proceed to `/oodaloop-orient`
+- `.oodaloop/CONTEXT.md` updated if conventions drifted
+- `.oodaloop/<slug>.task.md` created with requirements, observations, scope
+- Summary reported with next-step recommendation

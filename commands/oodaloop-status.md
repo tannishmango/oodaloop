@@ -1,27 +1,28 @@
 ---
 name: oodaloop-status
-description: Report current OODALOOP project state and phase.
+description: Report current OODALOOP project state and active tasks.
 ---
 
 Read-only. No side effects.
 
 1. Check if `.oodaloop/` exists. If not, report "No OODALOOP state found. Run `/oodaloop-init` first." and stop.
 
-2. Read `.oodaloop/STATE.md`. Extract and report:
-   - **Phase**: current phase and last updated date
-   - **Milestone**: if present
-   - **Task progress**: summary line from Task Progress section
+2. Read `.oodaloop/CONTEXT.md`. Report:
+   - **Project**: name from header
+   - **Objective**: current objective
+   - **Last refreshed**: timestamp
+   - **Conventions**: one-line summary per category (detected/not detected)
+   - **Active decisions**: count and most recent entry
+   - **Deconfliction**: summary line
 
-3. If `.oodaloop/PLAN.md` exists, count tasks and report:
-   - Total tasks
-   - Completed / in-progress / pending (if the plan uses status markers)
+3. List all `.oodaloop/*.task.md` files. For each active task, report:
+   - **Task**: slug (from filename)
+   - **Phase**: current phase
+   - **Last updated**: timestamp
+   - **Progress**: task completion counts if Plan section exists
 
-4. If `.oodaloop/VERIFICATION.md` exists, summarize:
-   - Pass/fail counts
-   - Any open gaps
+4. If no active tasks exist, report "No active tasks."
 
-5. Report the most recent entry from Decisions Log and Loop Verdicts (if any).
+5. Report blockers if any are mentioned in task files.
 
-6. Report blockers if any are mentioned in state files.
-
-Format the output as a concise structured summary. Do not modify any files.
+Format as a concise structured summary. Do not modify any files.
