@@ -1,0 +1,10 @@
+---
+description: Keep .oodaloop/ state current and consistent. No stale artifacts.
+alwaysApply: true
+---
+
+- After any phase transition, update STATE.md with current phase, timestamp, and summary.
+- Never leave STATE.md in an inconsistent state (e.g., phase says "decide" but no PLAN.md exists).
+- Phase files (PLAN.md, SUMMARY.md, VERIFICATION.md) are created by the relevant skill, not manually.
+- Delete or archive stale phase files when scope changes invalidate them.
+- If .oodaloop/ doesn't exist and a command needs it, prompt for /oodaloop-init first.

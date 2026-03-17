@@ -1,0 +1,11 @@
+---
+description: Non-trivial claims require proof paths. Evidence over assertion.
+alwaysApply: true
+---
+
+- Execution summaries must include concrete evidence: files changed, tests run, commands executed, outputs observed.
+- Verification results must reference specific acceptance criteria and show pass/fail with evidence.
+- Loop verdicts must cite specific artifacts and observations that support the verdict.
+- "It works" is not evidence. Provide the test output, the file diff, or the runtime check.
+- When confidence is less than high, state the uncertainty explicitly.
+- For trivial/quick tasks, evidence requirements scale down proportionally (a quick note is sufficient for a one-line fix).

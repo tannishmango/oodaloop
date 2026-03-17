@@ -1,0 +1,11 @@
+---
+description: Match process depth to task complexity. No unconditional ceremony.
+alwaysApply: true
+---
+
+- Trivial tasks (single file, low risk, clear intent) use /oodaloop-quick. No planning phase required.
+- Medium tasks (multi-file, moderate risk) use Observe -> Orient -> Decide -> Act minimum.
+- Complex tasks (architectural, high risk, multi-system) use full OODA with Loop reassessment.
+- Never force heavyweight process on lightweight work. Never skip verification on risky work.
+- If a task escalates in complexity mid-execution, pause and upgrade the process level.
+- If process feels like overhead without safety benefit, reduce it.

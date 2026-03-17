@@ -1,0 +1,14 @@
+{
+  "name": "oodaloop",
+  "displayName": "OODALOOP",
+  "version": "0.1.0",
+  "description": "OODA-loop orchestration for adaptive project delivery in Cursor.",
+  "author": { "name": "Transpose" },
+  "license": "MIT",
+  "keywords": ["ooda", "orchestration", "planning", "verification"],
+  "category": "developer-tools",
+  "commands": "./commands/",
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "agents": "./agents/"
+}
