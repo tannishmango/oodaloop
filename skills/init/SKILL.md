@@ -15,9 +15,20 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
    - If it exists: warn the user and **stop**. Do not overwrite existing state.
    - If it does not exist: proceed.
 
-3. Create the `.oodaloop/` directory.
+3. **Scan for plugin conflicts.** Check which Cursor plugins are active in this workspace. For each, assess interference risk against OODALOOP using these criteria:
+   - **High risk** (recommend disable): plugin injects mandatory context via hooks, enforces unconditional hard gates on all tasks, or overrides workflow autonomy. Example: `superpowers` -- its session hook injects "EXTREMELY_IMPORTANT" context and forces rigid skill-first behavior that conflicts with adaptive rigor.
+   - **Medium risk** (recommend deprioritize): plugin runs background processes or follow-up loops that add noise during focused work. Example: `continual-learning` -- its stop hook triggers autonomous memory updates.
+   - **Low risk** (keep): plugin provides scoped, opt-in capabilities that don't conflict. Examples: `create-plugin` (quality gates), `cursor-team-kit` (CI/review tools), domain-specific skills (database, etc.).
 
-4. Create `.oodaloop/STATE.md` with this content, substituting the project name and today's date:
+   Report findings to the user as a concise table:
+   ```
+   | Plugin | Risk | Recommendation | Reason |
+   ```
+   Let the user decide what to disable. Do not disable anything automatically.
+
+4. Create the `.oodaloop/` directory.
+
+5. Create `.oodaloop/STATE.md` with this content, substituting the project name, today's date, and deconfliction findings:
 
 ```markdown
 # OODALOOP State: <project_name>
@@ -37,10 +48,10 @@ No decisions recorded.
 No loop assessments performed.
 
 ## Deconfliction
-No deconfliction decisions recorded.
+<for each plugin scanned, record: plugin name, risk level, decision (keep/disable/deprioritize)>
 ```
 
-5. Create `.oodaloop/PROJECT.md` with this content, substituting the project name:
+6. Create `.oodaloop/PROJECT.md` with this content, substituting the project name:
 
 ```markdown
 # Project: <project_name>
@@ -60,10 +71,11 @@ To be populated during Observe phase.
 - **Deferred**: TBD
 ```
 
-6. Confirm initialization by reporting: project name, files created, current phase ("ready"), and recommended next step (`/oodaloop-observe`).
+7. Confirm initialization by reporting: project name, files created, deconfliction summary, current phase ("ready"), and recommended next step (`/oodaloop-observe`).
 
 ## Output
 
-- `.oodaloop/STATE.md` -- initialized with project name, date, phase "ready"
+- Plugin conflict assessment table reported to user
+- `.oodaloop/STATE.md` -- initialized with project name, date, phase "ready", deconfliction decisions
 - `.oodaloop/PROJECT.md` -- initialized with project name, empty sections
 - Confirmation message with next-step recommendation
