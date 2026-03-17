@@ -18,7 +18,26 @@ description: Research and gather requirements through structured discovery.
 Read `.oodaloop/CONTEXT.md` for repo conventions, architecture patterns, and active decisions. This is the baseline -- do not rediscover what is already captured.
 
 ### 2. Check for convention drift
-Compare CONTEXT.md's conventions against what is currently on disk. For each convention category: if the config files mentioned have been added, removed, or meaningfully changed since the last refresh date, update that section in CONTEXT.md and bump the refresh timestamp. If nothing changed, skip. This keeps context current without redundant re-scanning.
+For each convention category, check whether sentinel files exist on disk that contradict what CONTEXT.md currently records. Only re-scan categories where a mismatch is found.
+
+**Sentinel files per category:**
+| Category | Check for existence of |
+|---|---|
+| Git | `.gitattributes`, `CONTRIBUTING.md` |
+| Code Quality | `.pre-commit-config.yaml`, `ruff.toml`, `.eslintrc*`, `.prettierrc*`, `.flake8`, `pyproject.toml` (check for `[tool.ruff]` or `[tool.black]`) |
+| Testing | `pytest.ini`, `jest.config.*`, `vitest.config.*`, `tests/`, `__tests__/`, `test/`, `spec/` |
+| CI/CD | `.github/workflows/`, `.gitlab-ci.yml`, `Jenkinsfile`, `.circleci/` |
+| Dependencies | `pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `requirements.txt` and their lockfiles |
+| Workspace Tooling | `.cursor/rules/`, `AGENTS.md`, `.claude/` |
+
+**Detection logic:**
+1. For each category, glob for its sentinel files.
+2. Compare results against what CONTEXT.md says for that category:
+   - If CONTEXT.md says "None detected" but sentinel files now exist → drift. Re-scan that category using the init skill's full scan logic and update CONTEXT.md.
+   - If CONTEXT.md describes specific tools but their config files no longer exist → drift. Update to reflect removal.
+   - If sentinel files match what CONTEXT.md already records → no drift. Skip.
+3. If any category was updated, bump the "Last refreshed" timestamp.
+4. If nothing drifted, skip entirely -- do not touch CONTEXT.md.
 
 ### 3. Clarify scope
 If the user has not provided a task description or objective, ask. Otherwise, proceed.
@@ -45,10 +64,11 @@ From user input + codebase research, identify:
 - **Open questions**: unknowns (mark as uncertain)
 
 ### 7. Create or update task file
-Create `.oodaloop/<slug>.task.md`:
+Create `.oodaloop/<slug>.task.md`. If this observe was triggered by a blocking discovery from another task, include `Parent: <parent-slug>` and inherit only the blocker context (not the entire parent task):
 
 ```markdown
 # Task: <slug>
+Parent: <parent-slug, if spawned from a blocking discovery; omit otherwise>
 
 ## Phase: observe
 Started: <date>

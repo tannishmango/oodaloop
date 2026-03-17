@@ -25,7 +25,11 @@ For each task, check:
 - Were repo conventions followed?
 - Are there side effects or regressions?
 
-Run relevant checks: tests, linters, type checks, build commands. Use what CONTEXT.md says the repo uses.
+Run checks based on what CONTEXT.md says the repo uses:
+- **If repo has tests**: run the test suite, report pass/fail counts.
+- **If repo has linters/formatters**: run them, report any violations.
+- **If repo has CI**: check that local changes wouldn't break CI checks.
+- **If repo has no automated checks** (CONTEXT.md says "None detected" for testing/code quality): verify through file inspection -- read the changed files, confirm the changes match acceptance criteria, check for obvious regressions (broken imports, syntax errors, missing references). Note "verified by inspection" in evidence.
 
 ### 3. Record verification in task file
 Append to the task file:

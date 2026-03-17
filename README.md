@@ -8,13 +8,13 @@ Private/internal plugin. This repository is intended for local use or private Gi
 
 OODALOOP structures project/feature work into an adaptive cycle:
 
-- **Observe** -- research and gather requirements
+- **Observe** -- research, gather requirements, detect convention drift
 - **Orient** -- decompose into an executable plan
-- **Decide** -- implement atomic tasks
+- **Decide** -- implement atomic tasks, triage mid-execution discoveries
 - **Act** -- verify outcomes against acceptance criteria
-- **Loop** -- reassess scope based on execution evidence
+- **Loop** -- reassess scope, absorb learnings, curate backlog
 
-Process depth scales with task complexity. Trivial tasks get a fast path; complex work gets full OODA with sentinel reassessment.
+Process depth scales with task complexity. Trivial tasks get a fast path; complex work gets full OODA with sentinel reassessment. Blocking discoveries during execution can spawn recursive sub-cycles that pause the parent task and resume after resolution.
 
 ## Commands
 
@@ -47,6 +47,22 @@ Process depth scales with task complexity. Trivial tasks get a fast path; comple
 - **Compression**: minimal, high-signal process primitives.
 - **Every artifact earns its existence**: if it doesn't improve outcomes, delete it.
 
+## State model
+
+Project state lives in `.oodaloop/` within the target project:
+
+| File | Lifecycle | Purpose |
+|------|-----------|---------|
+| `CONTEXT.md` | Persistent | Repo identity, conventions, architecture, decisions |
+| `BACKLOG.md` | Persistent | Future work, deferred items, roadmap |
+| `<slug>.task.md` | Ephemeral | One per active OODA cycle -- created at observe, deleted at loop |
+
+CONTEXT.md is updated incrementally (convention drift, learning absorption). Task files capture the full lifecycle of a single piece of work and are deleted when complete. Multiple task files can coexist for concurrent work.
+
+## Self-bootstrapping
+
+OODALOOP builds itself. Each milestone uses the tooling produced by prior milestones. The plugin's own `.oodaloop/` directory tracks its development state, and every change to the plugin follows its own OODA cycle.
+
 ## Install
 
 ```bash
@@ -76,7 +92,7 @@ commands/                    8 entry-point commands
 skills/                      7 procedural skills (Agent Skills standard)
 agents/                      5 specialized agents
 rules/                       3 boundary rules (always active)
-templates/oodaloop/          state templates for target projects
+templates/oodaloop/          CONTEXT.md template for target projects
 install.sh                   host-detecting installer
 ```
 
@@ -84,7 +100,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for design details, portability model, an
 
 ## Status
 
-**Milestone 3.1** (current): cross-environment adapter architecture. Skills are portable via the Agent Skills open standard. Install script handles Cursor, Claude Code, and OpenCode.
+**Milestone 3.4** (current): recursive sub-cycles, concrete convention drift detection, error recovery, backlog management. All milestones were self-bootstrapped -- built using OODALOOP itself.
 
 ## License
 

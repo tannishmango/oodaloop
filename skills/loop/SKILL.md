@@ -34,11 +34,14 @@ Exactly one of:
 Each verdict must include: evidence, rationale, confidence level, and next recommended command.
 
 ### 4. Absorb learnings into CONTEXT.md
-Extract durable knowledge from this task cycle and update CONTEXT.md:
-- **Decisions**: add new decisions with date and rationale to the Decisions section.
-- **Architecture**: update if structural patterns were discovered or changed.
-- **Conventions**: update if conventions changed during this cycle.
-- Do NOT add task-specific details. Only absorb what future tasks need to know.
+Extract knowledge from this cycle that future tasks would need. Update CONTEXT.md:
+- **Decisions**: add if the cycle made a choice that constrains future work (e.g., "chose library X over Y", "adopted pattern Z"). Include date and one-line rationale.
+- **Architecture**: update if the cycle revealed or changed structural patterns (e.g., new module boundary, changed entry point, discovered critical path).
+- **Conventions**: update if the cycle added or changed a convention (e.g., new test pattern, new commit format rule).
+
+**Do NOT absorb**: execution details (what files were changed, what commands were run), task-specific observations that only matter for this task, or anything already captured in CONTEXT.md.
+
+**Test**: before adding a line, ask "would an agent working on a completely different task need this?" If no, don't add it.
 
 Update the "Last refreshed" timestamp.
 
@@ -52,7 +55,7 @@ Read `.oodaloop/BACKLOG.md`. Update it:
 When recommending next steps to the user, reference the top items from the Next section.
 
 ### 6. Handle task file lifecycle
-- If verdict is **CONTINUE** and all work is complete: append the verdict to the task file, then **delete the task file**. The learnings now live in CONTEXT.md.
+- If verdict is **CONTINUE** and all work is complete: append the verdict to the task file. Before deleting, check if this task has a `Parent:` field. If so, find the parent task file in `.oodaloop/`, remove its `Paused` section, and set the parent's phase back to `decide` so it can resume. Then **delete the child task file**. The learnings now live in CONTEXT.md. Recommend resuming the parent with `/oodaloop-decide`.
 - If verdict is **REFINE**: append verdict, keep task file, update phase to `decide`.
 - If verdict is **RESCOPE**: append verdict, keep task file, update phase to `observe`.
 

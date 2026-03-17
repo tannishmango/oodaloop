@@ -28,7 +28,20 @@ For each batch in the execution strategy:
 During execution, the executor may discover issues, improvement opportunities, or prerequisite work not in the plan. For each discovery, assess:
 - **Trivial** (one-line fix, no risk): handle inline, note in execution log.
 - **Notable but non-blocking** (would improve things but isn't required now): add to `.oodaloop/BACKLOG.md` Next or Later section with a brief description and date. Continue execution.
-- **Blocking** (can't proceed without fixing this): stop the current task, note the blocker in the execution log, and recommend the user either resolve it inline or spawn a new OODA cycle for it.
+- **Blocking** (can't proceed without fixing this):
+    1. Stop execution. Note the blocker in the execution log with a concrete description of what's blocking and why it can't be deferred.
+    2. Assess blocker complexity and act accordingly:
+       - **Small** (clear fix, single concern, low risk): resolve with `/oodaloop-quick`, then resume execution of the current task. No pause needed -- quick handles it inline.
+       - **Complex** (unclear scope, multiple files, architectural implications): pause the current task and spawn a full sub-cycle:
+         a. Mark the current task phase as `paused`. Append to the task file:
+            ```
+            ## Paused
+            Reason: <concrete description of what's blocking>
+            Waiting-for: <expected child task slug>
+            Paused-at: <date>
+            ```
+         b. Recommend `/oodaloop-observe` to start the sub-cycle. The child task file should include `Parent: <current-task-slug>` and inherit the blocker description as context.
+         c. Report to the user: what was discovered, why it blocks, and that the parent task will resume after the sub-cycle completes.
 
 ### 4. Update execution log in task file
 After each batch, append to the task file:

@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-03-17 (M3.1 adapter architecture complete)
+> Last refreshed: 2026-03-17 (M3.6 skill followability)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -26,7 +26,7 @@ None. Pure markdown plugin with no package manager, no lockfiles, no runtime dep
 This plugin has commands, skills, agents, rules, and templates, and supports local plugin loading for development.
 
 ## Architecture
-Plugin follows commands → skills → agents pattern. Commands are thin wrappers invoking skills. Skills contain procedural logic. Agents define roles with readonly constraints (only executor writes). Doctrine lives in `foundation/` (PRINCIPLES.md, SYSTEMS-REFERENCE.md). State lives in `.oodaloop/` using CONTEXT.md (persistent) + task files (ephemeral).
+Plugin follows commands → skills → agents pattern. Commands are thin wrappers invoking skills. Skills contain procedural logic. Agents define roles with readonly constraints (only executor writes). Doctrine lives in `foundation/` (PRINCIPLES.md, SYSTEMS-REFERENCE.md). State lives in `.oodaloop/` using CONTEXT.md (persistent) + BACKLOG.md (persistent) + task files (ephemeral). Task files support pause/resume for recursive sub-cycles via Parent/Paused metadata.
 
 ## Decisions
 
@@ -62,6 +62,29 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-17: install.sh detects host (Cursor, Claude Code, OpenCode) and applies matching adapter
 - 2026-03-17: Init skill enhanced to detect and record host environment in CONTEXT.md
 - 2026-03-17: Adapters are install docs + symlink setup, not behavioral forks
+
+### M3.2 (recursive sub-cycles)
+- 2026-03-17: Blocking discoveries during decide trigger sub-cycle spawning. Small blockers → quick path (no pause). Complex blockers → pause parent, spawn child task with Parent reference.
+- 2026-03-17: `paused` added as valid task file phase. Parent/child convention: child has `Parent: <slug>`, parent has `Paused` section.
+- 2026-03-17: Loop skill un-pauses parent after child completes (CONTINUE verdict), recommends resuming parent at decide.
+- 2026-03-17: Zero new file types, skills, or agents. Extended existing decide, observe, loop skills and state-hygiene rule.
+- 2026-03-17: Backlog description was over-specified -- delivered with less machinery than prescribed. Principle: minimum effective process.
+
+### M3.3 (convention drift detection)
+- 2026-03-17: Observe Step 2 rewritten with concrete sentinel file table (6 categories) and 4-step detection logic.
+- 2026-03-17: Drift detection uses file existence as primary signal -- no timestamps, no content diffing. Comparison against CONTEXT.md text.
+- 2026-03-17: Only drifted categories re-scanned. No-change categories skipped entirely.
+
+### M3.4 (error recovery)
+- 2026-03-17: Recovery section added to state-hygiene rule (always-apply). 9 detection checks, 3-part reporting template, 4 recovery options.
+- 2026-03-17: Approach: detect and report to user, not automatic repair. Follows "deference to expertise" -- human decides recovery path.
+- 2026-03-17: Single touchpoint (state-hygiene rule) covers all skills. Zero per-skill modifications.
+
+### M3.5 (readme update)
+- 2026-03-17: README updated with state model section, self-bootstrapping section, current milestone (M3.4→M3.5), updated phase descriptions.
+
+### M3.6 (skill followability audit)
+- 2026-03-17: Audited all 7 skills. Most steps are concrete. Two fixes: loop Step 4 "durable knowledge" given concrete criteria, examples, and litmus test. Act Step 2 given branching logic for verification with/without automated checks.
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level
