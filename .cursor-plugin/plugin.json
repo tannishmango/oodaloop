@@ -2,7 +2,7 @@
   "name": "oodaloop",
   "displayName": "OODALOOP",
   "version": "0.1.0",
-  "description": "Private OODA-loop orchestration plugin for internal project delivery in Cursor.",
+  "description": "An OODA loop that observes itself observing: orient, decide, act, and reorient recursively.",
   "author": { "name": "Pat Croke" },
   "license": "UNLICENSED",
   "keywords": ["internal", "private", "ooda", "orchestration", "planning", "verification"],
