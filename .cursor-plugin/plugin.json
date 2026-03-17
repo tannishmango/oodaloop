@@ -3,7 +3,7 @@
   "displayName": "OODALOOP",
   "version": "0.1.0",
   "description": "OODA-loop orchestration for adaptive project delivery in Cursor.",
-  "author": { "name": "Transpose" },
+  "author": { "name": "Pat Croke", "github": "tannishmango" },
   "license": "MIT",
   "keywords": ["ooda", "orchestration", "planning", "verification"],
   "category": "developer-tools",
