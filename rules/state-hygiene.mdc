@@ -18,7 +18,7 @@ alwaysApply: true
 - Delete completed task files promptly. Do not accumulate finished task files.
 - If `.oodaloop/` doesn't exist and a command needs it, prompt for `/oodaloop-init`.
 - Multiple task files may coexist for concurrent work. Each is independent.
-- **Parent/child tasks**: When a task spawns a sub-cycle to resolve a blocker, the child task file includes `Parent: <parent-slug>` in its header. The parent task file includes a `Paused` section with the reason and what it's waiting for. When the child completes (loop CONTINUE), the parent's `Paused` section is removed and its phase returns to `decide` for resumption.
+- **Parent/child tasks**: Arbitrary depth is supported. A child task can itself pause and spawn a grandchild. The chain resolves bottom-up: grandchild completes → un-pauses child → child completes → un-pauses parent. Each task's `Parent:` field references its immediate parent only. When a child completes (loop CONTINUE), the parent's `Paused` section is removed and its phase returns to `decide` for resumption. Before spawning beyond depth 3, the decide skill asks the user for consent.
 
 ## Recovery
 
@@ -38,6 +38,8 @@ Run these when a skill's preconditions feel wrong or state seems off:
 | Task file phase says `paused` but no Paused section | Pause metadata lost |
 | Task file has `Parent: <slug>` but parent task file doesn't exist | Parent was deleted without resuming child, or child is orphaned |
 | Task file has Paused section with `Waiting-for: <slug>` but child task doesn't exist | Child completed but parent wasn't un-paused |
+| Following `Parent:` references forms a cycle (A → B → A) | Circular chain -- should never happen, indicates corruption |
+| Chain depth exceeds 3 without evidence of user consent in the deepest task file | Runaway recursion -- decide skill should have asked before going this deep |
 
 ### When inconsistency is found
 Report to the user with this structure:

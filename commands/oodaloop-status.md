@@ -15,11 +15,18 @@ Read-only. No side effects.
    - **Active decisions**: count and most recent entry
    - **Deconfliction**: summary line
 
-3. List all `.oodaloop/*.task.md` files. For each active task, report:
-   - **Task**: slug (from filename)
-   - **Phase**: current phase
-   - **Last updated**: timestamp
-   - **Progress**: task completion counts if Plan section exists
+3. List all `.oodaloop/*.task.md` files. Build parent-child chains by following `Parent:` references. Display as a tree:
+   - Root tasks (no `Parent:` field) are top-level entries
+   - Child tasks are indented under their parent
+   - For each task, report: slug, phase, last updated, progress (task completion counts if Plan section exists)
+   - Show chain depth if > 1 (e.g., "depth: 2")
+
+   Example:
+   ```
+   fix-auth (decide, updated 2026-03-17, 2/4 tasks done)
+     └─ fix-token-refresh (act, updated 2026-03-17, depth: 2)
+   add-logging (observe, updated 2026-03-17)
+   ```
 
 4. If no active tasks exist, report "No active tasks."
 

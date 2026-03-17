@@ -56,6 +56,10 @@ init → observe → orient → decide → act → loop
                complex → pause parent → observe child → ... → loop child
                                                                 ↓
                                               CONTINUE → delete child, resume parent
+
+               arbitrary depth (child can spawn grandchild):
+               A pauses → B pauses → C completes → B resumes → B completes → A resumes
+               depth > 3 requires user consent
 ```
 
 The quick path (`/oodaloop-quick`) short-circuits this for low-risk, local changes: execute, summarize, update state. It also resolves small blocking discoveries during execution without pausing the parent task.
@@ -128,7 +132,7 @@ Each OODA cycle creates one `<slug>.task.md` file. It contains the full lifecycl
 - Created by observe, filled through orient/decide/act/loop.
 - On CONTINUE verdict, learnings are absorbed into CONTEXT.md, backlog updated, and the task file is **deleted**. If the completed task has a `Parent:` field, its parent task is un-paused and resumes at decide.
 - Multiple task files can coexist for concurrent work. Each is independent.
-- A task can be `paused` when a blocking discovery requires a sub-cycle. The parent task file records what it's waiting for. The child task file references its parent. This enables recursive depth without new file types or skills.
+- A task can be `paused` when a blocking discovery requires a sub-cycle. The parent task file records what it's waiting for. The child task file references its parent via `Parent:`. Chains can be arbitrary depth -- a child can itself pause and spawn a grandchild. Each level resolves bottom-up. Depth > 3 requires user consent. Status command shows chains as a tree.
 
 ### Design rationale
 - **Three types, clean separation**: CONTEXT.md = what IS, BACKLOG.md = what SHOULD BE, task files = what's HAPPENING. Each concept has one home.

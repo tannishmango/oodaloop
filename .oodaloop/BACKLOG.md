@@ -5,7 +5,7 @@ Items discovered during OODA cycles, user conversations, and execution. Curated 
 ## Next
 Prioritized, ready to cycle into.
 
-- **nested-sub-cycles**: Extend recursive sub-cycles to support child spawning grandchild (arbitrary depth). Deferred from recursive-tasks -- get single-depth right first, then generalize if real usage demands it. [2026-03-17]
+(empty)
 
 ## Later
 Valuable, not urgent. Promote to Next when dependencies clear or priority shifts.
@@ -15,6 +15,7 @@ Valuable, not urgent. Promote to Next when dependencies clear or priority shifts
 - **agent-tuning**: Evidence-based model selection per agent after enough real cycles to generate data. [2026-03-16]
 
 ## Done
+- **nested-sub-cycles**: Arbitrary-depth sub-cycles. Existing implementation was already generic; added depth check (>3 asks user), chain tree in status, cycle/depth detection in state-hygiene. 4 touchpoints. [done 2026-03-17]
 - **proof-of-work**: Proof-of-work architecture. Evidence contract rewritten with 4-tier hierarchy, surface-to-user mandate, counterfactual reasoning, anti-cowardice, honesty mandate. 7 touchpoints: evidence-contract, executor, decide, act, orient, loop, sentinel. 7 independent catches. [done 2026-03-17]
 - **test-rigor**: Defense-in-depth fix for test avoidance. 5 touchpoints updated: evidence-contract, executor, decide, orient, act. Triggered by real autotracing failure. [done 2026-03-17]
 - **skill-followability-audit**: Audited all 7 skills. Fixed loop Step 4 (durable knowledge criteria) and act Step 2 (no-automated-checks fallback). [done 2026-03-17]

@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-03-17 (M3.8 proof of work)
+> Last refreshed: 2026-03-17 (M3.9 nested sub-cycles)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -108,6 +108,14 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-17: Sentinel gains proof-scrutiny constraint -- rejects narrative-only evidence for non-trivial claims.
 - 2026-03-17: Execution log and verification templates changed from `**Evidence**` to `**Proof**` with raw-output requirement.
 - 2026-03-17: 7 independent catches across the OODA cycle (up from 5 in M3.7).
+
+### M3.9 (nested sub-cycles)
+- 2026-03-17: Existing Parent/child implementation already generic -- handles arbitrary depth without code changes to core logic.
+- 2026-03-17: Decide gains depth check: count chain depth before spawning, ask user if > 3 levels deep.
+- 2026-03-17: Status command shows parent-child chains as tree with depth indicator.
+- 2026-03-17: State-hygiene gains two chain-specific detection checks: circular Parent references and depth > 3 without consent.
+- 2026-03-17: ARCHITECTURE.md phase flow updated with arbitrary-depth diagram and task file section updated.
+- 2026-03-17: 4 touchpoints updated: decide, status, state-hygiene, ARCHITECTURE.md. Zero new files.
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level

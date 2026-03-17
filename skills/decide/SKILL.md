@@ -37,7 +37,8 @@ During execution, the executor may discover issues, improvement opportunities, o
     1. Stop execution. Note the blocker in the execution log with a concrete description of what's blocking and why it can't be deferred.
     2. Assess blocker complexity and act accordingly:
        - **Small** (clear fix, single concern, low risk): resolve with `/oodaloop-quick`, then resume execution of the current task. No pause needed -- quick handles it inline.
-       - **Complex** (unclear scope, multiple files, architectural implications): pause the current task and spawn a full sub-cycle:
+       - **Complex** (unclear scope, multiple files, architectural implications): pause the current task and spawn a full sub-cycle.
+         **Depth check first**: count the chain depth by following `Parent:` references from the current task file back to the root. If the chain is already 3 levels deep, report the full chain to the user and ask before spawning another level -- runaway recursion is a real risk and the user should consciously decide to go deeper.
          a. Mark the current task phase as `paused`. Append to the task file:
             ```
             ## Paused
