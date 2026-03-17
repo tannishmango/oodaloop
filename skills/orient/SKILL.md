@@ -30,7 +30,7 @@ Group related requirements into logical streams. Look for:
 For each stream, break into tasks where each task:
 - Has a single concern (one thing changes)
 - Can be verified independently
-- Has clear acceptance criteria
+- Has clear acceptance criteria that specify the required test type: unit tests for logic, integration tests for external systems/APIs/data pipelines. If CONTEXT.md shows the repo has integration test infrastructure for the area being changed, acceptance criteria must require integration tests pass -- not just unit tests.
 - Takes no more than one focused session
 
 ### 4. Define dependencies and parallelism

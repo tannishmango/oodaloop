@@ -22,7 +22,11 @@ Read the active task file's Plan section. Read `.oodaloop/CONTEXT.md` convention
 For each batch in the execution strategy:
 - Dispatch executor agent for each task in the batch.
 - The executor follows the task specification and respects CONTEXT.md conventions.
-- After each task: record what changed, what was tested, any side effects.
+- The executor must write and run tests as part of implementation, not defer testing to the act phase. The test type must match the task's risk:
+  - Code logic changes → unit tests at minimum.
+  - Integration points (APIs, databases, external services, data pipelines) → integration tests that hit real systems. If the repo has existing integration test infrastructure, use it. If running real integration tests requires credentials, environment setup, or could incur costs, ask the user before proceeding -- but do not silently skip.
+  - If the repo's CONTEXT.md Testing conventions describe specific test patterns, follow them.
+- After each task: record what changed, what was tested (including test type and output), any side effects.
 
 ### 3. Handle mid-execution discoveries
 During execution, the executor may discover issues, improvement opportunities, or prerequisite work not in the plan. For each discovery, assess:

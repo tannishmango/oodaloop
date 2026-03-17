@@ -15,6 +15,7 @@ Valuable, not urgent. Promote to Next when dependencies clear or priority shifts
 - **agent-tuning**: Evidence-based model selection per agent after enough real cycles to generate data. [2026-03-16]
 
 ## Done
+- **test-rigor**: Defense-in-depth fix for test avoidance. 5 touchpoints updated: evidence-contract, executor, decide, orient, act. Triggered by real autotracing failure. [done 2026-03-17]
 - **skill-followability-audit**: Audited all 7 skills. Fixed loop Step 4 (durable knowledge criteria) and act Step 2 (no-automated-checks fallback). [done 2026-03-17]
 - **readme-update**: README updated with state model, self-bootstrapping, M3.5 milestone. [done 2026-03-17]
 - **error-recovery**: Recovery section added to state-hygiene rule. Detection checks, reporting template, recovery options. [done 2026-03-17]

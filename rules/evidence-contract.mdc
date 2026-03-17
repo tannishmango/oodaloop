@@ -9,3 +9,5 @@ alwaysApply: true
 - "It works" is not evidence. Provide the test output, the file diff, or the runtime check.
 - When confidence is less than high, state the uncertainty explicitly.
 - For trivial/quick tasks, evidence requirements scale down proportionally (a quick note is sufficient for a one-line fix).
+- **Evidence type must match claim risk.** Unit tests with mocks are evidence that logic is correct. They are NOT evidence that integrations, APIs, external systems, or data pipelines work. If the claim is "this integration works," the evidence must include integration tests against the real system. Unit tests alone are insufficient and must be flagged as a verification gap.
+- **Do not substitute easy tests for hard ones.** If the repo has integration tests, E2E tests, or script-based validation for the area being changed, run them. Skipping harder tests because they're slower, riskier, or might fail is the opposite of epistemic rigor -- it is hiding from reality. If you believe a test should NOT be run (e.g., destructive, costly, requires credentials you lack), state that explicitly and let the user decide. Never silently omit.

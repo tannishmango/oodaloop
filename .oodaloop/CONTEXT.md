@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-03-17 (M3.6 skill followability)
+> Last refreshed: 2026-03-17 (M3.7 test rigor)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -85,6 +85,15 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 
 ### M3.6 (skill followability audit)
 - 2026-03-17: Audited all 7 skills. Most steps are concrete. Two fixes: loop Step 4 "durable knowledge" given concrete criteria, examples, and litmus test. Act Step 2 given branching logic for verification with/without automated checks.
+
+### M3.7 (test rigor)
+- 2026-03-17: Triggered by real failure: agent in autotracing wrote unit tests but avoided integration tests for API ingestion work. Root cause: five touchpoints lacked test-type awareness.
+- 2026-03-17: Evidence contract gains two rules: evidence type must match claim risk, and never silently substitute easy tests for hard ones.
+- 2026-03-17: Executor agent gains constraint: substituting unit for integration tests without user consent is a violation.
+- 2026-03-17: Decide gains testing-during-implementation instruction (not deferred to act).
+- 2026-03-17: Orient gains test-type in acceptance criteria for integration work.
+- 2026-03-17: Act gains test-type adequacy check -- unit tests alone flagged as gap for integration claims.
+- 2026-03-17: Defense in depth: 5 independent catches across the OODA cycle.
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level
