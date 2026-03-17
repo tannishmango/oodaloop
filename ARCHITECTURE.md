@@ -2,11 +2,11 @@
 
 ## Purpose
 
-OODALOOP orchestrates project delivery in Cursor using an OODA-style loop: Observe, Orient, Decide, Act, Loop. It preserves what works from GSD (atomic tasks, context isolation, file-based state, verification) while adapting to Cursor's plugin primitives and dropping ceremony that doesn't improve outcomes.
+OODALOOP orchestrates project delivery using an OODA-style loop: Observe, Orient, Decide, Act, Loop. It uses atomic tasking, context isolation, file-based state, and verification while dropping ceremony that does not improve outcomes.
 
 ---
 
-## GSD Transfer Analysis
+## Design Transfer Analysis
 
 ### Transfers directly
 - **Atomic task decomposition**: tasks are single-concern, dependency-ordered, with acceptance criteria.
@@ -14,9 +14,9 @@ OODALOOP orchestrates project delivery in Cursor using an OODA-style loop: Obser
 - **File-based shared state**: `.oodaloop/` directory is the single source of truth for project state.
 - **Verification before closure**: Act phase requires evidence-backed acceptance checks before progressing.
 
-### Adapts for Cursor
-- **Slash commands → Cursor commands**: GSD's terminal commands become `commands/*.md` with frontmatter.
-- **Planner/executor handoff → Cursor agents**: role separation uses Cursor's agent definitions with `readonly` constraints.
+### Platform adaptations
+- **Slash commands as entrypoints**: `commands/*.md` with frontmatter.
+- **Planner/executor handoff via specialized agents**: role separation uses agent definitions with `readonly` constraints.
 - **Skills as procedural layer**: deeper "how" logic lives in `skills/*/SKILL.md`, referenced by commands.
 - **Rules as boundary layer**: `rules/*.mdc` with `alwaysApply: true` enforce lightweight invariants.
 
@@ -98,7 +98,7 @@ Project state lives in `.oodaloop/` within the target project. Two file types, c
 
 ### CONTEXT.md (persistent)
 
-One file holds everything that survives across tasks: project identity, repo conventions (6 categories: git, code quality, testing, CI/CD, dependencies, Cursor), architecture patterns, active decisions, and plugin deconfliction.
+One file holds everything that survives across tasks: project identity, repo conventions (6 categories: git, code quality, testing, CI/CD, dependencies, workspace tooling), architecture patterns, active decisions, and plugin deconfliction.
 
 - Created by `/oodaloop-init` with automated convention scan.
 - Enriched by observe (convention drift check) and loop (learning absorption).
@@ -125,16 +125,7 @@ Each OODA cycle creates one `<slug>.task.md` file. It contains the full lifecycl
 
 ## Bootstrap Artifact Lifecycle
 
-These files exist at the repo root during initial development:
-
-| File | Status | Lifecycle |
-|------|--------|-----------|
-| `PROMPT.md` | Bootstrap | Hard input for plugin design. Archive or delete after v1 stable. |
-| ~~`START.md`~~ | Deleted | Absorbed after M1. |
-| `PLUGIN-AUDIT.md` | Bootstrap | Plugin interference findings. Collapse into this document's Deconfliction section after v1. |
-| `DECONFLICTION-CHECKLIST.md` | Bootstrap | Build gates. Collapse into this document after v1. |
-
-**Rule**: if a bootstrap file's content has been fully absorbed into a durable artifact, delete the bootstrap file.
+Legacy bootstrap artifacts were fully absorbed into durable skills, rules, and architecture docs, then deleted.
 
 ---
 
@@ -147,7 +138,7 @@ These files exist at the repo root during initial development:
 | `superpowers` | Disabled at workspace level | Session hook was injecting mandatory context. Removed to eliminate interference. |
 | `continual-learning` | Keep enabled, deprioritized | Low interference for structural work. |
 | `create-plugin` | Keep enabled | `plugin-quality-gates` rule directly supports correctness. |
-| `cursor-team-kit` | Keep enabled (selective) | Code-quality rules are non-conflicting. |
+| `team-kit` | Keep enabled (selective) | Code-quality rules are non-conflicting. |
 | `database-skills` | Ignore during plugin work | Domain-specific, no interference. |
 
 ### Precedence rule
@@ -160,7 +151,7 @@ From external plugins, these patterns are absorbed into OODALOOP (without runtim
 - Debugging discipline and verification-before-completion checks (from `superpowers`)
 - Parallel task decomposition heuristics (from `superpowers`)
 - Manifest/path/frontmatter quality gates (from `create-plugin`)
-- Smoke-test and compiler-check workflows (from `cursor-team-kit`)
+- Smoke-test and compiler-check workflows (from `team-kit`)
 
 ---
 
@@ -185,8 +176,8 @@ Reject these explicitly:
 |-----------|-------|--------|
 | M1: Ground Breaking | Plugin scaffold, component skeletons, architecture baseline, doctrine home | Complete |
 | M2: Working Observe/Orient | Functional research + planning pipeline, skill enrichment, local testing | Complete |
-| M2.5: State Architecture | Persistent/ephemeral separation, CONTEXT.md + task files, multi-task design, convention memory | Current |
-| M3: Full Loop | End-to-end OODA cycle with sentinel verdicts and adaptive rigor in practice | Future |
+| M2.5: State Architecture | Persistent/ephemeral separation, CONTEXT.md + task files, multi-task design, convention memory | Complete |
+| M3: Full Loop | End-to-end OODA cycle with sentinel verdicts and adaptive rigor in practice | Current |
 
 ---
 
@@ -194,7 +185,7 @@ Reject these explicitly:
 
 ```
 oodaloop/
-  .cursor-plugin/plugin.json    ← manifest
+  plugin manifest               ← metadata and component paths
   .oodaloop/                    ← self-tracking state (committed)
   foundation/                   ← permanent doctrine
     PRINCIPLES.md
@@ -209,6 +200,6 @@ oodaloop/
   LICENSE
 ```
 
-Commands are thin wrappers that invoke skills. Skills contain the actual procedure. This mirrors the pattern used by reference plugins (cursor-team-kit, superpowers).
+Commands are thin wrappers that invoke skills. Skills contain the actual procedure.
 
 All component paths in `plugin.json` are relative and resolve to existing directories.

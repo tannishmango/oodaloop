@@ -22,8 +22,8 @@ Pipeline config, required checks, deployment strategy.
 ### Dependencies
 Package manager, lockfile conventions, version constraints.
 
-### Cursor
-`.cursor/rules/` files, `AGENTS.md`, workspace settings.
+### Workspace Tooling
+Workspace rule files, `AGENTS.md`, and local agent/tooling settings.
 
 ## Architecture
 Key structural patterns, entry points, critical paths.

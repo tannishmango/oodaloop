@@ -1,6 +1,6 @@
 # OODALOOP
 
-OODA-loop orchestration for adaptive project delivery in Cursor.
+OODA-loop orchestration for adaptive project delivery.
 
 Private/internal plugin. This repository is intended for local use or private GitHub only, and is not for marketplace publication.
 
@@ -50,7 +50,7 @@ Process depth scales with task complexity. Trivial tasks get a fast path; comple
 ## Structure
 
 ```
-.cursor-plugin/plugin.json   manifest
+plugin.json                  manifest
 foundation/                  permanent doctrine
 commands/                    8 entry-point commands
 skills/                      7 procedural skills
@@ -59,7 +59,7 @@ rules/                       3 boundary rules (always active)
 templates/oodaloop/          state templates for target projects
 ```
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for design details, GSD transfer analysis, and deconfliction status.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for design details and deconfliction status.
 
 ## Status
 

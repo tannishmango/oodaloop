@@ -3,7 +3,7 @@
 > Last refreshed: 2026-03-17
 
 ## Objective
-Build OODALOOP into a functional Cursor plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
+Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
 
 ## Conventions
 
@@ -22,8 +22,8 @@ None detected. No `.github/workflows/`, no CI pipeline.
 ### Dependencies
 None. Pure markdown plugin with no package manager, no lockfiles, no runtime dependencies.
 
-### Cursor
-This IS a Cursor plugin (`.cursor-plugin/plugin.json`). Has its own commands (8), skills (7), agents (5), rules (3), and templates (1). Symlinked to `~/.cursor/plugins/local/oodaloop/`.
+### Workspace Tooling
+This plugin has commands, skills, agents, rules, and templates, and supports local plugin loading for development.
 
 ## Architecture
 Plugin follows commands → skills → agents pattern. Commands are thin wrappers invoking skills. Skills contain procedural logic. Agents define roles with readonly constraints (only executor writes). Doctrine lives in `foundation/` (PRINCIPLES.md, SYSTEMS-REFERENCE.md). State lives in `.oodaloop/` using CONTEXT.md (persistent) + task files (ephemeral).
@@ -40,7 +40,7 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-16: Flat `.oodaloop/` paths, no nested directories
 - 2026-03-16: Commands slimmed to thin skill invocations
 - 2026-03-16: License changed to UNLICENSED (internal/private)
-- 2026-03-16: Plugin symlinked to `~/.cursor/plugins/local/oodaloop/`
+- 2026-03-16: Plugin configured for local loading during development
 
 ### M2.5 (state architecture revision)
 - 2026-03-16: RESCOPE from conventions-only plan to full state architecture revision
@@ -56,4 +56,4 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - `superpowers`: disabled at workspace level
 - `continual-learning`: enabled, deprioritized
 - `create-plugin`: enabled (quality gates useful)
-- `cursor-team-kit`: enabled (selective)
+- `team-kit`: enabled (selective)

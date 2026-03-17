@@ -15,7 +15,7 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
    - If it exists: warn the user and **stop**. Do not overwrite existing state.
    - If it does not exist: proceed.
 
-3. **Scan for plugin conflicts.** Check which Cursor plugins are active in this workspace. For each, assess interference risk against OODALOOP:
+3. **Scan for plugin conflicts.** Check which plugins are active in this workspace. For each, assess interference risk against OODALOOP:
    - **High risk** (recommend disable): injects mandatory context via hooks, enforces unconditional hard gates, or overrides workflow autonomy.
    - **Medium risk** (recommend deprioritize): runs background processes or follow-up loops that add noise.
    - **Low risk** (keep): provides scoped, opt-in capabilities that don't conflict.
@@ -30,7 +30,7 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
    **Testing**: test runner config (`pytest.ini`, `pyproject.toml [tool.pytest]`, `jest.config.*`, `vitest.config.*`), test directories (`tests/`, `__tests__/`, `test/`, `spec/`), coverage config.
    **CI/CD**: `.github/workflows/` (list files), `.gitlab-ci.yml`, `Jenkinsfile`, `.circleci/`.
    **Dependencies**: manifest (`pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `requirements.txt`), lockfiles (`poetry.lock`, `uv.lock`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `Cargo.lock`).
-   **Cursor**: `.cursor/rules/` (list files), `AGENTS.md`, `.cursorrules`.
+   **Workspace Tooling**: workspace rule files, `AGENTS.md`, and local agent/tooling settings files.
 
 5. Create the `.oodaloop/` directory.
 
@@ -61,7 +61,7 @@ To be defined during Observe phase.
 ### Dependencies
 <findings or "None detected.">
 
-### Cursor
+### Workspace Tooling
 <findings or "None detected.">
 
 ## Architecture
