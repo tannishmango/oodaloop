@@ -1,0 +1,85 @@
+---
+name: begin
+description: Kick off a new OODALOOP flow with guided intake and next-step routing.
+---
+
+# begin
+
+## Trigger
+
+`/oodaloop-begin` when starting work, especially at the beginning of a new conversation or project task.
+
+## Workflow
+
+### 1. Ensure state exists
+
+Check whether `.oodaloop/` exists in the workspace root.
+
+- If missing: explain that OODALOOP state is not initialized and recommend running `/oodaloop-init` now.
+- If the user agrees, run `/oodaloop-init` first, then continue this begin flow.
+- If the user does not agree, stop with a concise note: "Cannot start OODALOOP flow without initialization."
+
+If `.oodaloop/` exists, continue.
+
+### 2. Read active state
+
+Read:
+
+- `.oodaloop/CONTEXT.md`
+- `.oodaloop/BACKLOG.md` if present
+- existing `.oodaloop/*.task.md` files (if any)
+
+Determine whether there is already active work (open task files). If active tasks exist, ask whether the user wants to resume one of them or start a new task.
+
+### 3. Guided intake (required when context is missing)
+
+If the user did not provide a concrete objective, run a short kickoff interview. Keep it brief and actionable:
+
+1. What do you want to achieve in this session? (feature, bug fix, refactor, docs, or exploration)
+2. What area of the repo is involved?
+3. What constraints matter most? (deadline, risk tolerance, compatibility, test expectations)
+
+If the user is unsure, offer concise prompts:
+
+- "Name one user-visible outcome you want by the end of this session."
+- "Name one pain point to remove."
+- "Name one question you want answered before coding."
+
+Convert the intake into:
+
+- objective statement (1-2 sentences)
+- initial requirement list
+- scope hints (in/out, known unknowns)
+
+### 4. Route to the right flow
+
+Use adaptive rigor:
+
+- **Trivial, low-risk, local change** -> recommend `/oodaloop-quick`.
+- **Anything non-trivial or unclear** -> recommend `/oodaloop-observe`.
+
+Default to `/oodaloop-observe` when uncertain.
+
+### 5. Handoff cleanly
+
+If user agrees, invoke the recommended command immediately and continue in that flow.
+
+When handing off to `/oodaloop-observe`, pass the distilled objective and requirements from step 3 so observe starts with concrete context instead of re-asking broad questions.
+
+When handing off to `/oodaloop-quick`, ensure the task is truly low-risk; otherwise escalate to observe.
+
+### 6. Report kickoff state
+
+Provide a concise kickoff summary:
+
+- initialization status
+- whether resuming or starting new
+- objective captured
+- selected next command and rationale
+
+## Output
+
+- Clear "start here" entrypoint behavior for OODALOOP
+- Guided intake when user context is missing
+- Deterministic routing to `/oodaloop-quick` or `/oodaloop-observe`
+- Immediate handoff into execution flow when user confirms

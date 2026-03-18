@@ -11,10 +11,10 @@ Prioritized, ready to cycle into.
 Valuable, not urgent. Promote to Next when dependencies clear or priority shifts.
 
 - **multitask-coordination**: Priority and conflict resolution when multiple task files touch the same files or compete for resources. [2026-03-16]
-- **auto-refresh**: Signal-based CONTEXT.md refresh heuristics beyond manual drift check in observe. [2026-03-16]
 - **agent-tuning**: Evidence-based model selection per agent after enough real cycles to generate data. [2026-03-16]
 
 ## Done
+- **state-sync**: Added `/oodaloop-sync` + `sync` skill to reconcile state after interruptions. Includes targeted convention drift refresh, unambiguous task metadata repairs, and done/ready/blocked status reporting without deleting task files. [done 2026-03-18]
 - **nested-sub-cycles**: Arbitrary-depth sub-cycles. Existing implementation was already generic; added depth check (>3 asks user), chain tree in status, cycle/depth detection in state-hygiene. 4 touchpoints. [done 2026-03-17]
 - **proof-of-work**: Proof-of-work architecture. Evidence contract rewritten with 4-tier hierarchy, surface-to-user mandate, counterfactual reasoning, anti-cowardice, honesty mandate. 7 touchpoints: evidence-contract, executor, decide, act, orient, loop, sentinel. 7 independent catches. [done 2026-03-17]
 - **test-rigor**: Defense-in-depth fix for test avoidance. 5 touchpoints updated: evidence-contract, executor, decide, orient, act. Triggered by real autotracing failure. [done 2026-03-17]

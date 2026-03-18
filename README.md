@@ -20,6 +20,7 @@ Process depth scales with task complexity. Trivial tasks get a fast path; comple
 
 | Command | Purpose |
 |---------|---------|
+| `/oodaloop-begin` | Start here: bootstrap/check state and kick off the right flow |
 | `/oodaloop-init` | Initialize `.oodaloop/` state in a project |
 | `/oodaloop-observe` | Research and requirements gathering |
 | `/oodaloop-orient` | Plan decomposition and task sequencing |
@@ -27,6 +28,7 @@ Process depth scales with task complexity. Trivial tasks get a fast path; comple
 | `/oodaloop-act` | Verify execution outcomes |
 | `/oodaloop-loop` | Sentinel scope reassessment |
 | `/oodaloop-status` | Report current state |
+| `/oodaloop-sync` | Reconcile state after interruptions/refreshes |
 | `/oodaloop-quick` | Fast path for trivial tasks |
 
 ## Agents
@@ -78,7 +80,17 @@ The install script detects your environment (Cursor, Claude Code, OpenCode) and 
 ./install.sh opencode
 ```
 
-Then in any project: run `/oodaloop-init` to start.
+Then in any project: run `/oodaloop-begin` to start.
+
+`/oodaloop-begin` is the default kickoff command. It initializes state if needed, asks a short guided intake if your objective is unclear, then routes you to `/oodaloop-quick` or `/oodaloop-observe`.
+
+For Cursor local development, sync updates into Cursor's local plugin directory with:
+
+```bash
+./sync.sh
+```
+
+Do this after any edits to the plugin. Then reload Cursor window.
 
 For manual setup or other hosts, see `adapters/<host>/install.md`.
 
@@ -88,12 +100,13 @@ For manual setup or other hosts, see `adapters/<host>/install.md`.
 .cursor-plugin/plugin.json   Cursor manifest
 adapters/                    per-host install instructions
 foundation/                  permanent doctrine
-commands/                    8 entry-point commands
-skills/                      7 procedural skills (Agent Skills standard)
+commands/                    10 entry-point commands
+skills/                      9 procedural skills (Agent Skills standard)
 agents/                      5 specialized agents
 rules/                       3 boundary rules (always active)
 templates/oodaloop/          CONTEXT.md template for target projects
 install.sh                   host-detecting installer
+sync.sh                      sync to Cursor local plugin directory
 ```
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for design details, portability model, and deconfliction status.

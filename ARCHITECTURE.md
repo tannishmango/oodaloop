@@ -38,14 +38,16 @@ OODALOOP orchestrates project delivery using an OODA-style loop: Observe, Orient
 | Loop | `/oodaloop-loop` | sentinel | loop | Scope reassessment, drift detection |
 
 Supporting commands:
+- `/oodaloop-begin`: "start here" kickoff; initializes if needed and routes to quick or observe.
 - `/oodaloop-init`: bootstrap `.oodaloop/` state in a target project.
 - `/oodaloop-status`: read-only state report.
+- `/oodaloop-sync`: state reconciliation and readiness check after interruptions.
 - `/oodaloop-quick`: fast path for trivial tasks, bypassing full ceremony.
 
 ### Phase flow
 
 ```
-init → observe → orient → decide → act → loop
+begin → (init if needed) → observe → orient → decide → act → loop
                               ↑               ↓
                    (resume)   |   CONTINUE → next task / resume parent
                               |   REFINE  → adjust plan, re-enter decide
@@ -233,8 +235,8 @@ oodaloop/
   foundation/                   ← permanent doctrine
     PRINCIPLES.md
     SYSTEMS-REFERENCE.md
-  commands/                     ← 8 thin command invocations (portable)
-  skills/                       ← 7 procedural skills (portable, Agent Skills standard)
+  commands/                     ← 10 thin command invocations (portable)
+  skills/                       ← 9 procedural skills (portable, Agent Skills standard)
   agents/                       ← 5 specialized agents
   rules/                        ← 3 boundary rules
   templates/oodaloop/           ← 1 state template (CONTEXT.md)

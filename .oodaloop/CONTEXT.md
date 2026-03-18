@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-03-17 (M3.9 nested sub-cycles)
+> Last refreshed: 2026-03-18 (M3.10 state sync command)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -116,6 +116,12 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-17: State-hygiene gains two chain-specific detection checks: circular Parent references and depth > 3 without consent.
 - 2026-03-17: ARCHITECTURE.md phase flow updated with arbitrary-depth diagram and task file section updated.
 - 2026-03-17: 4 touchpoints updated: decide, status, state-hygiene, ARCHITECTURE.md. Zero new files.
+
+### M3.10 (state sync command)
+- 2026-03-18: Added `/oodaloop-sync` command + `sync` skill for interruption recovery and state reconciliation.
+- 2026-03-18: Sync flow refreshes convention drift, repairs unambiguous metadata inconsistencies, and reports done/ready/blocked task status.
+- 2026-03-18: Sync is non-destructive for task lifecycle; deletion remains owned by `/oodaloop-loop`.
+- 2026-03-18: Plugin structure now 9 commands and 8 skills.
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level

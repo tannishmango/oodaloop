@@ -18,14 +18,25 @@ detect_host() {
 install_cursor() {
   local target="$HOME/.cursor/plugins/local/oodaloop"
   mkdir -p "$(dirname "$target")"
-  if [ -L "$target" ] || [ -d "$target" ]; then
-    echo "Already installed at $target"
-  else
-    ln -s "$OODALOOP_DIR" "$target"
-    echo "Symlinked $OODALOOP_DIR → $target"
+  if [ -L "$target" ]; then
+    rm "$target"
+    echo "Removed legacy symlink at $target"
   fi
+
+  if [ -d "$target" ]; then
+    echo "Updating existing local plugin at $target"
+  else
+    echo "Creating local plugin at $target"
+  fi
+
+  rsync -a --delete \
+    --exclude ".git/" \
+    --exclude ".DS_Store" \
+    "$OODALOOP_DIR"/ "$target"/
+
+  echo "Synced $OODALOOP_DIR → $target"
   echo ""
-  echo "Restart Cursor to activate. Commands: /oodaloop-init, /oodaloop-observe, etc."
+  echo "Reload or restart Cursor to activate. Commands: /oodaloop-init, /oodaloop-observe, etc."
 }
 
 install_claude_code() {
