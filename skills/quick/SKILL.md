@@ -9,7 +9,7 @@ description: Fast path for trivial tasks -- skip ceremony, preserve safety minim
 
 ## Preconditions
 
-- `.oodaloop/CONTEXT.md` must exist. If not, prompt for `/oodaloop-init`.
+- `.oodaloop/CONTEXT.md` must exist. If not, prompt for `/oodaloop-start`.
 
 ## Workflow
 

@@ -9,7 +9,7 @@ description: Research and gather requirements through structured discovery.
 
 ## Preconditions
 
-- `.oodaloop/` must exist. If not, prompt for `/oodaloop-init`.
+- `.oodaloop/` must exist. If not, prompt for `/oodaloop-start`.
 - `.oodaloop/CONTEXT.md` must exist.
 
 ## Workflow

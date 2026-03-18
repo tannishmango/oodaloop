@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+echo "[oodaloop hook] pre-commit checks starting"
+
+# 1) Keep local Cursor plugin copy in sync when installed.
+if [ -x "./sync.sh" ] && [ -d "$HOME/.cursor/plugins/local/oodaloop" ]; then
+  echo "[oodaloop hook] local install detected, running ./sync.sh"
+  ./sync.sh
+else
+  echo "[oodaloop hook] skipping sync (no local Cursor install detected)"
+fi
+
+# 2) Prevent committing ephemeral task files.
+staged_files="$(git diff --cached --name-only)"
+while IFS= read -r file; do
+  [ -z "$file" ] && continue
+  case "$file" in
+    .oodaloop/*.task.md)
+      echo "[oodaloop hook] ERROR: staged ephemeral task file: $file"
+      echo "[oodaloop hook] task files are runtime state and should not be committed"
+      exit 1
+      ;;
+  esac
+done <<< "$staged_files"
+
+# 3) Ensure each command that invokes oodaloop:<skill> has a matching skill file.
+for command_file in commands/oodaloop-*.md; do
+  [ -e "$command_file" ] || continue
+  invoke_line="$(awk '/^Invoke the oodaloop:/ {print; exit}' "$command_file")"
+  [ -z "$invoke_line" ] && continue
+
+  skill_name="${invoke_line#*oodaloop:}"
+  skill_name="${skill_name%% *}"
+  skill_name="${skill_name%%\`*}"
+  skill_name="${skill_name%%.*}"
+
+  if [ ! -f "skills/$skill_name/SKILL.md" ]; then
+    echo "[oodaloop hook] ERROR: missing skills/$skill_name/SKILL.md for $command_file"
+    exit 1
+  fi
+done
+
+# 4) Block accidental reintroduction of deprecated kickoff command naming.
+while IFS= read -r file; do
+  [ -z "$file" ] && continue
+  case "$file" in
+    *.md|*.mdc|*.sh)
+      # Read staged content from the index, not the working tree.
+      staged_content="$(git show ":$file" 2>/dev/null || true)"
+      case "$staged_content" in
+        *"/oodaloop-begin"*|*"oodaloop-begin"*|*"oodaloop:begin"*|*"name: begin"*)
+          echo "[oodaloop hook] ERROR: deprecated 'begin' kickoff naming found in staged file: $file"
+          echo "[oodaloop hook] use '/oodaloop-start' and 'oodaloop:start' instead"
+          exit 1
+          ;;
+      esac
+      ;;
+  esac
+done <<< "$staged_files"
+
+echo "[oodaloop hook] pre-commit checks passed"

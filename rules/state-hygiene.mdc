@@ -16,7 +16,7 @@ alwaysApply: true
 - CONTEXT.md must always have a valid "Last refreshed" timestamp.
 - When loop absorbs learnings, add to CONTEXT.md -- do not duplicate in both files.
 - Delete completed task files promptly. Do not accumulate finished task files.
-- If `.oodaloop/` doesn't exist and a command needs it, prompt for `/oodaloop-init`.
+- If `.oodaloop/` doesn't exist and a command needs it, prompt for `/oodaloop-start`.
 - Multiple task files may coexist for concurrent work. Each is independent.
 - **Parent/child tasks**: Arbitrary depth is supported. A child task can itself pause and spawn a grandchild. The chain resolves bottom-up: grandchild completes → un-pauses child → child completes → un-pauses parent. Each task's `Parent:` field references its immediate parent only. When a child completes (loop CONTINUE), the parent's `Paused` section is removed and its phase returns to `decide` for resumption. Before spawning beyond depth 3, the decide skill asks the user for consent.
 
@@ -53,4 +53,4 @@ Report to the user with this structure:
 | **Continue with warning** | Inconsistency is non-blocking (e.g., BACKLOG.md missing but current task doesn't need it) | Note the inconsistency, proceed, fix later |
 | **Repair in place** | Inconsistency is simple and unambiguous (e.g., task file phase is wrong but sections indicate the real phase) | Fix the inconsistent field, note what was repaired, proceed |
 | **Re-enter phase** | Task file is missing a section its phase requires | Set phase back to where the missing section should have been created, recommend re-running that phase's command |
-| **Re-init** | CONTEXT.md missing or corrupted beyond section-level repair | Recommend user run `/oodaloop-init` on a fresh directory (rename or delete `.oodaloop/` first) |
+| **Re-init** | CONTEXT.md missing or corrupted beyond section-level repair | Recommend user run `/oodaloop-start` on a fresh directory (rename or delete `.oodaloop/` first) |

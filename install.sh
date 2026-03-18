@@ -3,6 +3,20 @@ set -euo pipefail
 
 OODALOOP_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+setup_git_hooks() {
+  if [ ! -f "$OODALOOP_DIR/.githooks/pre-commit" ]; then
+    return
+  fi
+
+  if git -C "$OODALOOP_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    chmod +x "$OODALOOP_DIR/.githooks/pre-commit"
+    git -C "$OODALOOP_DIR" config core.hooksPath .githooks
+    echo "Configured git hooks: core.hooksPath=.githooks"
+  else
+    echo "Skipping git hook setup (not in a git worktree)."
+  fi
+}
+
 detect_host() {
   if [ -d "$HOME/.cursor" ]; then
     echo "cursor"
@@ -36,7 +50,7 @@ install_cursor() {
 
   echo "Synced $OODALOOP_DIR → $target"
   echo ""
-  echo "Reload or restart Cursor to activate. Commands: /oodaloop-init, /oodaloop-observe, etc."
+  echo "Reload or restart Cursor to activate. Start with /oodaloop-start."
 }
 
 install_claude_code() {
@@ -62,7 +76,7 @@ install_claude_code() {
   echo "For rules, append OODALOOP rules to your project's CLAUDE.md."
   echo "See adapters/claude-code/install.md for the rule snippet."
   echo ""
-  echo "Commands: /oodaloop-init, /oodaloop-observe, etc."
+  echo "Start with /oodaloop-start."
 }
 
 install_opencode() {
@@ -82,7 +96,7 @@ install_opencode() {
   echo ""
   echo "For agents, register via CLI or config. See adapters/opencode/install.md."
   echo ""
-  echo "Commands: /oodaloop-init, /oodaloop-observe, etc."
+  echo "Start with /oodaloop-start."
 }
 
 echo "OODALOOP Installer"
@@ -116,4 +130,6 @@ case "$HOST" in
 esac
 
 echo ""
-echo "Done. Run /oodaloop-init in a project to start."
+setup_git_hooks
+echo ""
+echo "Done. Run /oodaloop-start in a project to start."

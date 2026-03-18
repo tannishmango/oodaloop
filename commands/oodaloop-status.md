@@ -7,7 +7,7 @@ Read-only. No side effects.
 
 For resumed sessions after interruptions, model refreshes, or unrelated work, run `/oodaloop-sync` first to reconcile state before reading status.
 
-1. Check if `.oodaloop/` exists. If not, report "No OODALOOP state found. Run `/oodaloop-init` first." and stop.
+1. Check if `.oodaloop/` exists. If not, report "No OODALOOP state found. Run `/oodaloop-start` first." and stop.
 
 2. Read `.oodaloop/CONTEXT.md`. Report:
    - **Project**: name from header

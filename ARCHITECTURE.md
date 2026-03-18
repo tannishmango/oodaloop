@@ -38,7 +38,7 @@ OODALOOP orchestrates project delivery using an OODA-style loop: Observe, Orient
 | Loop | `/oodaloop-loop` | sentinel | loop | Scope reassessment, drift detection |
 
 Supporting commands:
-- `/oodaloop-begin`: "start here" kickoff; initializes if needed and routes to quick or observe.
+- `/oodaloop-start`: "start here" kickoff; initializes if needed and routes to quick or observe.
 - `/oodaloop-init`: bootstrap `.oodaloop/` state in a target project.
 - `/oodaloop-status`: read-only state report.
 - `/oodaloop-sync`: state reconciliation and readiness check after interruptions.

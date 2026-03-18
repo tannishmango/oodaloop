@@ -20,7 +20,7 @@ Process depth scales with task complexity. Trivial tasks get a fast path; comple
 
 | Command | Purpose |
 |---------|---------|
-| `/oodaloop-begin` | Start here: bootstrap/check state and kick off the right flow |
+| `/oodaloop-start` | Start here: bootstrap/check state and kick off the right flow |
 | `/oodaloop-init` | Initialize `.oodaloop/` state in a project |
 | `/oodaloop-observe` | Research and requirements gathering |
 | `/oodaloop-orient` | Plan decomposition and task sequencing |
@@ -80,9 +80,9 @@ The install script detects your environment (Cursor, Claude Code, OpenCode) and 
 ./install.sh opencode
 ```
 
-Then in any project: run `/oodaloop-begin` to start.
+Then in any project: run `/oodaloop-start` to start.
 
-`/oodaloop-begin` is the default kickoff command. It initializes state if needed, asks a short guided intake if your objective is unclear, then routes you to `/oodaloop-quick` or `/oodaloop-observe`.
+`/oodaloop-start` is the default kickoff command. It initializes state if needed, runs `/oodaloop-sync` when state already exists, asks a short guided intake if your objective is unclear, then routes you to `/oodaloop-quick` or `/oodaloop-observe`.
 
 For Cursor local development, sync updates into Cursor's local plugin directory with:
 
@@ -93,6 +93,24 @@ For Cursor local development, sync updates into Cursor's local plugin directory 
 Do this after any edits to the plugin. Then reload Cursor window.
 
 For manual setup or other hosts, see `adapters/<host>/install.md`.
+
+## Git Hooks (Recommended)
+
+`./install.sh` configures hooks automatically for this repo (`core.hooksPath=.githooks`).
+
+Manual fallback (once per clone):
+
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit
+```
+
+The pre-commit hook:
+
+- runs `./sync.sh` when a local Cursor install exists at `~/.cursor/plugins/local/oodaloop`
+- blocks committing ephemeral `.oodaloop/*.task.md` files
+- validates `commands/oodaloop-*.md` to `skills/<name>/SKILL.md` linkage
+- blocks deprecated kickoff naming (`begin`) from being reintroduced
 
 ## Structure
 
