@@ -5,7 +5,7 @@
   "description": "An OODA loop that observes itself observing: orient, decide, act, and reorient recursively.",
   "author": { "name": "Pat Croke" },
   "license": "UNLICENSED",
-  "logo": "assets/logo-square.png",
+  "logo": "https://raw.githubusercontent.com/tannishmango/oodaloop-assets/main/logo-square.png",
   "keywords": ["internal", "private", "ooda", "orchestration", "planning", "verification"],
   "category": "developer-tools",
   "commands": "./commands/",
