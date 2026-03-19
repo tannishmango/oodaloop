@@ -5,15 +5,18 @@ Items discovered during OODA cycles, user conversations, and execution. Curated 
 ## Next
 Prioritized, ready to cycle into.
 
-(empty)
+- **subcycle-live-test**: Run a real OODALOOP cycle on a target project (e.g., extracting status command into a skill) to validate checkpoint assessor fires, discovery classification works, and sub-cycle trigger path is reachable. [2026-03-19]
 
 ## Later
 Valuable, not urgent. Promote to Next when dependencies clear or priority shifts.
 
+- **start-resumable-detection**: `/oodaloop-start` should detect `resumable` tasks (from sync) and offer to resume them directly, not just report them. Currently relies on sync surfacing the Ready to Resume section. [2026-03-19]
+- **strategy-auto-selection**: Heuristics for automatically choosing between subagent/new-chat/in-chat based on blocker complexity, context window usage, and chain depth. Currently defaults to subagent with user confirmation. [2026-03-19]
 - **multitask-coordination**: Priority and conflict resolution when multiple task files touch the same files or compete for resources. [2026-03-16]
 - **agent-tuning**: Evidence-based model selection per agent after enough real cycles to generate data. [2026-03-16]
 
 ## Done
+- **subcycle-redesign**: Mandatory per-task checkpoint with readonly assessor, three execution strategies (subagent/new-chat/in-chat), enhanced Paused section for cold-start, CODE-DESIGN.md for design review, 6 new recovery checks. 8 files, 1 new. [done 2026-03-19]
 - **adaptive-principle-injection**: Implemented selective injection of compressed doctrine for non-trivial OODA commands via `foundation/PRINCIPLES-COMPRESSED.md`, with runtime smoke validation for `/oodaloop-observe` and `/oodaloop-quick`. [done 2026-03-18]
 - **state-sync**: Added `/oodaloop-sync` + `sync` skill to reconcile state after interruptions. Includes targeted convention drift refresh, unambiguous task metadata repairs, and done/ready/blocked status reporting without deleting task files. [done 2026-03-18]
 - **nested-sub-cycles**: Arbitrary-depth sub-cycles. Existing implementation was already generic; added depth check (>3 asks user), chain tree in status, cycle/depth detection in state-hygiene. 4 touchpoints. [done 2026-03-17]

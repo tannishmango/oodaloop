@@ -11,7 +11,7 @@ Take observations and decompose them into atomic, executable tasks. Identify dep
 
 ## Scope
 
-Task decomposition, dependency analysis, parallelism identification, acceptance criteria definition. Outputs plan content for the active task file.
+Used in the Decide phase. Task decomposition, dependency analysis, parallelism identification, acceptance criteria definition. Outputs plan content for the active task file.
 
 ## Constraints
 

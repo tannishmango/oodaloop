@@ -4,7 +4,7 @@
 
 Orient, decide, act, and reorient -- recursively. OODALOOP orchestrates AI-assisted project delivery as a living cycle that adapts mid-flight, recurses when it hits blockers, and collapses ceremony when the task doesn't warrant it.
 
-Most workflow frameworks bolt process onto work. They're rigid pipelines that force heavyweight ceremony on trivial tasks and have no answer when assumptions change mid-execution. OODALOOP inverts this: process depth is a function of task complexity, the cycle can nest inside itself, and a sentinel watches for the moment your plan stops matching reality.
+Most workflow frameworks bolt process onto work. They're rigid pipelines that force heavyweight ceremony on trivial tasks and have no answer when assumptions change mid-execution. OODALOOP inverts this: process depth is a function of task complexity, the cycle can nest inside itself, and a verification loop watches for the moment your plan stops matching reality.
 
 ---
 
@@ -21,12 +21,12 @@ observe → orient → decide → act → loop
 | Phase | What happens |
 |-------|--------------|
 | **Observe** | Research the codebase, detect convention drift, gather requirements |
-| **Orient** | Decompose into a dependency-ordered plan with acceptance criteria |
-| **Decide** | Execute atomic tasks, triage discoveries as they surface |
-| **Act** | Verify outcomes with independent evidence, not assertions |
-| **Loop** | Sentinel judges: continue, refine the plan, or rescope entirely |
+| **Orient** | Analyze observations, synthesize a situational assessment |
+| **Decide** | Decompose into a dependency-ordered plan with acceptance criteria |
+| **Act** | Execute atomic tasks, verify each with per-task checkpoint |
+| **Loop** | Assess aggregate outcomes: continue, refine the plan, or rescope entirely |
 
-Trivial work skips the ceremony. A one-line fix doesn't need a plan phase -- `/oodaloop-quick` handles it directly. Medium tasks run observe through act without a loop. Complex work gets the full cycle with sentinel reassessment. If a task escalates mid-execution, the process level upgrades with it.
+Trivial work skips the ceremony. A one-line fix doesn't need a plan phase -- `/oodaloop-quick` handles it directly. Medium tasks run observe through act without a loop. Complex work gets the full cycle with aggregate reassessment. If a task escalates mid-execution, the process level upgrades with it.
 
 ---
 
@@ -57,9 +57,9 @@ The recursion is the point. Work doesn't proceed in straight lines. The system t
 
 ---
 
-## Sentinel Rescoping
+## Scope Reassessment
 
-The loop phase isn't a rubber stamp. The sentinel agent compares what actually happened against what was assumed and emits a verdict:
+The loop phase isn't a rubber stamp. The assessor agent compares what actually happened against what was assumed and emits a verdict:
 
 | Verdict | Meaning | What happens next |
 |---------|---------|-------------------|
@@ -67,7 +67,7 @@ The loop phase isn't a rubber stamp. The sentinel agent compares what actually h
 | **REFINE** | Some tasks need adjustment, but the objective is sound. | Keep the task open, re-enter decide with an updated plan. |
 | **RESCOPE** | Core assumptions changed. The plan is wrong. | Re-enter observe. Research again with new information. |
 
-Every verdict includes proof references, rationale, confidence level, and a falsifiability statement -- not just a label. The sentinel is readonly; it can only recommend, never modify.
+Every verdict includes proof references, rationale, confidence level, and a falsifiability statement -- not just a label. The assessor is readonly; it can only recommend, never modify.
 
 This means OODALOOP doesn't just detect that something went wrong. It knows *where to re-enter the cycle* based on how wrong things went. A bad task gets refined. A bad premise gets rescoped from scratch.
 
@@ -80,12 +80,12 @@ Convention drift detection works the same way: observe and sync phases compare w
 | Command | Purpose |
 |---------|---------|
 | `/oodaloop-start` | Entry point. Bootstraps state, syncs if needed, routes to the right flow. |
-| `/oodaloop-quick` | Fast path for trivial tasks. No plan phase, no sentinel. |
+| `/oodaloop-quick` | Fast path for trivial tasks. No plan phase, no loop. |
 | `/oodaloop-observe` | Research and requirements gathering |
-| `/oodaloop-orient` | Plan decomposition and task sequencing |
-| `/oodaloop-decide` | Execute plan tasks |
-| `/oodaloop-act` | Verify execution outcomes |
-| `/oodaloop-loop` | Sentinel scope reassessment |
+| `/oodaloop-orient` | Analyze observations, form situational assessment |
+| `/oodaloop-decide` | Plan decomposition and task sequencing |
+| `/oodaloop-act` | Execute plan tasks, verify each with checkpoint |
+| `/oodaloop-loop` | Assess aggregate outcomes, reassess scope |
 | `/oodaloop-sync` | Reconcile state after interruptions or context resets |
 | `/oodaloop-status` | Read-only state report with task tree |
 | `/oodaloop-init` | Initialize `.oodaloop/` state in a target project |
@@ -96,15 +96,14 @@ Start with `/oodaloop-start`. It handles everything else.
 
 ## Agents
 
-Five specialized agents, four of them readonly. Only the executor writes.
+Four specialized agents, three of them readonly. Only the executor writes.
 
 | Agent | Role | Writes? |
 |-------|------|---------|
-| **researcher** | Codebase exploration, requirements discovery | No |
+| **researcher** | Codebase exploration, requirements discovery, situational assessment | No |
 | **planner** | Task decomposition, dependency analysis, pre-mortem | No |
 | **executor** | Implementation of atomic tasks | Yes |
-| **verifier** | Acceptance checks, independent evidence collection | No |
-| **sentinel** | Drift detection, scope reassessment, loop verdicts | No |
+| **assessor** | Per-task verification, aggregate assessment, loop verdicts | No |
 
 ---
 
@@ -157,7 +156,7 @@ adapters/                    Per-host install mappings
 foundation/                  Permanent doctrine (principles, systems reference)
 commands/                    10 entry-point commands
 skills/                      9 procedural skills (Agent Skills standard)
-agents/                      5 specialized agents
+agents/                      4 specialized agents
 rules/                       3 always-active boundary rules
 templates/oodaloop/          CONTEXT.md template for target projects
 install.sh                   Host-detecting installer

@@ -18,8 +18,8 @@ Using a lower tier when a higher tier is available is a proof-of-work violation.
 
 Evidence must reach the human in conversation, not just the task file. The user is the judge of sufficiency.
 
-- During execution (decide): show raw test output, command results, and key diffs to the user as they are produced. Do not summarize away the proof.
-- During verification (act): show verification results to the user. Do not just record them internally.
+- During execution (act): show raw test output, command results, and key diffs to the user as they are produced. Do not summarize away the proof.
+- During verification (loop): show verification results to the user. Do not just record them internally.
 - During verdict (loop): cite specific proof artifacts from the cycle. Do not issue verdicts backed only by narrative.
 
 If evidence is too voluminous to show in full, show the critical portions and state what was truncated. Never show nothing.

@@ -1,6 +1,6 @@
 ---
 name: oodaloop-orient
-description: Decompose observations into an executable plan with sequenced tasks.
+description: Analyze observations and form a situational assessment.
 ---
 
 Invoke the oodaloop:orient skill and follow it exactly.

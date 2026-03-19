@@ -36,8 +36,7 @@ OpenCode agents can be registered via CLI:
 opencode agent create --name oodaloop-researcher --description "Read-heavy discovery agent for codebase exploration"
 opencode agent create --name oodaloop-planner --description "Task decomposition and dependency analysis"
 opencode agent create --name oodaloop-executor --description "Implementation of atomic plan tasks"
-opencode agent create --name oodaloop-verifier --description "Acceptance checks and evidence collection"
-opencode agent create --name oodaloop-sentinel --description "Scope reassessment and loop verdicts"
+opencode agent create --name oodaloop-assessor --description "Per-task verification, aggregate assessment, loop verdicts"
 ```
 
 Or add to `opencode.json`:
@@ -48,8 +47,7 @@ Or add to `opencode.json`:
     "oodaloop-researcher": { "description": "Read-heavy discovery agent", "readonly": true },
     "oodaloop-planner": { "description": "Task decomposition and dependency analysis", "readonly": true },
     "oodaloop-executor": { "description": "Implementation of atomic plan tasks" },
-    "oodaloop-verifier": { "description": "Acceptance checks and evidence collection", "readonly": true },
-    "oodaloop-sentinel": { "description": "Scope reassessment and loop verdicts", "readonly": true }
+    "oodaloop-assessor": { "description": "Per-task verification, aggregate assessment, loop verdicts", "readonly": true }
   }
 }
 ```

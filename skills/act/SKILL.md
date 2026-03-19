@@ -1,72 +1,131 @@
 ---
 name: act
-description: Verify execution outcomes against acceptance criteria.
+description: Execute plan tasks and verify each against acceptance criteria.
 ---
+
+> Boyd's Act: Implement the decided course of action. The only stage where the environment changes. (foundation/OODALOOP.md)
 
 ## Trigger
 
-`/oodaloop-act` or transitioning from Decide.
+`/oodaloop-act` or transitioning from Decide phase.
 
 ## Preconditions
 
-- An active task file (`.oodaloop/<slug>.task.md`) must exist with Plan and Execution Log sections.
+- An active task file (`.oodaloop/<slug>.task.md`) must exist with a Plan section (from decide).
+- `.oodaloop/CONTEXT.md` must exist.
 - Task file phase should be `act`.
 
 ## Workflow
 
-### 1. Read plan and execution log
-From the task file, extract each task's acceptance criteria (from Plan) and execution evidence (from Execution Log).
-Extract each task's `Proof Plan` and claimed `Proof Plan Compliance` status from the Execution Log.
+### 1. Read plan and context
+Read the active task file's Plan section. Read `.oodaloop/CONTEXT.md` conventions — these are binding constraints on implementation (commit format, linter rules, test patterns, etc.).
+Treat the `Proof Infrastructure` subsection as binding for verification selection:
+- choose the strongest available proof command relevant to each task
+- only use weaker evidence when stronger checks are unavailable or explicitly blocked
 
-Read `.oodaloop/CONTEXT.md` conventions -- verify that implementation respected repo conventions (correct test patterns, linter compliance, commit format, etc.).
+### 2. Execute, assess, repeat
+For each task in dependency order:
 
-### 2. Verify each task independently
-The verifier must produce its own evidence. Do not accept the executor's self-reported proof as verification -- reproduce it.
+**a. Execute.** Dispatch executor agent. The executor follows the task specification and respects CONTEXT.md conventions:
+- Write and run tests during implementation, not deferred. Test type matches risk: code logic → unit tests, integration points → integration tests.
+- Execute the task's **Proof Plan** (from decide). If a required hard check cannot be run, stop and ask before substituting weaker evidence.
+- Surface raw evidence to the user as it is produced. Do not summarize into narrative.
+- Output a structured discovery assessment after completing the task (see executor agent constraints).
 
-For each task:
-- **Re-run checks independently.** If the executor claims "tests pass," run the tests yourself and show the output. If the executor claims "file changed correctly," read the file yourself and confirm. The executor's proof is a claim until the verifier reproduces it.
-- Does the reproduced evidence satisfy the acceptance criteria?
-- Were repo conventions followed?
-- Are there side effects or regressions?
-- **Were the right kind of tests run?** If the task touches integrations, APIs, or external systems, unit tests alone are not sufficient evidence. Check whether integration tests were written and run. If only unit tests exist for an integration claim, flag this as a verification gap -- do not mark as pass.
-- **Did execution satisfy the task Proof Plan?** If not, classify as `partial` or `fail` unless the user explicitly approved the deviation.
-- **Surface verification evidence to the user.** Show the verification output in conversation. The user judges sufficiency.
+**b. Record.** Write the execution log entry for this task (see Step 4 format).
 
-Run checks based on what CONTEXT.md says the repo uses:
-- **If repo has tests**: run the full test suite, report pass/fail counts with raw output. Check that tests match the risk profile of the changes (unit for logic, integration for external systems).
-- **If CONTEXT.md lists strong repo proof commands for the changed area**: run those commands specifically, even if they are not part of the default unit suite.
-- **If repo has linters/formatters**: run them, show the output.
-- **If repo has CI**: check that local changes wouldn't break CI checks.
-- **If repo has no automated checks** (CONTEXT.md says "None detected" for testing/code quality): verify through structured file inspection -- read the changed files, trace the logic, confirm against acceptance criteria with specific line references. Check for regressions (broken imports, syntax errors, missing references). Note "verified by inspection" with the specific files and lines checked.
+**c. Assess.** Dispatch **assessor agent in verify mode** to evaluate the execution results. This is mandatory after every task — it catches blockers the executor missed or underclassified. The assessor receives:
+- The task's acceptance criteria and proof plan (from the Plan section)
+- The execution log entry just written (from Step b)
+- The executor's discovery assessment
+- Read access to the changed files, CONTEXT.md, and `foundation/CODE-DESIGN.md`
 
-### 3. Record verification in task file
-Append to the task file:
+The assessor runs its 6-point check (acceptance, discovery review, plan validity, design review, goal alignment, evidence quality) and returns a result.
+
+Record the checkpoint in the execution log (see Step 4 format).
+
+**d. Route.** Based on the checkpoint result:
+- **Proceed**: no blockers, plan still valid. Continue to next task.
+- **Blocker detected**: checkpoint identified or reclassified a discovery as blocking. Halt execution and route to Step 3.
+- **Quality concern**: execution passed but evidence is thin or a gap was flagged. Report to user and ask whether to continue or re-execute the task.
+
+Do not proceed to the next task until the checkpoint completes and returns `proceed`.
+
+### 3. Handle blockers
+When the checkpoint (Step 2d) routes here, or the executor surfaces a blocking discovery:
+
+**Trivial** (one-line fix, handled inline): already resolved by executor. Note in execution log, continue.
+
+**Notable but non-blocking**: add to `.oodaloop/BACKLOG.md` Next or Later section. Continue.
+
+**Blocking-small** (clear fix, single concern, low risk): resolve with `/oodaloop-quick`, then resume the current task. No pause needed.
+
+**Blocking-complex** (unclear scope, multi-file, or architectural): pause the current task and spawn a child OODA cycle. Proceed as follows:
+
+**Depth check**: follow `Parent:` references from the current task file back to root. If chain depth ≥ 3, report the full chain to the user and ask before going deeper.
+
+**Select execution strategy** (default: `subagent`; confirm with user or override if a disqualifier applies):
+
+#### Strategy: subagent
+The parent agent orchestrates the child OODA cycle by dispatching subagents for each phase, using the task file as the coordination layer.
+
+1. Write the Paused section to the parent task file (format defined in state-hygiene rule). Set `Strategy: subagent`.
+2. Spawn a subagent (readonly) for **observe**: provide the observe skill path, `.oodaloop/CONTEXT.md`, the parent's Paused section context (blocker description, child objective), and `Parent: <current-task-slug>`. The subagent creates the child task file.
+3. Check the child task file exists and has Requirements + Observations. If malformed, report and ask user.
+4. Spawn a subagent (readonly) for **orient**: provide the orient skill path and the child task file. The subagent appends the Assessment section.
+5. Spawn a subagent (readonly) for **decide**: provide the decide skill path and the child task file. The subagent appends the Plan section.
+6. Spawn a subagent (read/write) for **act**: provide the act skill path, the child task file, and CONTEXT.md. The subagent executes the plan (including its own checkpoints).
+7. Spawn a subagent (readonly) for **loop**: provide the loop skill path, the child task file, and CONTEXT.md. The subagent emits a verdict.
+8. Read the verdict from the child task file:
+   - **CONTINUE**: child resolved the blocker. Delete the child task file (loop left it for us to read). Remove parent's Paused section, set parent phase to `act`, resume execution at the task that was blocked.
+   - **REFINE/RESCOPE**: child needs more work. Report to user with the verdict and ask how to proceed.
+
+Between each subagent dispatch, read the child task file to verify the expected section was written. If a subagent fails or produces malformed output, report the failure to the user rather than retrying silently.
+
+#### Strategy: new-chat
+For complex blockers requiring fresh context or significant user judgment.
+
+1. Write the Paused section to the parent task file (format defined in state-hygiene rule). Set `Strategy: new-chat`.
+2. Report to the user: what was discovered, why it blocks, the child objective, and instruct them to start a new conversation and run `/oodaloop-start` (which will detect the paused parent and pending child via sync).
+3. Stop execution. The parent resumes when the child completes and loop un-pauses it.
+
+#### Strategy: in-chat
+For moderate blockers where context isn't exhausted and the child cycle is expected to be short.
+
+1. Write the Paused section to the parent task file. Set `Strategy: in-chat`.
+2. Run the child OODA cycle directly in the current conversation: observe → orient → decide → act → loop.
+3. On child CONTINUE: remove parent's Paused section, set parent phase to `act`, resume execution.
+4. On child REFINE/RESCOPE: continue the child cycle until it reaches CONTINUE, or escalate to `new-chat` if context is running low.
+
+### 4. Execution log format
+After each task (Step 2b), append to the task file. After each checkpoint (Step 2c), append the checkpoint block to the same task entry.
 
 ```markdown
-## Verification
+## Execution Log
 
 ### T1: <title>
-**Result**: pass | fail | partial
-**Proof Plan Compliance**: full | partial | none
-**Proof**: <raw output from independently-run checks -- not copied from execution log>
-**Gaps**: <what couldn't be independently verified, and why>
+**Status**: done | blocked | escalated
+**Changes**: <files modified, created, deleted>
+**Proof Plan Compliance**: full | partial | blocked (<reason>)
+**Proof**: <raw output — paste actual test results, command output, diffs. Not descriptions of them. If output is long, paste the critical portion and state what was truncated.>
+**Gaps**: <anything skipped, untested, uncertain, or where a lower evidence tier was used and why>
+**Discoveries**: <executor's structured discovery assessment — classification, evidence, rationale per finding. "No discoveries" if none.>
+**Backlog additions**: <items added to BACKLOG.md, if any>
+
+**Checkpoint**: proceed | blocker-detected | quality-concern
+**Checkpoint evidence**: <what the assessor verified — specific file paths, line ranges, output checked, criteria compared. Not "looks good.">
+**Checkpoint reclassifications**: <any executor discoveries the assessor reclassified, with rationale. "None" if all confirmed.>
+**Design review**: <structural limit flags (file sizes, function lengths), composition concerns, red flags, refactor opportunities. "Clean" only if limits were checked and nothing flagged.>
+**Plan validity**: <are remaining tasks still valid? Does the goal still make sense given what the codebase actually looks like?>
 
 ### T2: ...
-
-### Summary
-- **Passed**: <count>
-- **Failed**: <count>
-- **Convention compliance**: <yes/no, details>
 ```
 
-### 4. Report gaps
-If any task failed or has gaps, report with concrete next steps: what needs fixing, which tasks need re-execution.
-
 ### 5. Update task file phase
-Set phase to `loop`. Update timestamp.
+After all tasks complete, set task file phase to `loop`. Update timestamp.
 
 ## Output
 
-- Verification section appended to task file with per-task results
+- Execution log appended to task file with evidence per task
 - Task file phase advanced to `loop`
-- Gap analysis reported with next-step recommendation: `/oodaloop-loop` to assess, or fix and re-verify
+- Summary reported with recommendation to proceed to `/oodaloop-loop`

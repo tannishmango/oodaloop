@@ -10,9 +10,9 @@ OODALOOP orchestrates project delivery using an OODA-style loop: Observe, Orient
 
 ### Transfers directly
 - **Atomic task decomposition**: tasks are single-concern, dependency-ordered, with acceptance criteria.
-- **Context isolation**: each agent (researcher, planner, executor, verifier, sentinel) operates within a focused scope.
+- **Context isolation**: each agent (researcher, planner, executor, assessor) operates within a focused scope.
 - **File-based shared state**: `.oodaloop/` directory is the single source of truth for project state.
-- **Verification before closure**: Act phase requires evidence-backed acceptance checks before progressing.
+- **Verification before closure**: Act phase executes tasks with per-task verification checkpoints; Loop provides aggregate assessment.
 
 ### Platform adaptations
 - **Slash commands as entrypoints**: `commands/*.md` with frontmatter.
@@ -33,10 +33,10 @@ OODALOOP orchestrates project delivery using an OODA-style loop: Observe, Orient
 | Phase | Command | Agent | Skill | Purpose |
 |-------|---------|-------|-------|---------|
 | Observe | `/oodaloop-observe` | researcher | observe | Research, requirements gathering |
-| Orient | `/oodaloop-orient` | planner | orient | Plan decomposition, task sequencing |
-| Decide | `/oodaloop-decide` | executor | decide | Implementation of atomic tasks |
-| Act | `/oodaloop-act` | verifier | act | Acceptance checks, gap reporting |
-| Loop | `/oodaloop-loop` | sentinel | loop | Scope reassessment, drift detection |
+| Orient | `/oodaloop-orient` | researcher | orient | Analysis, synthesis, situational assessment |
+| Decide | `/oodaloop-decide` | planner | decide | Plan decomposition, task sequencing |
+| Act | `/oodaloop-act` | executor + assessor | act | Implementation + per-task verification |
+| Loop | `/oodaloop-loop` | assessor | loop | Aggregate verification, scope reassessment |
 
 Supporting commands:
 - `/oodaloop-start`: "start here" kickoff; initializes if needed and routes to quick or observe.
@@ -54,7 +54,7 @@ begin → (init if needed) → observe → orient → decide → act → loop
                               |   REFINE  → adjust plan, re-enter decide
                               |   RESCOPE → re-enter observe
                               |
-               blocking discovery during decide:
+               blocking discovery during act:
                small  → /oodaloop-quick → resume inline
                complex → pause parent → observe child → ... → loop child
                                                                 ↓
@@ -77,7 +77,7 @@ Process depth is not uniform. It scales with task complexity and risk:
 |------------|------|----------|
 | Trivial | `/oodaloop-quick` | Execute → summary → state update |
 | Medium | Observe → Orient → Decide → Act | Plan + verify, no loop |
-| Complex | Full OODA with Loop | Plan + verify + sentinel reassessment |
+| Complex | Full OODA with Loop | Plan + verify + aggregate reassessment |
 
 If a task escalates mid-execution (trivial becomes complex), the executor pauses and upgrades the process level. If process feels like overhead, reduce it. The rule `adaptive-rigor.mdc` enforces this.
 
@@ -85,15 +85,14 @@ If a task escalates mid-execution (trivial becomes complex), the executor pauses
 
 ## Agent Architecture
 
-Four of five agents are `readonly: true`. Only the executor writes.
+Three of four agents are `readonly: true`. Only the executor writes.
 
 | Agent | Readonly | Model | Role |
 |-------|----------|-------|------|
-| researcher | true | fast | Codebase exploration, requirements discovery |
+| researcher | true | fast | Codebase exploration, requirements discovery, situational assessment |
 | planner | true | fast | Task decomposition, dependency analysis |
 | executor | false | fast | Implementation of atomic tasks |
-| verifier | true | fast | Acceptance checks, evidence collection |
-| sentinel | true | fast | Scope reassessment, loop verdicts |
+| assessor | true | fast | Per-task verification, aggregate assessment, loop verdicts |
 
 This enforces separation of concerns: read-heavy analysis is isolated from write operations. The executor is the only mutation surface, bounded to single-task scope.
 
@@ -124,7 +123,7 @@ One file holds everything that survives across tasks: project identity, repo con
 Tracks roadmap items, deferred work, discovered improvements, and ideas across conversations. Prevents roadmap loss when conversations end.
 
 - Three tiers: **Next** (prioritized, ready), **Later** (valuable, not urgent), **Done** (completed, pruned periodically).
-- Updated by loop (discoveries, promotions, completions) and decide (mid-execution notable discoveries).
+- Updated by loop (discoveries, promotions, completions) and act (mid-execution notable discoveries).
 - Read when choosing next work or when loop recommends next steps. NOT read during every phase -- stays out of hot context.
 - Curated, not accumulated. Stale items pruned by loop.
 
@@ -218,7 +217,7 @@ Reject these explicitly:
 | M1: Ground Breaking | Plugin scaffold, component skeletons, architecture baseline, doctrine home | Complete |
 | M2: Working Observe/Orient | Functional research + planning pipeline, skill enrichment, local testing | Complete |
 | M2.5: State Architecture | Persistent/ephemeral separation, CONTEXT.md + task files, multi-task design, convention memory | Complete |
-| M3: Full Loop | End-to-end OODA cycle with sentinel verdicts and adaptive rigor in practice | Current |
+| M3: Full Loop | End-to-end OODA cycle with loop verdicts and adaptive rigor in practice | Current |
 | M3.1: Adapter Architecture | Cross-environment portability, install script, host detection, adapter layer | Current |
 
 ---
@@ -239,7 +238,7 @@ oodaloop/
     SYSTEMS-REFERENCE.md
   commands/                     ← 10 thin command invocations (portable)
   skills/                       ← 9 procedural skills (portable, Agent Skills standard)
-  agents/                       ← 5 specialized agents
+  agents/                       ← 4 specialized agents
   rules/                        ← 3 boundary rules
   templates/oodaloop/           ← 1 state template (CONTEXT.md)
   install.sh                    ← host-detecting install script

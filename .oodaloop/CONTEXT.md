@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-03-18 (M3.11 selective doctrine injection)
+> Last refreshed: 2026-03-19 (M3.14 subcycle redesign)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -11,7 +11,7 @@ Build OODALOOP into a functional plugin that orchestrates project delivery using
 Standard git workflow. No branch protection. Commit messages are descriptive, imperative mood. No `.gitattributes`. No `CONTRIBUTING.md`.
 
 ### Code Quality
-None detected. Plugin is pure markdown/declarative -- no linters, formatters, or pre-commit hooks.
+Pre-commit hook at `.githooks/pre-commit` enforces: sync to local Cursor install, blocks committing ephemeral `.oodaloop/*.task.md` files, validates command→skill linkage, blocks deprecated naming, requires `CHANGELOG.md` in staged files (bypass with `SKIP_CHANGELOG=1`). No linters or formatters (plugin is pure markdown/declarative).
 
 ### Testing
 No automated test framework. Plugin is tested by running commands against target projects (e.g., `/oodaloop-init` on `autotracing` repo). Structural validation via file existence checks.
@@ -26,7 +26,7 @@ None. Pure markdown plugin with no package manager, no lockfiles, no runtime dep
 This plugin has commands, skills, agents, rules, and templates, and supports local plugin loading for development.
 
 ## Architecture
-Plugin follows commands → skills → agents pattern. Commands are thin wrappers invoking skills. Skills contain procedural logic. Agents define roles with readonly constraints (only executor writes). Doctrine lives in `foundation/` (PRINCIPLES.md, PRINCIPLES-COMPRESSED.md, SYSTEMS-REFERENCE.md). State lives in `.oodaloop/` using CONTEXT.md (persistent) + BACKLOG.md (persistent) + task files (ephemeral). Task files support pause/resume for recursive sub-cycles via Parent/Paused metadata.
+Plugin follows commands → skills → agents pattern. Commands are thin wrappers invoking skills. Skills contain procedural logic. Agents define roles with readonly constraints (only executor writes). Doctrine lives in `foundation/` (PRINCIPLES.md, PRINCIPLES-COMPRESSED.md, SYSTEMS-REFERENCE.md, CODE-DESIGN.md). State lives in `.oodaloop/` using CONTEXT.md (persistent) + BACKLOG.md (persistent) + task files (ephemeral). Task files support pause/resume for recursive sub-cycles via Parent/Paused metadata. `CHANGELOG.md` tracks releases.
 
 ## Decisions
 
@@ -127,6 +127,22 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-18: Added `foundation/PRINCIPLES-COMPRESSED.md` as a high-signal doctrine layer derived from canonical principles.
 - 2026-03-18: Command-layer selective doctrine injection added to non-trivial OODA commands (`observe`, `orient`, `decide`, `act`, `loop`) with explicit trivial-path guardrails.
 - 2026-03-18: Quick/init/status paths intentionally remain lean; no always-on doctrine rule added.
+
+### M3.14 (subcycle redesign)
+- 2026-03-19: Decide skill rewritten with mandatory per-task readonly checkpoint (execute-assess-repeat). Checkpoint dispatches subagent with 6-point assessment: acceptance, discovery review, plan validity, design review (against CODE-DESIGN.md), goal alignment, evidence.
+- 2026-03-19: Three sub-cycle execution strategies: `subagent` (default, Task tool orchestration), `new-chat` (cold-start via Paused section), `in-chat` (inline). Subagent strategy uses 8-step phase-by-phase dispatch with task file as coordination layer.
+- 2026-03-19: Enhanced Paused section format with 8 fields for cold-start resumption. Parent/child file lifecycle differs by strategy.
+- 2026-03-19: `foundation/CODE-DESIGN.md` added: concrete code design principles with structural thresholds, composition criteria, and red flag table. Injected into checkpoint assessor.
+- 2026-03-19: Executor agent gains structured discovery output (4-category classification feeding checkpoint).
+- 2026-03-19: Loop skill handles per-strategy resumption. New-chat writes `Ready to Resume` section; sync detects and reports it.
+- 2026-03-19: State-hygiene gains 6 new recovery checks for sub-cycle failure modes (stale subagent, dispatch failure, checkpoint ignored, conflicting Ready to Resume/Paused).
+- 2026-03-19: 8 files touched, 1 new file, zero new commands/skills/agents. README rewritten.
+
+### Phase alignment
+- 2026-03-19: Phase alignment corrected to match Boyd's OODA Loop. Orient = analysis/synthesis, Decide = planning, Act = execution, Loop = verification + aggregate assessment. Root cause: Orient had been reduced from Boyd's cognitive engine to a planning activity, shifting every downstream phase forward by one position.
+- 2026-03-19: Agents reduced from 5 to 4. Verifier + sentinel merged into assessor (dual-mode: verify per-task in act, assess aggregate in loop). Researcher expanded with analytical synthesis capability for orient.
+- 2026-03-19: Scanning consolidated. Sync sheds convention scanning and proof auditing (now pure state reconciliation + staleness detection). Observe owns active-cycle scanning. Init dispatches researcher for bootstrap.
+- 2026-03-19: Each phase skill anchored with Boyd-canonical one-liner referencing foundation/OODALOOP.md.
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level

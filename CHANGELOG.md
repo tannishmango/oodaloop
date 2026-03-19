@@ -7,6 +7,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `agents/assessor.md`: dual-mode assessment agent (verify per-task in act, assess aggregate in loop), merged from verifier + sentinel
+- Boyd-canonical one-liner anchoring in all 5 phase skills, referencing `foundation/OODALOOP.md`
+- Interactive engagement checkpoints in observe skill (3 structural pause points with adaptive compression)
+- Full proof audit procedure absorbed into observe from sync
 - `foundation/CODE-DESIGN.md`: concrete, assessable code design principles for the assess checkpoint
 - Mandatory readonly checkpoint subagent after every task in decide (execute-assess-repeat loop)
 - Three sub-cycle execution strategies: `subagent` (default), `new-chat`, `in-chat`
@@ -15,14 +19,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `Ready to Resume` section for cross-conversation parent resumption
 - 6 new state-hygiene recovery checks for sub-cycle failure modes
 - `resumable` task status in sync for completed child cycles
-- README rewrite with recursive sub-cycles and sentinel rescoping sections
 
 ### Changed
-- Decide skill rewritten: per-task checkpoints replace per-batch pauses, design review in assessments
-- Executor agent gains structured discovery output (4-category classification)
-- Observe skill reads parent Paused section for child task cold-start bootstrapping
-- Loop skill handles per-strategy parent resumption (subagent retains file, new-chat writes Ready to Resume)
-- Sync skill detects Ready to Resume sections and reports resumable tasks
+- Phase alignment corrected to Boyd's canonical OODA Loop: Orient = analysis/synthesis, Decide = planning, Act = execution, Loop = verification + aggregate assessment
+- Orient skill rewritten as cognitive engine — analysis, synthesis, situational assessment (was: planning)
+- Decide skill rewritten as planning phase — absorbs decomposition logic from old orient (was: execution)
+- Act skill rewritten as execution + Type 1 checkpoint — absorbs execution loop, blocker handling, sub-cycle management from old decide (was: verification)
+- Loop skill dispatches assessor in assess mode (was: sentinel), adds aggregate verification scope
+- Observe skill gains facts-only framing, phase transition to orient, proof audit ownership
+- Sync skill simplified to pure state reconciliation + staleness detection (sheds scanning and proof audit)
+- Init skill reframes convention scanning as researcher dispatch
+- Researcher agent expanded with analytical synthesis capability for orient phase
+- 5 command descriptions updated to match new phase definitions
+- Rules updated: evidence-contract phase names, state-hygiene phase-section mapping and parent resumption references
+- ARCHITECTURE.md and README.md updated: phase tables, agent tables, counts, all descriptions aligned
+
+### Removed
+- `agents/verifier.md` (absorbed into assessor)
+- `agents/sentinel.md` (absorbed into assessor)
 
 ## [M3.13] - 2026-03-19
 

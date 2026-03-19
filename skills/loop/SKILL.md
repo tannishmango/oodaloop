@@ -1,7 +1,9 @@
 ---
 name: loop
-description: Sentinel reassessment, learning absorption, and task lifecycle management.
+description: Assess aggregate outcomes, emit verdict, and manage task lifecycle.
 ---
+
+> Boyd's Feedback: After acting, observe results and reorient. The loop is continuous — every action's outcome feeds the next cycle. (foundation/OODALOOP.md)
 
 ## Trigger
 
@@ -9,7 +11,7 @@ description: Sentinel reassessment, learning absorption, and task lifecycle mana
 
 ## Preconditions
 
-- An active task file (`.oodaloop/<slug>.task.md`) must exist with Verification section.
+- An active task file (`.oodaloop/<slug>.task.md`) must exist with Execution Log section.
 - `.oodaloop/CONTEXT.md` must exist.
 
 ## Workflow
@@ -18,11 +20,19 @@ description: Sentinel reassessment, learning absorption, and task lifecycle mana
 Read the active task file (all sections). Read `.oodaloop/CONTEXT.md` for persistent context and active decisions.
 
 ### 2. Assess
-Dispatch sentinel agent (readonly). Evaluate:
+Dispatch **assessor agent in assess mode** (readonly). The assessor evaluates aggregate concerns only:
+- **Coherence**: all tasks passed individually, but does the whole solve the objective?
+- **Cross-cutting consistency**: inconsistencies between task outputs (naming conflicts, style drift, missing integration).
+- **Cumulative drift**: did incremental changes shift away from the objective?
+- **Convention compliance sweep**: cross-task, not per-file (Type 1 handled per-file during act).
+- **Proof adequacy**: across the full cycle, was proof proportional to risk?
+
+The assessor does NOT re-verify individual tasks — Type 1 checkpoints during act already handled per-task verification.
+
+Also evaluate:
 - Are original assumptions still valid?
 - Has scope drifted from what was planned?
 - Were there unexpected discoveries during execution?
-- Are verification results acceptable?
 - Have repo conventions changed during this cycle?
 
 ### 3. Emit verdict
@@ -67,7 +77,7 @@ When recommending next steps to the user, reference the top items from the Next 
 
   If this task has **no `Parent:` field**: delete the task file. Learnings now live in CONTEXT.md.
 
-  If this task **has a `Parent:` field**: read the parent task file's Paused section `Strategy` field. Remove the Paused section and set parent phase to `decide`. Then handle per strategy:
+  If this task **has a `Parent:` field**: read the parent task file's Paused section `Strategy` field. Remove the Paused section and set parent phase to `act`. Then handle per strategy:
 
   - **`subagent`**: the parent agent is orchestrating this child through subagents and will read the verdict from the child task file. Do NOT delete the child task file -- the parent agent is responsible for cleanup after reading the verdict (decide skill Step 3, subagent strategy step 8).
   - **`new-chat`**: delete the child task file, then append a `## Ready to Resume` section to the parent task file:

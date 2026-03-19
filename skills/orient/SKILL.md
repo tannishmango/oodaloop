@@ -1,7 +1,9 @@
 ---
 name: orient
-description: Decompose observations into a sequenced, executable plan.
+description: Analyze observations and form a situational assessment.
 ---
+
+> Boyd's Orient: Process observations through experience and mental models to form a perception of reality. The cognitive engine of the OODA Loop. (foundation/OODALOOP.md)
 
 ## Trigger
 
@@ -9,93 +11,77 @@ description: Decompose observations into a sequenced, executable plan.
 
 ## Preconditions
 
-- An active task file (`.oodaloop/<slug>.task.md`) must exist with populated Requirements and Observations.
+- An active task file (`.oodaloop/<slug>.task.md`) must exist with populated Requirements, Observations, and Scope sections.
 - `.oodaloop/CONTEXT.md` must exist.
-- If the task file lacks requirements, recommend returning to `/oodaloop-observe`.
+- If an Assessment section already exists (re-entry after rescope), note it — the previous assessment is being revised, not started from scratch.
 
 ## Workflow
 
-### 1. Read task observations
-Read the active task file. Identify all requirements, constraints, scope boundaries, risks, and open questions.
+### 1. Read observations and context
+Read the active task file: requirements, observations, scope, and any existing assessment.
 
-Read `.oodaloop/CONTEXT.md` for repo conventions that constrain implementation.
-Extract `Testing` and `Proof Infrastructure` details as hard planning inputs.
+Read `.oodaloop/CONTEXT.md` for prior decisions, architecture patterns, and conventions — Boyd's "repertoire of mental models." This is the experience dimension that transforms raw observation into understanding.
 
-### 2. Identify work streams
-Group related requirements into logical streams. Look for:
-- Natural clusters (e.g., "data layer" vs "UI")
-- Shared dependencies between requirements
-- Independent streams that can be parallelized
+### 2. Interpret findings
+Transform facts into meaning. For each significant observation, state what it means for the current work — not what was found, but what it implies.
 
-### 3. Decompose into atomic tasks
-For each stream, break into tasks where each task:
-- Has a single concern (one thing changes)
-- Can be verified independently
-- Has clear acceptance criteria that specify the required test type: unit tests for logic, integration tests for external systems/APIs/data pipelines. If CONTEXT.md shows the repo has integration test infrastructure for the area being changed, acceptance criteria must require integration tests pass -- not just unit tests.
-- Includes a **Proof Plan** naming the strongest available verification command(s) for that task and when they will be run.
-- Takes no more than one focused session
+If a sentence in the interpretation could appear unchanged in the Observations section, it is not interpretation. "The test suite has no integration tests" is an observation. "We cannot verify API behavior with existing infrastructure" is interpretation.
 
-Never downshift to weaker proof when stronger repo-native proof exists, unless explicitly justified (for example: missing credentials, destructive side effects, excessive runtime). Any downshift must be written into acceptance criteria as a gap with rationale.
+When codebase investigation is needed during analysis, dispatch the researcher agent (readonly).
 
-### 4. Define dependencies and parallelism
-For each task, identify:
-- Which tasks must complete first
-- Which can run in parallel
-- The dependency graph
+### 3. Compare against prior decisions
+Review decisions recorded in CONTEXT.md. For each relevant prior decision:
+- Does it constrain the current work? (e.g., "chose library X" limits technology choices)
+- Does it enable a faster path? (e.g., "pattern Z adopted" means we follow it, not reinvent)
+- Does it conflict with what the observations suggest?
 
-### 5. Write plan into task file
-Append the plan section to the existing task file:
+### 4. Narrow the option space
+Evaluate viable approaches for the current work:
+- For each approach: what it entails, its trade-offs, and constraints that apply.
+- If only one approach is viable, state why alternatives were eliminated.
+- Recommend one approach with rationale. Orient recommends; Decide commits.
 
-```markdown
-## Plan
+### 5. Identify risks to the understanding
+Stress-test the interpretation, not a plan (there is no plan yet):
+- What could be wrong about the assessment?
+- What assumptions are being made, and what would invalidate them?
+- Where is confidence lowest, and what additional information would help?
 
-### T1: <title>
-**Depends on**: none
-**Acceptance**: <concrete, verifiable criteria>
-**Proof Plan**: <commands + expected evidence tier + any gating prerequisites>
+### 6. Assess sufficiency
+Is the understanding clear enough for Decide to produce a plan?
+- If yes: proceed to write the Assessment section.
+- If no: state what's missing and recommend returning to `/oodaloop-observe` for targeted research.
 
-### T2: <title>
-**Depends on**: T1
-**Acceptance**: <criteria>
-**Proof Plan**: <commands + expected evidence tier + any gating prerequisites>
+### Mid-execution re-entry
+When re-entering after a rescope (existing execution log and Paused section in the task file), read the execution log and Paused section. Account for existing work:
+- What is salvageable and still valid?
+- What needs modification given the new understanding?
+- What should be discarded?
 
-...
-
-### Dependency Graph
-<ASCII diagram or description>
-
-### Execution Strategy
-Batch 1: <parallel tasks>
-Batch 2: <next tasks>
-...
-```
-
-### 6. Pre-mortem and steelman
-Before finalizing, confront the plan's weaknesses:
-- **Pre-mortem**: assume the plan fails. What are the most likely failure modes? For each, state what signal would reveal it during execution and what the fallback is. Append to the plan:
-  ```markdown
-  ### Failure modes
-  - <failure mode>: signal = <what you'd see>, fallback = <what to do>
-  ```
-- **Steelman**: if an alternative approach was considered and rejected, state the strongest argument for it and why the chosen approach still wins. If no alternative was considered, state that explicitly -- it may indicate the orient phase was too shallow.
-
-Skip this step only for trivial tasks where the plan is obvious and the risk is negligible.
-
-### 7. Review
-Check before finalizing:
-- Every requirement covered by at least one task
-- No ambiguous acceptance criteria
-- Dependencies form a valid DAG (no cycles)
-- Plan is executable without reinterpretation
-- Convention constraints from CONTEXT.md are reflected in relevant tasks
-- Proof plans match repo proof posture (hardest available checks are selected when relevant)
-- Failure modes identified for non-trivial plans
-
-### 8. Update task file phase
-Set the task file phase to `decide`. Update the timestamp.
+The revised assessment must reflect the current state, not just the original observations.
 
 ## Output
 
-- Plan section appended to `.oodaloop/<slug>.task.md`
-- Task file phase set to `decide`
-- Summary reported with recommendation to proceed to `/oodaloop-decide`
+Append to the task file:
+
+```markdown
+## Assessment
+
+### Situational interpretation
+<what the observations mean — not restating findings, interpreting them>
+
+### Viable approaches
+<narrowed options, trade-offs, constraints per approach>
+
+### Risks and assumptions
+<stress-tested understanding, not plan risks>
+
+### Constraints
+<from conventions, architecture, prior decisions, proof posture>
+
+### Recommendation
+<which approach and why — orient recommends, decide commits>
+```
+
+- Update task file phase from `orient` to `decide`. Update timestamp.
+- Recommend `/oodaloop-decide` to formulate the plan.

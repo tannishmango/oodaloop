@@ -26,5 +26,5 @@ Single-task implementation. Follows plan specifications exactly. Produces proof 
   - `notable`: improvement opportunity, not blocking current work
   - `blocking-small`: clear fix needed, single concern, low risk
   - `blocking-complex`: unclear scope, multi-file, or architectural implications
-  For each discovery: state what was found, its classification, evidence (file paths, error output, concrete description), and rationale for the classification. If no discoveries were encountered, state "No discoveries" explicitly -- do not omit the assessment. This output feeds the decide skill's reflection checkpoint.
-- Must stop and report if any `blocking-small` or `blocking-complex` discovery is found. The executor does not resolve blockers -- it classifies and surfaces them. The decide skill's checkpoint and Step 3 handle resolution routing (quick for small, sub-cycle for complex).
+  For each discovery: state what was found, its classification, evidence (file paths, error output, concrete description), and rationale for the classification. If no discoveries were encountered, state "No discoveries" explicitly -- do not omit the assessment. This output feeds the act skill's reflection checkpoint.
+- Must stop and report if any `blocking-small` or `blocking-complex` discovery is found. The executor does not resolve blockers -- it classifies and surfaces them. The act skill's checkpoint and Step 3 handle resolution routing (quick for small, sub-cycle for complex).

@@ -3,6 +3,8 @@ name: observe
 description: Research and gather requirements through structured discovery.
 ---
 
+> Boyd's Observe: Gather information from the environment. The raw input that feeds the loop. (foundation/OODALOOP.md)
+
 ## Trigger
 
 `/oodaloop-observe` or entering Observe phase.
@@ -46,7 +48,16 @@ When Testing drift is detected, re-evaluate and update the `Proof Infrastructure
 - notable proof gaps and upgrade opportunities
 - if the subsection is missing, create it as part of the update
 
-If CONTEXT.md has no `Proof Infrastructure` subsection, or the subsection is `none/weak`, run the same full proof audit checklist defined in `sync` before proceeding. Observe should not proceed on stale or shallow proof posture data.
+If CONTEXT.md has no `Proof Infrastructure` subsection, or the subsection says `none` or `weak`, run a full proof inventory before proceeding. Dispatch the researcher agent to:
+1. Inventory proof assets: test directories, configs, runners, project skill sources that define or wrap tests.
+2. Inventory executable proof commands: package scripts, make/task targets, documented commands, commands embedded in skill markdown.
+3. Inventory CI proof coupling: CI jobs that run tests, whether integration/e2e checks are required vs optional.
+4. Inventory sandboxed test infrastructure: docker-compose files, testcontainers, localstack/mock-server setup, ephemeral fixtures. Document boundaries between sandbox and real-system validation.
+5. Map strongest proof by area: for each major subsystem, record strongest available command.
+6. Characterize coverage: posture (`none|weak|adequate|strong`), gaps (missing integration coverage, flaky suites, no reproducible command, env-gated checks without setup notes).
+7. Update CONTEXT.md Proof Infrastructure subsection with findings.
+
+Observe should not proceed on stale or shallow proof posture data.
 
 ### 3. Clarify scope
 If the user has not provided a task description or objective, ask. Otherwise, proceed.
@@ -68,7 +79,9 @@ Use the researcher agent (readonly). Focus on:
 - **Patterns**: naming conventions, testing approach, state management, error handling
 - **Risks**: complexity hotspots, missing tests, tight coupling, stale code
 
-Breadth first, then depth on areas relevant to the objective.
+Breadth first, then depth on areas relevant to the objective. Focus on what exists — facts and evidence, not interpretations of significance (that is Orient's job).
+
+**Interactive checkpoint**: share research findings with the user. "Here's what I found about the structure and patterns. Does this match your understanding? Anything I should look at more closely?" Incorporate feedback before continuing.
 
 ### 6. Gather requirements
 From user input + codebase research, identify:
@@ -76,6 +89,8 @@ From user input + codebase research, identify:
 - **Constraints**: technology, performance, compatibility, time
 - **Assumptions**: what we take as given (mark confidence level)
 - **Open questions**: unknowns (mark as uncertain)
+
+**Interactive checkpoint**: share identified requirements with the user. "Here are the requirements I've identified. What's missing? What's wrong?" Incorporate feedback before continuing.
 
 ### 7. Create or update task file
 Create `.oodaloop/<slug>.task.md`.
@@ -115,14 +130,23 @@ Updated: <date>
 - **Deferred**: <what we will do later>
 ```
 
-### 8. Assess sufficiency
-Sufficient when: objective is clear, key requirements identified, scope defined, major risks surfaced. If gaps remain, state them explicitly in the task file and ask the user whether to research further or proceed with known uncertainty.
+### 8. Assess sufficiency and confirm scope
+Sufficient when: objective is clear, key requirements identified, scope defined, major risks surfaced.
 
-### 9. Report
-Summarize findings to user. Recommend `/oodaloop-orient` to create the plan.
+**Interactive checkpoint**: share the proposed scope with the user. "Here's the proposed scope — in, out, deferred. Are these the right boundaries?" Confirm before finalizing.
+
+**Adaptive compression**: for simple, well-understood tasks, the three interactive checkpoints (steps 5, 6, 8) can compress into a single summary: "I've scanned the codebase and gathered requirements. Here's everything — does this look right?" For complex or uncertain tasks, each checkpoint is a full pause.
+
+If gaps remain, state them explicitly in the task file and ask the user whether to research further or proceed with known uncertainty.
+
+### 9. Report and transition
+Update task file phase from `observe` to `orient`. Update timestamp.
+
+Summarize findings to user. Recommend `/oodaloop-orient` to analyze findings and form a situational assessment.
 
 ## Output
 
 - `.oodaloop/CONTEXT.md` updated if conventions drifted
 - `.oodaloop/<slug>.task.md` created with requirements, observations, scope
+- Task file phase updated from `observe` to `orient`
 - Summary reported with next-step recommendation

@@ -6,19 +6,19 @@ alwaysApply: true
 ## File types
 
 - **CONTEXT.md** is persistent. It survives across tasks and is never deleted. It is updated incrementally by observe (convention drift), loop (learning absorption), and init (creation). Never overwrite wholesale -- update sections.
-- **BACKLOG.md** is persistent. It tracks future work, ideas, and deferred items across conversations. Updated by loop (discoveries, completions, promotions) and decide (mid-execution discoveries). Curated, not accumulated -- prune stale items.
+- **BACKLOG.md** is persistent. It tracks future work, ideas, and deferred items across conversations. Updated by loop (discoveries, completions, promotions) and act (mid-execution discoveries). Curated, not accumulated -- prune stale items.
 - **<slug>.task.md** files are ephemeral. They are created by observe, filled through the OODA cycle, and deleted by loop on CONTINUE verdict. They represent active work, not permanent records. Valid phases: `observe`, `orient`, `decide`, `act`, `loop`, `paused`. The `paused` phase means the task is waiting for a sub-cycle to resolve a blocking discovery before it can resume.
 
 ## Rules
 
 - After any phase transition within a task, update the task file's phase and timestamp.
-- Never leave a task file in an inconsistent state (e.g., phase says "decide" but no Plan section exists).
+- Never leave a task file in an inconsistent state (e.g., phase says "act" but no Plan section exists).
 - CONTEXT.md must always have a valid "Last refreshed" timestamp.
 - When loop absorbs learnings, add to CONTEXT.md -- do not duplicate in both files.
 - Delete completed task files promptly. Do not accumulate finished task files.
 - If `.oodaloop/` doesn't exist and a command needs it, prompt for `/oodaloop-start`.
 - Multiple task files may coexist for concurrent work. Each is independent.
-- **Parent/child tasks**: Arbitrary depth is supported. A child task can itself pause and spawn a grandchild. The chain resolves bottom-up: grandchild completes → un-pauses child → child completes → un-pauses parent. Each task's `Parent:` field references its immediate parent only. When a child completes (loop CONTINUE), the parent's `Paused` section is removed and its phase returns to `decide` for resumption. Before spawning beyond depth 3, the decide skill asks the user for consent.
+- **Parent/child tasks**: Arbitrary depth is supported. A child task can itself pause and spawn a grandchild. The chain resolves bottom-up: grandchild completes → un-pauses child → child completes → un-pauses parent. Each task's `Parent:` field references its immediate parent only. When a child completes (loop CONTINUE), the parent's `Paused` section is removed and its phase returns to `act` for resumption. Before spawning beyond depth 3, the act skill asks the user for consent.
 - **Paused section format**: When a task pauses to spawn a sub-cycle, the Paused section must contain enough context for a cold start (different conversation or subagent). Required fields:
   ```
   ## Paused
@@ -44,20 +44,20 @@ Run these when a skill's preconditions feel wrong or state seems off:
 |---|---|
 | `.oodaloop/` exists but `CONTEXT.md` missing | Partial init -- directory created but setup incomplete |
 | `.oodaloop/` exists but `BACKLOG.md` missing | Pre-backlog init or accidental deletion |
-| Task file phase says `orient` but no Requirements section | Phase advanced without completing prior step |
-| Task file phase says `decide` but no Plan section | Phase advanced without completing orient |
-| Task file phase says `act` but no Execution Log section | Phase advanced without completing decide |
-| Task file phase says `loop` but no Verification section | Phase advanced without completing act |
+| Task file phase says `orient` but no Observations section | Observe didn't complete |
+| Task file phase says `decide` but no Assessment section | Orient didn't complete |
+| Task file phase says `act` but no Plan section | Decide didn't complete |
+| Task file phase says `loop` but no Execution Log section | Act didn't complete |
 | Task file phase says `paused` but no Paused section | Pause metadata lost |
 | Task file has `Parent: <slug>` but parent task file doesn't exist | Parent was deleted without resuming child, or child is orphaned |
 | Task file has Paused section with `Child-slug: <slug>` but child task doesn't exist | Child completed but parent wasn't un-paused |
 | Following `Parent:` references forms a cycle (A → B → A) | Circular chain -- should never happen, indicates corruption |
-| Chain depth exceeds 3 without evidence of user consent in the deepest task file | Runaway recursion -- decide skill should have asked before going this deep |
+| Chain depth exceeds 3 without evidence of user consent in the deepest task file | Runaway recursion -- act skill should have asked before going this deep |
 | Paused section exists but is missing required fields (`Reason`, `Child-slug`, `Strategy`, `Resume-instructions`) | Incomplete pause -- cold start will fail |
 | Paused section `Strategy` is `subagent` but child task file doesn't exist and no error was recorded | Subagent failed to create child task file -- dispatch failure |
 | Child task file exists but its phase timestamp is stale (>24h with no progress) and parent `Strategy` is `subagent` | Subagent likely failed or hung mid-child-cycle |
 | Execution log has a checkpoint with `blocker-detected` but the next task was still executed (no pause, no Step 3 handling) | Checkpoint blocker was ignored -- execution integrity violation |
-| Parent task file has `## Ready to Resume` section but phase is not `decide` | Ready to Resume written but parent phase wasn't updated |
+| Parent task file has `## Ready to Resume` section but phase is not `act` | Ready to Resume written but parent phase wasn't updated |
 | Parent task file has `## Ready to Resume` section and a Paused section simultaneously | Conflicting state -- child completed but Paused section wasn't removed |
 
 ### When inconsistency is found

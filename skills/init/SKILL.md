@@ -30,7 +30,7 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
    - If ambiguous, ask the user.
    Record the detected host in the Workspace Tooling section of CONTEXT.md. This informs convention scanning and future command references.
 
-5. **Scan repo conventions.** For each category, check for known config files and extract key facts. If nothing found for a category, record "None detected."
+5. **Scan repo conventions.** Dispatch the researcher agent for the bootstrap convention scan. The researcher scans each category below, checking for known config files and extracting key facts. If nothing found for a category, record "None detected."
 
    **Git**: `.gitattributes`, recent commit messages (sample 5 for format patterns), branch naming from `git branch -a`, any `CONTRIBUTING.md`.
    **Code Quality**: `.pre-commit-config.yaml` (list hooks), linter configs (`ruff.toml`, `.eslintrc*`, `.prettierrc*`, `pyproject.toml [tool.ruff]`, `pyproject.toml [tool.black]`, `.flake8`).
