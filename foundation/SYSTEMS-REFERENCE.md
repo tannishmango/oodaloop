@@ -111,13 +111,16 @@
 - **Scheduling Algorithms** — How an OS decides what process gets CPU time next; directly maps to prioritization under resource constraints (Round Robin, Priority Queuing, Shortest Job First)
 - **Interrupt-Driven Architecture** — Systems don't poll constantly; they *wait and respond* to signals; superior to brute-force monitoring
 - **Memory Hierarchy** (Cache → RAM → Disk) — Faster access costs more; every system must decide what to keep "hot"; maps to cognitive load and attention management
+- **Working Set Model** (Peter Denning) — The critical question is not what exists, but what must stay resident for smooth execution; every bounded system needs explicit promotion and eviction rules for its hot set
 - **Preemption vs. Cooperative Multitasking** — Who controls context-switching? Forced interruption vs. voluntary yielding; maps to autonomy vs. control tradeoffs in organizations
 - **Deadlock & Livelock** — Two processes waiting on each other forever; organizations get deadlocked too; recognition is the first step to resolution
+- **Process Reaping / Zombie and Orphan Semantics** — Spawning work creates a duty to collect completion, status, and cleanup; if no one reaps finished children or adopts abandoned ones, the system leaks coordination and trust
 - **Virtual Memory / Abstraction Layers** — Hide complexity beneath clean interfaces; the power of the right abstraction to enable scale
 - **Unix Philosophy** (Ken Thompson, Dennis Ritchie) — Do one thing well; compose simple tools into complex systems; worse-is-better paradox (simpler systems win in the long run)
 - **Microkernels vs. Monolithic Kernels** — Modularity vs. performance tradeoff; every system architecture faces this tension
+- **Crash-Only Software** (George Candea, Armando Fox) — Systems become more reliable when components stop brutally but recover quickly; build units that are idempotent, restartable, and cheap to resume instead of assuming uninterrupted continuity
 
-**Key People:** Ken Thompson, Dennis Ritchie, Linus Torvalds, Edsger Dijkstra, Andy Tanenbaum
+**Key People:** Ken Thompson, Dennis Ritchie, Peter Denning, Linus Torvalds, Edsger Dijkstra, Andy Tanenbaum
 
 ---
 

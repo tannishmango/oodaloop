@@ -16,6 +16,10 @@ Linters, formatters, pre-commit hooks, style guides.
 ### Testing
 Framework, directory structure, naming conventions, coverage requirements.
 
+### Proof Infrastructure
+Posture: `none|weak|adequate|strong`
+Strongest available proof commands by area, required environment/prerequisites, and known gaps.
+
 ### CI/CD
 Pipeline config, required checks, deployment strategy.
 

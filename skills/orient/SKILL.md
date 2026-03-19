@@ -19,6 +19,7 @@ description: Decompose observations into a sequenced, executable plan.
 Read the active task file. Identify all requirements, constraints, scope boundaries, risks, and open questions.
 
 Read `.oodaloop/CONTEXT.md` for repo conventions that constrain implementation.
+Extract `Testing` and `Proof Infrastructure` details as hard planning inputs.
 
 ### 2. Identify work streams
 Group related requirements into logical streams. Look for:
@@ -31,7 +32,10 @@ For each stream, break into tasks where each task:
 - Has a single concern (one thing changes)
 - Can be verified independently
 - Has clear acceptance criteria that specify the required test type: unit tests for logic, integration tests for external systems/APIs/data pipelines. If CONTEXT.md shows the repo has integration test infrastructure for the area being changed, acceptance criteria must require integration tests pass -- not just unit tests.
+- Includes a **Proof Plan** naming the strongest available verification command(s) for that task and when they will be run.
 - Takes no more than one focused session
+
+Never downshift to weaker proof when stronger repo-native proof exists, unless explicitly justified (for example: missing credentials, destructive side effects, excessive runtime). Any downshift must be written into acceptance criteria as a gap with rationale.
 
 ### 4. Define dependencies and parallelism
 For each task, identify:
@@ -48,10 +52,12 @@ Append the plan section to the existing task file:
 ### T1: <title>
 **Depends on**: none
 **Acceptance**: <concrete, verifiable criteria>
+**Proof Plan**: <commands + expected evidence tier + any gating prerequisites>
 
 ### T2: <title>
 **Depends on**: T1
 **Acceptance**: <criteria>
+**Proof Plan**: <commands + expected evidence tier + any gating prerequisites>
 
 ...
 
@@ -82,6 +88,7 @@ Check before finalizing:
 - Dependencies form a valid DAG (no cycles)
 - Plan is executable without reinterpretation
 - Convention constraints from CONTEXT.md are reflected in relevant tasks
+- Proof plans match repo proof posture (hardest available checks are selected when relevant)
 - Failure modes identified for non-trivial plans
 
 ### 8. Update task file phase

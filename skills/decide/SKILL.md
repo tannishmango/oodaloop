@@ -17,6 +17,9 @@ description: Execute plan tasks through the executor agent.
 
 ### 1. Read plan and context
 Read the active task file's Plan section. Read `.oodaloop/CONTEXT.md` conventions -- these are binding constraints on implementation (commit format, linter rules, test patterns, etc.).
+Treat the `Proof Infrastructure` subsection as binding for verification selection:
+- choose the strongest available proof command relevant to each task
+- only use weaker evidence when stronger checks are unavailable or explicitly blocked
 
 ### 2. Process tasks in dependency order
 For each batch in the execution strategy:
@@ -26,6 +29,8 @@ For each batch in the execution strategy:
   - Code logic changes → unit tests at minimum.
   - Integration points (APIs, databases, external services, data pipelines) → integration tests that hit real systems. If the repo has existing integration test infrastructure, use it. If running real integration tests requires credentials, environment setup, or could incur costs, ask the user before proceeding -- but do not silently skip.
   - If the repo's CONTEXT.md Testing conventions describe specific test patterns, follow them.
+- The executor must execute each task's **Proof Plan** (from orient), including integration/e2e checks when required.
+- If a required hard check cannot be run, stop and ask the user before substituting weaker evidence. Record the gap explicitly.
 - **The executor must surface raw evidence to the user during execution.** Paste actual test output, actual command results, actual key diffs in the conversation as they are produced. Do not summarize evidence into narrative -- the user is the judge of sufficiency.
 - After each task: record what changed, what was tested (including test type and output), any side effects.
 
@@ -58,6 +63,7 @@ After each batch, append to the task file:
 ### T1: <title>
 **Status**: done | blocked | escalated
 **Changes**: <files modified, created, deleted>
+**Proof Plan Compliance**: full | partial | blocked (<reason>)
 **Proof**: <raw output -- paste actual test results, command output, diffs. Not descriptions of them. If output is long, paste the critical portion and state what was truncated.>
 **Gaps**: <anything skipped, untested, uncertain, or where a lower evidence tier was used and why>
 **Notes**: <side effects, discoveries, blockers>

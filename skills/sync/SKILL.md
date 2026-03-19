@@ -34,6 +34,13 @@ Run the same sentinel-file drift check used by `observe` step 2:
 - if any category changed, update `.oodaloop/CONTEXT.md`
 - bump `Last refreshed` timestamp if anything changed
 
+Always reassess `Proof Infrastructure` inside the Testing conventions, even when drift is subtle:
+- refresh strongest available proof commands
+- refresh environment requirements that gate hard tests
+- refresh posture (`none|weak|adequate|strong`)
+- if posture is `none` or `weak`, ensure upgrade opportunities are explicitly listed
+- if the subsection is missing, add it and treat that as drift
+
 If no drift is detected, do not modify convention sections.
 
 ### 3. Reconcile task integrity
@@ -79,6 +86,7 @@ Recommend promotion/completion moves, but do not rewrite backlog unless the mapp
 Return a concise sync report:
 
 - what changed (if any)
+- proof posture delta (if any): previous vs current, and why
 - integrity issues found (blocking/non-blocking)
 - task status table (done/ready/blocked/active)
 - exact next commands (for example `/oodaloop-act`, `/oodaloop-loop`, `/oodaloop-decide`)

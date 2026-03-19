@@ -100,27 +100,31 @@ OODALOOP exists to make AI-assisted feature development **faster, safer, and mor
   - Build for detection, containment, and recovery.
   - Failure handling quality is as important as success-path quality.
 
-- **22) Falsifiability beats plausibility** (scientific method + TDD)
+- **22) Restartability beats continuity assumptions** (crash-only design)
+  - Build steps so they fail cleanly, resume cheaply, and produce the same result when retried from known state.
+  - Long-running workflows should assume interruption, partial progress, and tool failure; reliability comes from idempotence and recovery speed, not continuity fantasies.
+
+- **23) Falsifiability beats plausibility** (scientific method + TDD)
   - Important claims should be expressed in a form reality can refute.
   - Tests, invariants, and reconciliations are stronger than persuasive explanations.
 
-- **23) Counterfactual comparison hardens decisions** (inversion + Bayesian updating)
+- **24) Counterfactual comparison hardens decisions** (inversion + Bayesian updating)
   - Strong reasoning compares the chosen path against the best alternative, not just the first coherent plan.
   - Counterfactuals and steelmanning matter most when uncertainty, risk, or irreversibility is high.
 
-- **24) Do one thing well; compose cleanly** (Unix philosophy)
+- **25) Do one thing well; compose cleanly** (Unix philosophy)
   - Steps, tools, and artifacts should have narrow purposes and explicit interfaces.
   - System capability should grow from composition, not from monolithic instructions or phases.
 
-- **25) Separate mechanism from policy** (Unix + software architecture)
+- **26) Separate mechanism from policy** (Unix + software architecture)
   - Keep orchestration machinery independent from task-specific judgment and heuristics.
   - Adaptive rigor only works when changing policy does not require rewiring the engine.
 
-- **26) Fold knowledge into data; keep logic simple** (Rule of Representation)
+- **27) Fold knowledge into data; keep logic simple** (Rule of Representation)
   - Put variability, state, and decision context into schemas and records before adding branching logic.
   - Richer data with simpler interpreters is easier to inspect, test, and revise.
 
-- **27) Systems drift toward self-preservation** (Gall / Systemantics)
+- **28) Systems drift toward self-preservation** (Gall / Systemantics)
   - Any framework will tend to justify its own files, phases, metrics, and rituals.
   - Repeatedly ask whether a step improves mission outcomes or merely preserves the system.
 

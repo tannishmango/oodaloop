@@ -25,7 +25,7 @@ For each convention category, check whether sentinel files exist on disk that co
 |---|---|
 | Git | `.gitattributes`, `CONTRIBUTING.md` |
 | Code Quality | `.pre-commit-config.yaml`, `ruff.toml`, `.eslintrc*`, `.prettierrc*`, `.flake8`, `pyproject.toml` (check for `[tool.ruff]` or `[tool.black]`) |
-| Testing | `pytest.ini`, `jest.config.*`, `vitest.config.*`, `tests/`, `__tests__/`, `test/`, `spec/` |
+| Testing | `pytest.ini`, `jest.config.*`, `vitest.config.*`, `tests/`, `__tests__/`, `test/`, `spec/`, `integration/`, `e2e/`, `playwright/`, `cypress/`, `contract/`, `tests/integration/`, `tests/e2e/` |
 | CI/CD | `.github/workflows/`, `.gitlab-ci.yml`, `Jenkinsfile`, `.circleci/` |
 | Dependencies | `pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `requirements.txt` and their lockfiles |
 | Workspace Tooling | `.cursor/rules/`, `AGENTS.md`, `.claude/` |
@@ -38,6 +38,13 @@ For each convention category, check whether sentinel files exist on disk that co
    - If sentinel files match what CONTEXT.md already records → no drift. Skip.
 3. If any category was updated, bump the "Last refreshed" timestamp.
 4. If nothing drifted, skip entirely -- do not touch CONTEXT.md.
+
+When Testing drift is detected, re-evaluate and update the `Proof Infrastructure` subsection:
+- posture (`none|weak|adequate|strong`)
+- strongest available proof commands by area
+- required environment for hard checks
+- notable proof gaps and upgrade opportunities
+- if the subsection is missing, create it as part of the update
 
 ### 3. Clarify scope
 If the user has not provided a task description or objective, ask. Otherwise, proceed.

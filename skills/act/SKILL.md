@@ -16,6 +16,7 @@ description: Verify execution outcomes against acceptance criteria.
 
 ### 1. Read plan and execution log
 From the task file, extract each task's acceptance criteria (from Plan) and execution evidence (from Execution Log).
+Extract each task's `Proof Plan` and claimed `Proof Plan Compliance` status from the Execution Log.
 
 Read `.oodaloop/CONTEXT.md` conventions -- verify that implementation respected repo conventions (correct test patterns, linter compliance, commit format, etc.).
 
@@ -28,10 +29,12 @@ For each task:
 - Were repo conventions followed?
 - Are there side effects or regressions?
 - **Were the right kind of tests run?** If the task touches integrations, APIs, or external systems, unit tests alone are not sufficient evidence. Check whether integration tests were written and run. If only unit tests exist for an integration claim, flag this as a verification gap -- do not mark as pass.
+- **Did execution satisfy the task Proof Plan?** If not, classify as `partial` or `fail` unless the user explicitly approved the deviation.
 - **Surface verification evidence to the user.** Show the verification output in conversation. The user judges sufficiency.
 
 Run checks based on what CONTEXT.md says the repo uses:
 - **If repo has tests**: run the full test suite, report pass/fail counts with raw output. Check that tests match the risk profile of the changes (unit for logic, integration for external systems).
+- **If CONTEXT.md lists strong repo proof commands for the changed area**: run those commands specifically, even if they are not part of the default unit suite.
 - **If repo has linters/formatters**: run them, show the output.
 - **If repo has CI**: check that local changes wouldn't break CI checks.
 - **If repo has no automated checks** (CONTEXT.md says "None detected" for testing/code quality): verify through structured file inspection -- read the changed files, trace the logic, confirm against acceptance criteria with specific line references. Check for regressions (broken imports, syntax errors, missing references). Note "verified by inspection" with the specific files and lines checked.
@@ -44,6 +47,7 @@ Append to the task file:
 
 ### T1: <title>
 **Result**: pass | fail | partial
+**Proof Plan Compliance**: full | partial | none
 **Proof**: <raw output from independently-run checks -- not copied from execution log>
 **Gaps**: <what couldn't be independently verified, and why>
 

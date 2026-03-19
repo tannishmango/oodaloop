@@ -19,7 +19,8 @@ Derived from `foundation/PRINCIPLES.md`. Use this as a high-signal orientation a
 7. **Context hygiene**: curated shared context beats high context volume.
 8. **Single source of truth**: each critical concept has one canonical home.
 9. **Robustness to imperfect agents**: architecture should degrade gracefully.
-10. **Evidence over fluency**: confidence comes from proof paths, not narrative tone.
+10. **Restartability beats continuity assumptions**: design steps to fail cleanly, retry safely, and resume from known state.
+11. **Evidence over fluency**: confidence comes from proof paths, not narrative tone.
 
 ## Execution laws
 

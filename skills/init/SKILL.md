@@ -35,6 +35,17 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
    **Git**: `.gitattributes`, recent commit messages (sample 5 for format patterns), branch naming from `git branch -a`, any `CONTRIBUTING.md`.
    **Code Quality**: `.pre-commit-config.yaml` (list hooks), linter configs (`ruff.toml`, `.eslintrc*`, `.prettierrc*`, `pyproject.toml [tool.ruff]`, `pyproject.toml [tool.black]`, `.flake8`).
    **Testing**: test runner config (`pytest.ini`, `pyproject.toml [tool.pytest]`, `jest.config.*`, `vitest.config.*`), test directories (`tests/`, `__tests__/`, `test/`, `spec/`), coverage config.
+   **Proof Infrastructure**: identify highest-truth verification mechanisms and how to run them. At minimum scan for:
+   - integration/e2e/contract suites (`integration/`, `e2e/`, `playwright/`, `cypress/`, `contract/`, `tests/integration/`, `tests/e2e/`)
+   - test commands in manifests (`scripts.test:*`, `make test-*`, CI jobs that run integration/e2e checks)
+   - environment requirements (credentials, services, docker compose, seeded databases)
+   - mapping from major repo areas to strongest available proof command
+   Then classify posture:
+   - `none`: no meaningful automated proof beyond basic unit checks or ad-hoc manual testing
+   - `weak`: proof exists but misses major integration surfaces, is flaky, or is rarely run
+   - `adequate`: integration surfaces mostly covered with executable commands
+   - `strong`: clear high-signal integration proof exists for critical paths and is enforced in CI
+   Include explicit upgrade opportunities when posture is `none` or `weak`.
    **CI/CD**: `.github/workflows/` (list files), `.gitlab-ci.yml`, `Jenkinsfile`, `.circleci/`.
    **Dependencies**: manifest (`pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `requirements.txt`), lockfiles (`poetry.lock`, `uv.lock`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `Cargo.lock`).
    **Workspace Tooling**: workspace rule files, `AGENTS.md`, and local agent/tooling settings files.
@@ -61,6 +72,10 @@ To be defined during Observe phase.
 
 ### Testing
 <findings or "None detected.">
+
+### Proof Infrastructure
+Posture: <none|weak|adequate|strong>
+<strongest available proof commands, coverage map, environment requirements, and upgrade opportunities>
 
 ### CI/CD
 <findings or "None detected.">
@@ -99,7 +114,7 @@ No items yet.
 No completed items.
 ```
 
-9. Confirm initialization: project name, host environment, files created (CONTEXT.md, BACKLOG.md), convention summary, deconfliction summary, current state ("ready for observe"), recommended next step (`/oodaloop-observe`).
+9. Confirm initialization: project name, host environment, files created (CONTEXT.md, BACKLOG.md), convention summary, proof-infrastructure posture and strongest commands, deconfliction summary, current state ("ready for observe"), recommended next step (`/oodaloop-observe`).
 
 ## Output
 
