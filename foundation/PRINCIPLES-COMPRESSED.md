@@ -39,10 +39,14 @@ Derived from `foundation/PRINCIPLES.md`. Use this as a high-signal orientation a
 - What is the strongest alternative explanation?
 - What is the likely failure mode and earliest signal?
 - What uncertainty remains and what evidence would reduce it?
+- Has this component accumulated a second job?
+- Could this complexity move into structured data instead of branching logic?
+- Is this step serving the task, or preserving the framework?
 
 ## Anti-patterns to reject
 
 - Process theater and framework bloat.
+- Monolithic orchestration fused with task-specific judgment.
 - Context accumulation without curation.
 - Duplicate state tracking that drifts.
 - Easy tests substituted for hard but relevant tests.

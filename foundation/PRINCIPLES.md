@@ -108,6 +108,22 @@ OODALOOP exists to make AI-assisted feature development **faster, safer, and mor
   - Strong reasoning compares the chosen path against the best alternative, not just the first coherent plan.
   - Counterfactuals and steelmanning matter most when uncertainty, risk, or irreversibility is high.
 
+- **24) Do one thing well; compose cleanly** (Unix philosophy)
+  - Steps, tools, and artifacts should have narrow purposes and explicit interfaces.
+  - System capability should grow from composition, not from monolithic instructions or phases.
+
+- **25) Separate mechanism from policy** (Unix + software architecture)
+  - Keep orchestration machinery independent from task-specific judgment and heuristics.
+  - Adaptive rigor only works when changing policy does not require rewiring the engine.
+
+- **26) Fold knowledge into data; keep logic simple** (Rule of Representation)
+  - Put variability, state, and decision context into schemas and records before adding branching logic.
+  - Richer data with simpler interpreters is easier to inspect, test, and revise.
+
+- **27) Systems drift toward self-preservation** (Gall / Systemantics)
+  - Any framework will tend to justify its own files, phases, metrics, and rituals.
+  - Repeatedly ask whether a step improves mission outcomes or merely preserves the system.
+
 ---
 
 ## Design Laws For OODALOOP
@@ -147,6 +163,7 @@ OODALOOP exists to make AI-assisted feature development **faster, safer, and mor
 ## Anti-Patterns To Reject
 
 - Framework bloat disguised as rigor.
+- Monolithic orchestration that fuses workflow control with task-specific judgment.
 - Creating artifacts because frameworks are expected to have them.
 - Over-serialization that ignores parallel opportunities.
 - Naive parallelism that ignores coupling and integration cost.
