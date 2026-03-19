@@ -56,6 +56,11 @@ Determine a **task slug**: short, kebab-case, descriptive (e.g., `add-auth`, `fi
 ### 4. Check for existing task files
 List any `*.task.md` files in `.oodaloop/`. If the user is resuming work on an existing task (slug matches), read that task file and build on it. If starting new work, create a new task file.
 
+Also check for parent/child state:
+- If any task file has phase `paused` with a `Child-slug` that doesn't match an existing task file, report: the parent is waiting for a child that hasn't been created yet. Offer to start the child cycle.
+- If any task file has a `Parent:` field but the parent task file doesn't exist, report: this child is orphaned.
+- If this observe was triggered to resolve a blocking discovery (either by a subagent dispatch, user following new-chat instructions, or in-chat flow), read the parent task file's Paused section for context. The `Child-objective`, `Reason`, and `Blocked-during` fields provide the starting context for this child cycle -- use them directly rather than re-discovering from scratch.
+
 ### 5. Research the codebase
 Use the researcher agent (readonly). Focus on:
 - **Structure**: directory layout, key files, entry points, configuration
@@ -73,7 +78,13 @@ From user input + codebase research, identify:
 - **Open questions**: unknowns (mark as uncertain)
 
 ### 7. Create or update task file
-Create `.oodaloop/<slug>.task.md`. If this observe was triggered by a blocking discovery from another task, include `Parent: <parent-slug>` and inherit only the blocker context (not the entire parent task):
+Create `.oodaloop/<slug>.task.md`.
+
+If this observe is for a **child cycle** (blocking discovery from another task), read the parent task file's Paused section and inherit its context:
+- `Parent:` field set to the parent task slug
+- Objective derived from the parent's `Child-objective` field
+- Blocker context from `Reason` and `Blocked-during` fields informs requirements and scope
+- Do NOT inherit the entire parent task -- only the blocker context needed for this child cycle
 
 ```markdown
 # Task: <slug>
@@ -84,7 +95,7 @@ Started: <date>
 Updated: <date>
 
 ## Objective
-<what we are accomplishing>
+<what we are accomplishing -- for child tasks, derived from parent's Child-objective>
 
 ## Requirements
 ### R1: <title>

@@ -19,6 +19,19 @@ alwaysApply: true
 - If `.oodaloop/` doesn't exist and a command needs it, prompt for `/oodaloop-start`.
 - Multiple task files may coexist for concurrent work. Each is independent.
 - **Parent/child tasks**: Arbitrary depth is supported. A child task can itself pause and spawn a grandchild. The chain resolves bottom-up: grandchild completes → un-pauses child → child completes → un-pauses parent. Each task's `Parent:` field references its immediate parent only. When a child completes (loop CONTINUE), the parent's `Paused` section is removed and its phase returns to `decide` for resumption. Before spawning beyond depth 3, the decide skill asks the user for consent.
+- **Paused section format**: When a task pauses to spawn a sub-cycle, the Paused section must contain enough context for a cold start (different conversation or subagent). Required fields:
+  ```
+  ## Paused
+  Reason: <what blocks and why it can't be deferred>
+  Blocked-during: <which plan task was in progress when the blocker was found>
+  Completed-before-pause: <list of plan tasks already completed>
+  Child-objective: <what the child cycle must accomplish to unblock the parent>
+  Child-slug: <expected child task slug>
+  Strategy: <in-chat | new-chat | subagent>
+  Paused-at: <date>
+  Resume-instructions: <what the parent should do when child completes -- which plan task to resume, any context the parent agent needs>
+  ```
+  The `Strategy` field records how the child cycle is being executed. The `Resume-instructions` field must be specific enough that a different conversation can resume the parent without the original conversation context.
 
 ## Recovery
 
@@ -37,9 +50,15 @@ Run these when a skill's preconditions feel wrong or state seems off:
 | Task file phase says `loop` but no Verification section | Phase advanced without completing act |
 | Task file phase says `paused` but no Paused section | Pause metadata lost |
 | Task file has `Parent: <slug>` but parent task file doesn't exist | Parent was deleted without resuming child, or child is orphaned |
-| Task file has Paused section with `Waiting-for: <slug>` but child task doesn't exist | Child completed but parent wasn't un-paused |
+| Task file has Paused section with `Child-slug: <slug>` but child task doesn't exist | Child completed but parent wasn't un-paused |
 | Following `Parent:` references forms a cycle (A → B → A) | Circular chain -- should never happen, indicates corruption |
 | Chain depth exceeds 3 without evidence of user consent in the deepest task file | Runaway recursion -- decide skill should have asked before going this deep |
+| Paused section exists but is missing required fields (`Reason`, `Child-slug`, `Strategy`, `Resume-instructions`) | Incomplete pause -- cold start will fail |
+| Paused section `Strategy` is `subagent` but child task file doesn't exist and no error was recorded | Subagent failed to create child task file -- dispatch failure |
+| Child task file exists but its phase timestamp is stale (>24h with no progress) and parent `Strategy` is `subagent` | Subagent likely failed or hung mid-child-cycle |
+| Execution log has a checkpoint with `blocker-detected` but the next task was still executed (no pause, no Step 3 handling) | Checkpoint blocker was ignored -- execution integrity violation |
+| Parent task file has `## Ready to Resume` section but phase is not `decide` | Ready to Resume written but parent phase wasn't updated |
+| Parent task file has `## Ready to Resume` section and a Paused section simultaneously | Conflicting state -- child completed but Paused section wasn't removed |
 
 ### When inconsistency is found
 Report to the user with this structure:

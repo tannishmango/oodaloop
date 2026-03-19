@@ -62,4 +62,17 @@ while IFS= read -r file; do
   esac
 done <<< "$staged_files"
 
+# 5) Require CHANGELOG.md update in every commit.
+#    Bypass with: SKIP_CHANGELOG=1 git commit ...
+if [ "${SKIP_CHANGELOG:-0}" != "1" ]; then
+  if ! echo "$staged_files" | grep -q '^CHANGELOG\.md$'; then
+    echo "[oodaloop hook] ERROR: CHANGELOG.md not included in staged changes"
+    echo "[oodaloop hook] every commit must update the changelog"
+    echo "[oodaloop hook] bypass for tooling-only commits: SKIP_CHANGELOG=1 git commit ..."
+    exit 1
+  fi
+else
+  echo "[oodaloop hook] SKIP_CHANGELOG set, bypassing changelog check"
+fi
+
 echo "[oodaloop hook] pre-commit checks passed"

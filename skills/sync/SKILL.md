@@ -80,6 +80,7 @@ When repair is unambiguous, repair in place:
 - If phase metadata is ahead of available sections, set phase back to the last fully evidenced phase.
 - If task is `paused` but has no `Paused` section, set phase back to `decide`.
 - If parent has `Paused` section waiting on a child task that no longer exists, remove `Paused` and set parent phase to `decide`.
+- If task has a `## Ready to Resume` section, a child cycle completed and this task is ready to continue. Report the child result and recommend `/oodaloop-decide` to resume execution. Remove the `Ready to Resume` section after reporting (it's a one-time signal).
 
 When repair is ambiguous or high-risk, do not mutate; report and recommend the next command.
 
@@ -90,6 +91,7 @@ Update task `Updated:` timestamp only for files actually modified.
 For each task, determine status:
 
 - **done**: explicit `CONTINUE` verdict exists
+- **resumable**: has `## Ready to Resume` section (child cycle completed, parent ready to continue)
 - **ready-for-loop**: verification is present and phase is `act` or `loop`
 - **ready-for-act**: implementation appears complete and phase is `decide`
 - **blocked**: paused or waiting on dependency

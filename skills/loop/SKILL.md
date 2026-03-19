@@ -61,9 +61,25 @@ Read `.oodaloop/BACKLOG.md`. Update it:
 When recommending next steps to the user, reference the top items from the Next section.
 
 ### 6. Handle task file lifecycle
-- If verdict is **CONTINUE** and all work is complete: append the verdict to the task file. Before deleting, check if this task has a `Parent:` field. If so, find the parent task file in `.oodaloop/`, remove its `Paused` section, and set the parent's phase back to `decide` so it can resume. Then **delete the child task file**. The learnings now live in CONTEXT.md. Recommend resuming the parent with `/oodaloop-decide`.
 - If verdict is **REFINE**: append verdict, keep task file, update phase to `decide`.
 - If verdict is **RESCOPE**: append verdict, keep task file, update phase to `observe`.
+- If verdict is **CONTINUE** and all work is complete: append the verdict to the task file. Then handle parent resumption:
+
+  If this task has **no `Parent:` field**: delete the task file. Learnings now live in CONTEXT.md.
+
+  If this task **has a `Parent:` field**: read the parent task file's Paused section `Strategy` field. Remove the Paused section and set parent phase to `decide`. Then handle per strategy:
+
+  - **`subagent`**: the parent agent is orchestrating this child through subagents and will read the verdict from the child task file. Do NOT delete the child task file -- the parent agent is responsible for cleanup after reading the verdict (decide skill Step 3, subagent strategy step 8).
+  - **`new-chat`**: delete the child task file, then append a `## Ready to Resume` section to the parent task file:
+    ```
+    ## Ready to Resume
+    Child-completed: <child-slug>
+    Child-result: <one-line summary of what the child accomplished>
+    Resume-at: <which plan task to resume, from the parent's Resume-instructions>
+    Date: <date>
+    ```
+    This section is read by `/oodaloop-start` (via sync) when the user opens a new conversation. Recommend the user run `/oodaloop-start` to resume.
+  - **`in-chat`**: delete the child task file and resume execution of the parent task inline.
 
 ### 7. Report
 Report verdict, absorbed learnings, and next step to the user.

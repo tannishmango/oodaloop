@@ -21,4 +21,10 @@ Single-task implementation. Follows plan specifications exactly. Produces proof 
 - **Must match test rigor to risk.** Code logic → unit tests. Integration points (APIs, databases, external services, data pipelines) → integration tests that hit real systems. Substituting unit tests for integration tests without explicit user consent is a constraint violation. If running integration tests requires setup, credentials, or could incur costs, ask -- do not silently skip.
 - **Must follow repo conventions from `.oodaloop/CONTEXT.md`**: commit format, test patterns, linter rules, package manager, directory conventions. Convention violations are execution failures.
 - **Must state gaps honestly.** If something was skipped, couldn't be tested, or has uncertain results, state it explicitly. Silent omission is a constraint violation.
-- Must stop and report if blocked or if task reveals unexpected complexity.
+- **Must surface discoveries in structured format.** After completing each task, output a discovery assessment. For each finding encountered during implementation, classify it:
+  - `trivial`: one-line fix, handled inline during execution
+  - `notable`: improvement opportunity, not blocking current work
+  - `blocking-small`: clear fix needed, single concern, low risk
+  - `blocking-complex`: unclear scope, multi-file, or architectural implications
+  For each discovery: state what was found, its classification, evidence (file paths, error output, concrete description), and rationale for the classification. If no discoveries were encountered, state "No discoveries" explicitly -- do not omit the assessment. This output feeds the decide skill's reflection checkpoint.
+- Must stop and report if any `blocking-small` or `blocking-complex` discovery is found. The executor does not resolve blockers -- it classifies and surfaces them. The decide skill's checkpoint and Step 3 handle resolution routing (quick for small, sub-cycle for complex).
