@@ -38,8 +38,11 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
    **Proof Infrastructure**: identify highest-truth verification mechanisms and how to run them. At minimum scan for:
    - integration/e2e/contract suites (`integration/`, `e2e/`, `playwright/`, `cypress/`, `contract/`, `tests/integration/`, `tests/e2e/`)
    - test commands in manifests (`scripts.test:*`, `make test-*`, CI jobs that run integration/e2e checks)
+   - project skills and agent workflow sources that may define/wrap test commands (local `skills/**/SKILL.md`, command files, `AGENTS.md`, workspace automation docs)
+   - sandbox harnesses where integration is simulated (`docker-compose*.yml`, testcontainers, localstack, mock servers)
    - environment requirements (credentials, services, docker compose, seeded databases)
    - mapping from major repo areas to strongest available proof command
+   - explicit boundaries between sandboxed validation and real-system validation
    Then classify posture:
    - `none`: no meaningful automated proof beyond basic unit checks or ad-hoc manual testing
    - `weak`: proof exists but misses major integration surfaces, is flaky, or is rarely run

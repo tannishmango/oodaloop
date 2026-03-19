@@ -46,6 +46,8 @@ When Testing drift is detected, re-evaluate and update the `Proof Infrastructure
 - notable proof gaps and upgrade opportunities
 - if the subsection is missing, create it as part of the update
 
+If CONTEXT.md has no `Proof Infrastructure` subsection, or the subsection is `none/weak`, run the same full proof audit checklist defined in `sync` before proceeding. Observe should not proceed on stale or shallow proof posture data.
+
 ### 3. Clarify scope
 If the user has not provided a task description or objective, ask. Otherwise, proceed.
 
