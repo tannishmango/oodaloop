@@ -14,6 +14,7 @@ Valuable, not urgent. Promote to Next when dependencies clear or priority shifts
 - **agent-tuning**: Evidence-based model selection per agent after enough real cycles to generate data. [2026-03-16]
 
 ## Done
+- **adaptive-principle-injection**: Implemented selective injection of compressed doctrine for non-trivial OODA commands via `foundation/PRINCIPLES-COMPRESSED.md`, with runtime smoke validation for `/oodaloop-observe` and `/oodaloop-quick`. [done 2026-03-18]
 - **state-sync**: Added `/oodaloop-sync` + `sync` skill to reconcile state after interruptions. Includes targeted convention drift refresh, unambiguous task metadata repairs, and done/ready/blocked status reporting without deleting task files. [done 2026-03-18]
 - **nested-sub-cycles**: Arbitrary-depth sub-cycles. Existing implementation was already generic; added depth check (>3 asks user), chain tree in status, cycle/depth detection in state-hygiene. 4 touchpoints. [done 2026-03-17]
 - **proof-of-work**: Proof-of-work architecture. Evidence contract rewritten with 4-tier hierarchy, surface-to-user mandate, counterfactual reasoning, anti-cowardice, honesty mandate. 7 touchpoints: evidence-contract, executor, decide, act, orient, loop, sentinel. 7 independent catches. [done 2026-03-17]

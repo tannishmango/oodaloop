@@ -18,6 +18,7 @@ OODALOOP orchestrates project delivery using an OODA-style loop: Observe, Orient
 - **Slash commands as entrypoints**: `commands/*.md` with frontmatter.
 - **Planner/executor handoff via specialized agents**: role separation uses agent definitions with `readonly` constraints.
 - **Skills as procedural layer**: deeper "how" logic lives in `skills/*/SKILL.md`, referenced by commands.
+- **Selective doctrine injection at command layer**: non-trivial OODA commands can load compressed doctrine (`foundation/PRINCIPLES-COMPRESSED.md`) while preserving quick-path lightness.
 - **Rules as boundary layer**: `rules/*.mdc` with `alwaysApply: true` enforce lightweight invariants.
 
 ### Drops
@@ -184,7 +185,7 @@ OODALOOP is host-agnostic. The core (skills, doctrine, state model, templates) w
 ### Portable layer (unchanged across hosts)
 - **Skills** (`skills/*/SKILL.md`): Agent Skills open standard, supported by 27+ tools.
 - **State** (`.oodaloop/`): CONTEXT.md + task files. Pure markdown, no host dependencies.
-- **Doctrine** (`foundation/`): Principles and systems reference.
+- **Doctrine** (`foundation/`): Principles, systems reference, and compressed principles used for selective command-layer injection.
 - **Templates** (`templates/`): State templates for target projects.
 
 ### Adapter layer (thin, per-host)
@@ -234,6 +235,7 @@ oodaloop/
     opencode/
   foundation/                   ← permanent doctrine
     PRINCIPLES.md
+    PRINCIPLES-COMPRESSED.md
     SYSTEMS-REFERENCE.md
   commands/                     ← 10 thin command invocations (portable)
   skills/                       ← 9 procedural skills (portable, Agent Skills standard)

@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-03-18 (M3.10 state sync command)
+> Last refreshed: 2026-03-18 (M3.11 selective doctrine injection)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -26,7 +26,7 @@ None. Pure markdown plugin with no package manager, no lockfiles, no runtime dep
 This plugin has commands, skills, agents, rules, and templates, and supports local plugin loading for development.
 
 ## Architecture
-Plugin follows commands → skills → agents pattern. Commands are thin wrappers invoking skills. Skills contain procedural logic. Agents define roles with readonly constraints (only executor writes). Doctrine lives in `foundation/` (PRINCIPLES.md, SYSTEMS-REFERENCE.md). State lives in `.oodaloop/` using CONTEXT.md (persistent) + BACKLOG.md (persistent) + task files (ephemeral). Task files support pause/resume for recursive sub-cycles via Parent/Paused metadata.
+Plugin follows commands → skills → agents pattern. Commands are thin wrappers invoking skills. Skills contain procedural logic. Agents define roles with readonly constraints (only executor writes). Doctrine lives in `foundation/` (PRINCIPLES.md, PRINCIPLES-COMPRESSED.md, SYSTEMS-REFERENCE.md). State lives in `.oodaloop/` using CONTEXT.md (persistent) + BACKLOG.md (persistent) + task files (ephemeral). Task files support pause/resume for recursive sub-cycles via Parent/Paused metadata.
 
 ## Decisions
 
@@ -122,6 +122,11 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-18: Sync flow refreshes convention drift, repairs unambiguous metadata inconsistencies, and reports done/ready/blocked task status.
 - 2026-03-18: Sync is non-destructive for task lifecycle; deletion remains owned by `/oodaloop-loop`.
 - 2026-03-18: Plugin structure now 9 commands and 8 skills.
+
+### M3.11 (adaptive doctrine injection)
+- 2026-03-18: Added `foundation/PRINCIPLES-COMPRESSED.md` as a high-signal doctrine layer derived from canonical principles.
+- 2026-03-18: Command-layer selective doctrine injection added to non-trivial OODA commands (`observe`, `orient`, `decide`, `act`, `loop`) with explicit trivial-path guardrails.
+- 2026-03-18: Quick/init/status paths intentionally remain lean; no always-on doctrine rule added.
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level
