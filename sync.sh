@@ -16,5 +16,13 @@ rsync -a --delete \
   --exclude ".DS_Store" \
   "$OODALOOP_DIR"/ "$TARGET"/
 
+# Bump version in the synced copy so Cursor invalidates its plugin cache (it caches by version and does not invalidate on file change).
+BUILD_ID="sync.$(date -u +%Y%m%d%H%M%S)"
+if [ -f "$TARGET/.cursor-plugin/plugin.json" ]; then
+  if sed -e "s/\"version\": \"[^\"]*\"/\"version\": \"0.1.0+$BUILD_ID\"/" "$TARGET/.cursor-plugin/plugin.json" > "$TARGET/.cursor-plugin/plugin.json.tmp" 2>/dev/null; then
+    mv "$TARGET/.cursor-plugin/plugin.json.tmp" "$TARGET/.cursor-plugin/plugin.json"
+  fi
+fi
+
 echo "Synced $OODALOOP_DIR → $TARGET"
-echo "Reload or restart Cursor to pick up changes."
+echo "Reload Cursor (or restart) to pick up changes. If reload still shows old behavior, clear cache: rm -rf ~/.cursor/plugins/cache"
