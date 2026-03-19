@@ -1,187 +1,196 @@
 # OODALOOP
 
-**An OODA loop that observes itself observing.**
+**A lightweight, composable OODA harness for AI-assisted software delivery.**
 
-Orient, decide, act, and reorient -- recursively. OODALOOP orchestrates AI-assisted project delivery as a living cycle that adapts mid-flight, recurses when it hits blockers, and collapses ceremony when the task doesn't warrant it.
+Boyd built OODA for environments defined by friction, incomplete information, and changing conditions. Software delivery has the same shape.
 
-Most workflow frameworks bolt process onto work. They're rigid pipelines that force heavyweight ceremony on trivial tasks and have no answer when assumptions change mid-execution. OODALOOP inverts this: process depth is a function of task complexity, the cycle can nest inside itself, and a verification loop watches for the moment your plan stops matching reality.
+OODALOOP is built to stay lightweight on simple tasks while remaining flexible, composable, and scalable when the work has to pause, rescope, or split into child loops.
 
----
+Most agent harnesses optimize for forward motion. OODALOOP optimizes for maintaining orientation while the situation changes.
 
-## The Cycle
+## Operating Premise
 
-```
-observe → orient → decide → act → loop
-   ↑                                 │
-   │         CONTINUE ───→ done      │
-   │         REFINE  ───→ decide     │
-   └──────── RESCOPE ───→ observe ───┘
-```
+- Plans are provisional.
+- Execution produces new intelligence.
+- Progress without reassessment is drift.
+- Task success does not guarantee objective success.
+- The procedure must know how to pause, branch, and re-enter cleanly.
 
-| Phase | What happens |
-|-------|--------------|
-| **Observe** | Research the codebase, detect convention drift, gather requirements |
-| **Orient** | Analyze observations, synthesize a situational assessment |
-| **Decide** | Decompose into a dependency-ordered plan with acceptance criteria |
-| **Act** | Execute atomic tasks, verify each with per-task checkpoint |
-| **Loop** | Assess aggregate outcomes: continue, refine the plan, or rescope entirely |
+## The Procedure
 
-Trivial work skips the ceremony. A one-line fix doesn't need a plan phase -- `/oodaloop-quick` handles it directly. Medium tasks run observe through act without a loop. Complex work gets the full cycle with aggregate reassessment. If a task escalates mid-execution, the process level upgrades with it.
-
----
-
-## Recursive Sub-Cycles
-
-This is where OODALOOP diverges from linear workflows.
-
-During execution, you will discover things -- a dependency that's broken, an assumption that's wrong, a prerequisite that doesn't exist yet. Most frameworks tell you to file a ticket and keep going. OODALOOP handles it structurally:
-
-**Small blocker?** Resolve it inline with `/oodaloop-quick`. No pause, no context switch.
-
-**Complex blocker?** The parent task *pauses* and spawns a child OODA cycle. The child runs its own full observe → orient → decide → act → loop. When it completes, the parent automatically resumes where it left off.
-
-```
-Task A (building auth)
-  └─ discovers missing DB migration
-     └─ Task A pauses
-        └─ Task B spawns (fix migration)
-           └─ discovers schema conflict
-              └─ Task B pauses
-                 └─ Task C spawns (resolve schema)
-                    └─ C completes → B resumes → B completes → A resumes
+```text
+observe -> orient -> decide -> act -> loop
 ```
 
-Chains resolve bottom-up. Each child references its parent. Depth beyond 3 levels requires explicit user consent. `/oodaloop-status` renders the full chain as a tree.
+- `Observe` - reconnaissance. Gather facts, constraints, and signs of drift.
+- `Orient` - situational assessment. Turn raw findings into a usable picture of the problem.
+- `Decide` - course of action. Break the work into ordered tasks with clear acceptance.
+- `Act` - execution. Carry out one task at a time.
+- `Loop` - after-action assessment. Judge results and choose where to re-enter.
 
-The recursion is the point. Work doesn't proceed in straight lines. The system that orchestrates it shouldn't pretend otherwise.
+After `loop`, OODALOOP takes one of three actions:
 
----
+- `CONTINUE` - the objective still holds and the results are sufficient.
+- `REFINE` - the objective holds, but the plan must change.
+- `RESCOPE` - the assumptions changed; return to observation.
 
-## Scope Reassessment
+The advantage is practical: the system does not just notice that reality changed. It knows where to re-enter the procedure.
 
-The loop phase isn't a rubber stamp. The assessor agent compares what actually happened against what was assumed and emits a verdict:
+## Recursive Shape
 
-| Verdict | Meaning | What happens next |
-|---------|---------|-------------------|
-| **CONTINUE** | Scope held. Outcomes match criteria. | Absorb learnings, close the task, move on. |
-| **REFINE** | Some tasks need adjustment, but the objective is sound. | Keep the task open, re-enter decide with an updated plan. |
-| **RESCOPE** | Core assumptions changed. The plan is wrong. | Re-enter observe. Research again with new information. |
+OODALOOP uses one loop shape everywhere.
 
-Every verdict includes proof references, rationale, confidence level, and a falsifiability statement -- not just a label. The assessor is readonly; it can only recommend, never modify.
+- Run the full loop to complete an operation.
+- Step back to `decide` or `observe` when new information invalidates the current course of action.
+- Pause a parent task and open a child loop when a blocker becomes its own operation.
 
-This means OODALOOP doesn't just detect that something went wrong. It knows *where to re-enter the cycle* based on how wrong things went. A bad task gets refined. A bad premise gets rescoped from scratch.
+Child loops use the same shape and can recurse again if needed. That composability is what makes the system scalable: reassessment, reset, resume, and sub-operations all use the same procedure and state model.
 
-Convention drift detection works the same way: observe and sync phases compare what's actually on disk against what CONTEXT.md claims across six categories (git, code quality, testing, CI/CD, dependencies, workspace tooling). Only drifted categories get rescanned.
+## Closed-Loop Execution
 
----
+This is the part most agent harnesses do not have.
 
-## Commands
+Execution does not run open-loop. After each task, the assessor checks whether the step actually met its acceptance, whether it stayed aligned with design and intent, and whether anything discovered during execution changes the remaining plan.
 
-| Command | Purpose |
-|---------|---------|
-| `/oodaloop-start` | Entry point. Bootstraps state, syncs if needed, routes to the right flow. |
-| `/oodaloop-quick` | Fast path for trivial tasks. No plan phase, no loop. |
-| `/oodaloop-observe` | Research and requirements gathering |
-| `/oodaloop-orient` | Analyze observations, form situational assessment |
-| `/oodaloop-decide` | Plan decomposition and task sequencing |
-| `/oodaloop-act` | Execute plan tasks, verify each with checkpoint |
-| `/oodaloop-loop` | Assess aggregate outcomes, reassess scope |
-| `/oodaloop-sync` | Reconcile state after interruptions or context resets |
-| `/oodaloop-status` | Read-only state report with task tree |
-| `/oodaloop-init` | Initialize `.oodaloop/` state in a target project |
+Only then does the next task begin.
 
-Start with `/oodaloop-start`. It handles everything else.
+At the end of the cycle, the work is judged again at a different level: not "did each step complete," but "did the whole body of work solve the objective."
 
----
+That distinction matters. Local success can still produce overall drift.
 
-## Agents
+## Friction and Branching
 
-Four specialized agents, three of them readonly. Only the executor writes.
+The procedure assumes friction rather than treating it as an exception.
 
-| Agent | Role | Writes? |
-|-------|------|---------|
-| **researcher** | Codebase exploration, requirements discovery, situational assessment | No |
-| **planner** | Task decomposition, dependency analysis, pre-mortem | No |
-| **executor** | Implementation of atomic tasks | Yes |
-| **assessor** | Per-task verification, aggregate assessment, loop verdicts | No |
+A small blocker can be handled inline. A larger blocker pauses the parent task and opens a child loop. When the child completes, control returns to the parent at the correct re-entry point with state intact.
 
----
+```text
+Task A: ship auth flow
+  discovers missing migration
+  pauses
+
+Task B: create migration
+  discovers schema conflict
+  pauses
+
+Task C: resolve schema conflict
+  completes -> Task B resumes -> Task A resumes
+```
+
+This keeps the work legible. The blocker becomes structured work instead of dissolving into chat context and improvisation.
+
+## Adaptive Rigor
+
+OODALOOP does not force the same ceremony on every task.
+
+- Low-risk local work can go through `/oodaloop-quick`.
+- Normal scoped work runs through observe, orient, decide, and act.
+- Higher-risk or unstable work gets the full loop, including after-action reassessment.
+
+If the situation changes mid-execution, the procedure deepens with it. Rigor tracks risk.
+
+## Roles
+
+OODALOOP uses four narrow roles:
+
+- `researcher` - reconnaissance and discovery
+- `planner` - course-of-action design
+- `executor` - implementation
+- `assessor` - step authorization and after-action judgment
+
+Three are readonly. Only the executor writes.
+
+That separation is deliberate. Discovery, planning, execution, and assessment are different jobs. Keeping them distinct reduces self-justifying behavior and makes the procedure easier to trust.
 
 ## State
 
-All project state lives in `.oodaloop/` within the target project. Three file types, clean separation:
+State lives in `.oodaloop/` inside the target project:
 
-| File | What it tracks | Lifecycle |
-|------|----------------|-----------|
-| `CONTEXT.md` | What **is** -- repo identity, conventions, architecture, decisions | Persistent, incrementally updated |
-| `BACKLOG.md` | What **should be** -- future work, deferred items, roadmap | Persistent, curated by loop |
-| `<slug>.task.md` | What's **happening** -- one per active OODA cycle | Ephemeral, deleted on completion |
+- `CONTEXT.md` - the current operating picture: conventions, architecture, decisions
+- `BACKLOG.md` - deferred and follow-on work
+- `<slug>.task.md` - the live record of a single OODA cycle
 
-Multiple task files coexist for concurrent work. Paused parents and active children are separate files linked by a `Parent:` field. CONTEXT.md is the only file read every phase; BACKLOG.md stays out of hot context until explicitly needed.
+This gives the workflow durable memory inside the repo. It also makes pause/resume, rescope, and parent/child task chains explicit rather than conversational. Each loop keeps its own record, so recursion stays clean.
 
----
+## Portability
+
+OODALOOP is host-agnostic at the core. Skills, agents, rules, doctrine, and state stay the same. Thin adapters map those pieces to each host's discovery and install model.
+
+Current targets include Cursor, Claude Code, and OpenCode.
 
 ## Install
 
 ```bash
-git clone <repo-url> && cd oodaloop
+git clone <repo-url>
+cd oodaloop
 ./install.sh
 ```
 
-The install script detects your environment and places components where the host can discover them:
+Target a specific host if needed:
 
 ```bash
-./install.sh cursor       # Cursor IDE
-./install.sh claude-code  # Claude Code
-./install.sh opencode     # OpenCode
+./install.sh cursor
+./install.sh claude-code
+./install.sh opencode
 ```
 
-Then in any project: `/oodaloop-start`.
+Then, inside any target project:
 
-For local development, sync edits into Cursor's plugin directory:
+```text
+/oodaloop-start
+```
+
+For local development of this repo:
 
 ```bash
 ./sync.sh
 ```
 
-The pre-commit hook runs this automatically when a local Cursor install exists.
+If a local Cursor install exists, the pre-commit hook runs that sync automatically.
 
----
+## Commands
 
-## Structure
+Entry and control:
 
-```
+- `/oodaloop-start` - initialize, resync state if needed, and route to the right flow
+- `/oodaloop-quick` - fast path for trivial work
+- `/oodaloop-status` - inspect active task state and parent/child chains
+- `/oodaloop-sync` - reconcile state after interruption
+- `/oodaloop-init` - create `.oodaloop/` state in a target project
+
+Phase commands:
+
+- `/oodaloop-observe` - gather facts and current constraints
+- `/oodaloop-orient` - produce a situational assessment
+- `/oodaloop-decide` - produce an ordered plan
+- `/oodaloop-act` - execute task by task
+- `/oodaloop-loop` - reassess and choose continue, refine, or rescope
+
+## Project Shape
+
+```text
 .cursor-plugin/plugin.json   Cursor manifest
-adapters/                    Per-host install mappings
-foundation/                  Permanent doctrine (principles, systems reference)
-commands/                    10 entry-point commands
-skills/                      9 procedural skills (Agent Skills standard)
-agents/                      4 specialized agents
-rules/                       3 always-active boundary rules
-templates/oodaloop/          CONTEXT.md template for target projects
-install.sh                   Host-detecting installer
-sync.sh                      Dev sync to Cursor local plugin directory
+adapters/                    host-specific install mappings
+foundation/                  doctrine and systems reference
+commands/                    entrypoints
+skills/                      procedures
+agents/                      specialized roles
+rules/                       always-on guardrails
+templates/oodaloop/          project state template
+install.sh                   installer
+sync.sh                      local development sync
 ```
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for design details, portability model, and the full phase flow.
-
----
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design, state model, and portability details.
 
 ## Principles
 
-OODALOOP is a learning-rate engine. Its advantage isn't writing code faster -- it's improving the quality of decisions per cycle while preserving reliability under uncertainty.
-
-- **Adaptive rigor** -- process depth matches task complexity. No unconditional ceremony.
-- **Compression over complexity** -- minimal, high-signal primitives. If it needs too much explanation, it's not production-grade.
-- **Evidence over assertion** -- non-trivial claims require proof paths, not confident wording.
-- **Every artifact earns its existence** -- if it doesn't improve outcomes, delete it.
-- **The framework should shrink over time** -- better understanding removes ceremony, not accumulates it.
-
----
-
-## Status
-
-**Milestone 3.4**: recursive sub-cycles, convention drift detection, error recovery, backlog management. All milestones self-bootstrapped -- built using OODALOOP itself.
+- Adaptive rigor over fixed ceremony.
+- Evidence over assertion.
+- Single source of truth for state.
+- Verification before closure.
+- Explicit handoffs over implicit drift.
+- Less process over time, not more.
 
 ## License
 

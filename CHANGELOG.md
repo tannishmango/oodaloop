@@ -21,6 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `resumable` task status in sync for completed child cycles
 
 ### Changed
+- README tightened around composable recursive OODA framing
 - Phase alignment corrected to Boyd's canonical OODA Loop: Orient = analysis/synthesis, Decide = planning, Act = execution, Loop = verification + aggregate assessment
 - Orient skill rewritten as cognitive engine — analysis, synthesis, situational assessment (was: planning)
 - Decide skill rewritten as planning phase — absorbs decomposition logic from old orient (was: execution)
