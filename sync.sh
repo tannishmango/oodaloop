@@ -4,6 +4,21 @@ set -euo pipefail
 OODALOOP_DIR="$(cd "$(dirname "$0")" && pwd)"
 TARGET="$HOME/.cursor/plugins/local/oodaloop"
 
+ensure_git_hooks() {
+  if ! git -C "$OODALOOP_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    return
+  fi
+
+  if [ ! -f "$OODALOOP_DIR/.githooks/pre-commit" ]; then
+    return
+  fi
+
+  chmod +x "$OODALOOP_DIR/.githooks/pre-commit"
+  git -C "$OODALOOP_DIR" config core.hooksPath .githooks
+}
+
+ensure_git_hooks
+
 mkdir -p "$(dirname "$TARGET")"
 
 if [ -L "$TARGET" ]; then

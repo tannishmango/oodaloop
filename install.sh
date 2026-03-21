@@ -9,9 +9,15 @@ setup_git_hooks() {
   fi
 
   if git -C "$OODALOOP_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    local current_hooks_path=""
+    current_hooks_path="$(git -C "$OODALOOP_DIR" config --get core.hooksPath || true)"
     chmod +x "$OODALOOP_DIR/.githooks/pre-commit"
     git -C "$OODALOOP_DIR" config core.hooksPath .githooks
-    echo "Configured git hooks: core.hooksPath=.githooks"
+    if [ "$current_hooks_path" != ".githooks" ]; then
+      echo "Configured git hooks: core.hooksPath=.githooks (was: ${current_hooks_path:-unset})"
+    else
+      echo "Configured git hooks: core.hooksPath=.githooks"
+    fi
   else
     echo "Skipping git hook setup (not in a git worktree)."
   fi

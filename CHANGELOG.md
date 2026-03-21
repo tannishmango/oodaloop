@@ -19,6 +19,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `Ready to Resume` section for cross-conversation parent resumption
 - 6 new state-hygiene recovery checks for sub-cycle failure modes
 - `resumable` task status in sync for completed child cycles
+- Explicit orient precondition recovery when observe output was not persisted to a task file
 
 ### Changed
 - README tightened around composable recursive OODA framing
@@ -34,6 +35,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - 5 command descriptions updated to match new phase definitions
 - Rules updated: evidence-contract phase names, state-hygiene phase-section mapping and parent resumption references
 - ARCHITECTURE.md and README.md updated: phase tables, agent tables, counts, all descriptions aligned
+- Observe now persists task state earlier and incrementally (skeleton at step 4, then requirements/observations/scope updates before checkpoints)
+- Install and sync scripts now reassert `core.hooksPath=.githooks` so pre-commit enforcement (including changelog and sync checks) self-heals on local drift
 
 ### Removed
 - `agents/verifier.md` (absorbed into assessor)
