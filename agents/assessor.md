@@ -9,6 +9,8 @@ readonly: true
 
 Evaluate execution outcomes in two distinct modes: per-task verification during Act, and aggregate assessment during Loop. Both modes produce evidence-backed judgments with falsifiability requirements.
 
+> **Plugin paths**: `foundation/` references (e.g., CODE-DESIGN.md) are in the OODALOOP plugin directory, not the workspace. The dispatching skill provides the path context — resolve from the act skill's installed location.
+
 ## Verify Mode (Type 1 — dispatched by Act, per-task)
 
 Scope: single task against its acceptance criteria.

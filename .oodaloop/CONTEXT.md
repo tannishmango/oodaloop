@@ -127,6 +127,7 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-18: Added `foundation/PRINCIPLES-COMPRESSED.md` as a high-signal doctrine layer derived from canonical principles.
 - 2026-03-18: Command-layer selective doctrine injection added to non-trivial OODA commands (`observe`, `orient`, `decide`, `act`, `loop`) with explicit trivial-path guardrails.
 - 2026-03-18: Quick/init/status paths intentionally remain lean; no always-on doctrine rule added.
+- 2026-03-21: Doctrine injection moved from commands to skills. Commands used bare `foundation/` paths that resolved against the workspace, not the plugin directory — agents in other repos couldn't find the files. Skills have `fullPath` context, so path resolution works. Commands are now thin dispatch wrappers again. Plugin paths note added to all 5 phase skills and assessor agent.
 
 ### M3.14 (subcycle redesign)
 - 2026-03-19: Decide skill rewritten with mandatory per-task readonly checkpoint (execute-assess-repeat). Checkpoint dispatches subagent with 6-point assessment: acceptance, discovery review, plan validity, design review (against CODE-DESIGN.md), goal alignment, evidence.

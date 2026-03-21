@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Foundation doctrine loading (`PRINCIPLES-COMPRESSED.md`, `CODE-DESIGN.md`) moved from commands to skills — commands used bare `foundation/` paths that resolved against workspace root instead of plugin directory, causing agents in other repos to fail finding the files
+- Added `Plugin paths` resolution note to all 5 phase skills and assessor agent so agents can derive plugin root from skill `fullPath`
+
 ### Added
 - `agents/assessor.md`: dual-mode assessment agent (verify per-task in act, assess aggregate in loop), merged from verifier + sentinel
 - Boyd-canonical one-liner anchoring in all 5 phase skills, referencing `foundation/OODALOOP.md`

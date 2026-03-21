@@ -5,6 +5,8 @@ description: Execute plan tasks and verify each against acceptance criteria.
 
 > Boyd's Act: Implement the decided course of action. The only stage where the environment changes. (foundation/OODALOOP.md)
 
+> **Plugin paths**: `foundation/` references in this skill are relative to the OODALOOP plugin root, not the workspace. Resolve from this skill file's installed path.
+
 ## Trigger
 
 `/oodaloop-act` or transitioning from Decide phase.
@@ -22,6 +24,8 @@ Read the active task file's Plan section. Read `.oodaloop/CONTEXT.md` convention
 Treat the `Proof Infrastructure` subsection as binding for verification selection:
 - choose the strongest available proof command relevant to each task
 - only use weaker evidence when stronger checks are unavailable or explicitly blocked
+
+For non-trivial verification judgments and uncertainty handling, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics.
 
 ### 2. Execute, assess, repeat
 For each task in dependency order:

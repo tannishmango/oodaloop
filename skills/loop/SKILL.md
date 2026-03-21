@@ -5,6 +5,8 @@ description: Assess aggregate outcomes, emit verdict, and manage task lifecycle.
 
 > Boyd's Feedback: After acting, observe results and reorient. The loop is continuous — every action's outcome feeds the next cycle. (foundation/OODALOOP.md)
 
+> **Plugin paths**: `foundation/` references in this skill are relative to the OODALOOP plugin root, not the workspace. Resolve from this skill file's installed path.
+
 ## Trigger
 
 `/oodaloop-loop` or after Act phase completion.
@@ -18,6 +20,8 @@ description: Assess aggregate outcomes, emit verdict, and manage task lifecycle.
 
 ### 1. Read state
 Read the active task file (all sections). Read `.oodaloop/CONTEXT.md` for persistent context and active decisions.
+
+For non-trivial rescoping and verdict decisions, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics.
 
 ### 2. Assess
 Dispatch **assessor agent in assess mode** (readonly). The assessor evaluates aggregate concerns only:

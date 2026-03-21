@@ -5,6 +5,8 @@ description: Decompose the assessment into a sequenced, executable plan.
 
 > Boyd's Decide: Select a course of action from the understanding formed during orientation. (foundation/OODALOOP.md)
 
+> **Plugin paths**: `foundation/` references in this skill are relative to the OODALOOP plugin root, not the workspace. Resolve from this skill file's installed path.
+
 ## Trigger
 
 `/oodaloop-decide` or transitioning from Orient phase.
@@ -24,6 +26,8 @@ Read the Observations section for underlying facts.
 
 Read `.oodaloop/CONTEXT.md` conventions — these are binding constraints on the plan (commit format, linter rules, test patterns, etc.).
 Extract `Proof Infrastructure` details as binding for verification selection.
+
+For non-trivial, uncertain, or high-impact implementation choices, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics.
 
 ### 2. Identify work streams
 Group related requirements into logical streams. Look for:

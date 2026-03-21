@@ -5,6 +5,8 @@ description: Research and gather requirements through structured discovery.
 
 > Boyd's Observe: Gather information from the environment. The raw input that feeds the loop. (foundation/OODALOOP.md)
 
+> **Plugin paths**: `foundation/` references in this skill are relative to the OODALOOP plugin root, not the workspace. Resolve from this skill file's installed path.
+
 ## Trigger
 
 `/oodaloop-observe` or entering Observe phase.
@@ -18,6 +20,8 @@ description: Research and gather requirements through structured discovery.
 
 ### 1. Read persistent context
 Read `.oodaloop/CONTEXT.md` for repo conventions, architecture patterns, and active decisions. This is the baseline -- do not rediscover what is already captured.
+
+For non-trivial objectives or ambiguous scope, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics. Skip for trivial work.
 
 ### 2. Check for convention drift
 For each convention category, check whether sentinel files exist on disk that contradict what CONTEXT.md currently records. Only re-scan categories where a mismatch is found.

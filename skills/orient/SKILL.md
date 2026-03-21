@@ -5,6 +5,8 @@ description: Analyze observations and form a situational assessment.
 
 > Boyd's Orient: Process observations through experience and mental models to form a perception of reality. The cognitive engine of the OODA Loop. (foundation/OODALOOP.md)
 
+> **Plugin paths**: `foundation/` references in this skill are relative to the OODALOOP plugin root, not the workspace. Resolve from this skill file's installed path.
+
 ## Trigger
 
 `/oodaloop-orient` or transitioning from Observe phase.
@@ -26,6 +28,8 @@ description: Analyze observations and form a situational assessment.
 Read the active task file: requirements, observations, scope, and any existing assessment.
 
 Read `.oodaloop/CONTEXT.md` for prior decisions, architecture patterns, and conventions — Boyd's "repertoire of mental models." This is the experience dimension that transforms raw observation into understanding.
+
+For non-trivial planning and trade-off decisions, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics.
 
 ### 2. Interpret findings
 Transform facts into meaning. For each significant observation, state what it means for the current work — not what was found, but what it implies.
