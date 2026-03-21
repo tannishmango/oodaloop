@@ -64,8 +64,22 @@ If the user has not provided a task description or objective, ask. Otherwise, pr
 
 Determine a **task slug**: short, kebab-case, descriptive (e.g., `add-auth`, `fix-deploy`, `state-revision`). This names the task file.
 
-### 4. Check for existing task files
-List any `*.task.md` files in `.oodaloop/`. If the user is resuming work on an existing task (slug matches), read that task file and build on it. If starting new work, create a new task file.
+### 4. Check for existing task files and persist skeleton
+List any `*.task.md` files in `.oodaloop/`. If the user is resuming work on an existing task (slug matches), read that task file and build on it. If starting new work, **create the task file now** with skeleton content:
+
+```markdown
+# Task: <slug>
+Parent: <parent-slug, if spawned from a blocking discovery; omit otherwise>
+
+## Phase: observe
+Started: <date>
+Updated: <date>
+
+## Objective
+<objective from user input or intake -- even if preliminary>
+```
+
+This is the **persistence anchor**. All subsequent steps update this file in place. If the agent's turn ends unexpectedly at any point after this step, partial state is preserved on disk rather than lost in chat memory.
 
 Also check for parent/child state:
 - If any task file has phase `paused` with a `Child-slug` that doesn't match an existing task file, report: the parent is waiting for a child that hasn't been created yet. Offer to start the child cycle.
@@ -81,7 +95,9 @@ Use the researcher agent (readonly). Focus on:
 
 Breadth first, then depth on areas relevant to the objective. Focus on what exists — facts and evidence, not interpretations of significance (that is Orient's job).
 
-**Interactive checkpoint**: share research findings with the user. "Here's what I found about the structure and patterns. Does this match your understanding? Anything I should look at more closely?" Incorporate feedback before continuing.
+**Persist findings**: append the `## Observations` section to the task file with research results before presenting to the user. Write to disk first, then share.
+
+**Interactive checkpoint**: share research findings with the user. "Here's what I found about the structure and patterns. Does this match your understanding? Anything I should look at more closely?" Incorporate feedback (update the task file with any corrections) before continuing.
 
 ### 6. Gather requirements
 From user input + codebase research, identify:
@@ -90,16 +106,18 @@ From user input + codebase research, identify:
 - **Assumptions**: what we take as given (mark confidence level)
 - **Open questions**: unknowns (mark as uncertain)
 
-**Interactive checkpoint**: share identified requirements with the user. "Here are the requirements I've identified. What's missing? What's wrong?" Incorporate feedback before continuing.
+**Persist requirements**: append the `## Requirements` section to the task file before presenting to the user. Write to disk first, then share.
 
-### 7. Create or update task file
-Create `.oodaloop/<slug>.task.md`.
+**Interactive checkpoint**: share identified requirements with the user. "Here are the requirements I've identified. What's missing? What's wrong?" Incorporate feedback (update the task file with any corrections) before continuing.
 
-If this observe is for a **child cycle** (blocking discovery from another task), read the parent task file's Paused section and inherit its context:
-- `Parent:` field set to the parent task slug
-- Objective derived from the parent's `Child-objective` field
-- Blocker context from `Reason` and `Blocked-during` fields informs requirements and scope
-- Do NOT inherit the entire parent task -- only the blocker context needed for this child cycle
+### 7. Verify task file completeness
+The task file was created at step 4 and updated incrementally through steps 5-6. Before proceeding, **verify** it exists on disk and contains all required sections:
+
+- `## Objective` (from step 4)
+- `## Observations` (from step 5)
+- `## Requirements` (from step 6)
+
+If any section is missing, write it now. Do not proceed to step 8 with an incomplete task file.
 
 ```markdown
 # Task: <slug>
@@ -133,9 +151,11 @@ Updated: <date>
 ### 8. Assess sufficiency and confirm scope
 Sufficient when: objective is clear, key requirements identified, scope defined, major risks surfaced.
 
+**Persist scope**: append the `## Scope` section to the task file before presenting to the user. Write to disk first, then share.
+
 **Interactive checkpoint**: share the proposed scope with the user. "Here's the proposed scope — in, out, deferred. Are these the right boundaries?" Confirm before finalizing.
 
-**Adaptive compression**: for simple, well-understood tasks, the three interactive checkpoints (steps 5, 6, 8) can compress into a single summary: "I've scanned the codebase and gathered requirements. Here's everything — does this look right?" For complex or uncertain tasks, each checkpoint is a full pause.
+**Adaptive compression**: for simple, well-understood tasks, the three interactive checkpoints (steps 5, 6, 8) can compress into a single summary: "I've scanned the codebase and gathered requirements. Here's everything — does this look right?" When compressing, still persist all sections to the task file before presenting the combined summary. For complex or uncertain tasks, each checkpoint is a full pause.
 
 If gaps remain, state them explicitly in the task file and ask the user whether to research further or proceed with known uncertainty.
 

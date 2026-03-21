@@ -15,6 +15,11 @@ description: Analyze observations and form a situational assessment.
 - `.oodaloop/CONTEXT.md` must exist.
 - If an Assessment section already exists (re-entry after rescope), note it — the previous assessment is being revised, not started from scratch.
 
+**If no task file exists**: this means Observe did not persist its output. Do NOT silently reconstruct from chat memory or proceed without a task file. Instead:
+1. Report the gap: "Observe completed in conversation but the task file was not written to disk."
+2. Recommend re-running `/oodaloop-observe` to persist findings properly.
+3. Do not proceed with Orient until the task file exists on disk with the required sections.
+
 ## Workflow
 
 ### 1. Read observations and context

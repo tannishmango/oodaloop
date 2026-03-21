@@ -44,6 +44,7 @@ Run these when a skill's preconditions feel wrong or state seems off:
 |---|---|
 | `.oodaloop/` exists but `CONTEXT.md` missing | Partial init -- directory created but setup incomplete |
 | `.oodaloop/` exists but `BACKLOG.md` missing | Pre-backlog init or accidental deletion |
+| Phase transition invoked (orient, decide, etc.) but no task file exists on disk | Observe ran in conversation but never persisted the task file -- re-run observe |
 | Task file phase says `orient` but no Observations section | Observe didn't complete |
 | Task file phase says `decide` but no Assessment section | Orient didn't complete |
 | Task file phase says `act` but no Plan section | Decide didn't complete |
