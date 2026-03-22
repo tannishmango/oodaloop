@@ -31,6 +31,7 @@ For non-trivial verification judgments and uncertainty handling, also read `foun
 For each task in dependency order:
 
 **a. Execute.** Dispatch executor agent. The executor follows the task specification and respects CONTEXT.md conventions:
+- **Destructive operations gate (binding — from destructive-ops rule):** Before executing any command that mutates external state (databases, Docker volumes, deployed services, APIs, infrastructure, make targets/scripts with unverified side effects), the executor MUST stop and present the operation to the user for explicit yes/no confirmation. Present: what the command does, what state it destroys, whether it's recoverable. Each destructive operation is confirmed individually. Plan approval does not constitute confirmation of destructive commands. When uncertain whether a command is destructive, ask.
 - Write and run tests during implementation, not deferred. Test type matches risk: code logic → unit tests, integration points → integration tests.
 - Execute the task's **Proof Plan** (from decide). If a required hard check cannot be run, stop and ask before substituting weaker evidence.
 - Before working around a missing precondition or unblocking execution through any means other than the planned task steps, evaluate risk: is the workaround reversible (undoable via revert), contained (limited to task-created artifacts), and confident (based on certain knowledge of current state)? If any dimension is unfavorable, stop and surface the blocker to the user. Urgency does not override risk.

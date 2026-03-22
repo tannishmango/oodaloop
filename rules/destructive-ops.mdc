@@ -1,0 +1,41 @@
+---
+description: Hard safety boundary. Never execute destructive operations without explicit user confirmation.
+alwaysApply: true
+---
+
+## Destructive operations require explicit user confirmation
+
+This rule is absolute. No skill, phase, process level, or efficiency argument overrides it. "It's in the plan" is not confirmation.
+
+### What constitutes a destructive operation
+
+**External state mutations** (HARD STOP — always require confirmation):
+- Database operations: DROP, TRUNCATE, DELETE without WHERE, schema migrations that alter/drop columns or tables, reset commands, any command that recreates or wipes a database
+- Docker/container operations: removing volumes, pruning, recreating containers that hold data
+- Deployment commands: anything that pushes to staging/production or modifies remote infrastructure
+- Service mutations: API calls that delete or modify data in external services
+- Any `make` target, script, or CLI command whose effect on external state you have not verified as non-destructive by reading its source
+
+**Bulk file operations** (confirmation required unless trivially git-recoverable):
+- Deleting multiple files
+- Overwriting files with generated content that replaces human-authored work
+- Any operation touching more files than the plan explicitly enumerated
+
+### Enforcement
+
+Before executing any command:
+
+1. **Classify**: read-only, write to git-tracked files only, or mutation of external state?
+2. **If external state mutation**: STOP. Present to the user:
+   - Exactly what the command does
+   - What state it will destroy or modify
+   - Whether the state is recoverable and how
+   - Explicit ask: "This will [X]. Proceed? (yes/no)"
+3. **One confirmation per destructive operation.** Do not batch. Do not bundle destructive commands with safe ones.
+4. **Plan approval ≠ execution approval.** The user approving a plan means they approve the intent. It does not mean they approved every destructive command required to implement it.
+
+### When uncertain
+
+If you cannot determine whether a command mutates external state, treat it as destructive. Ask.
+
+Defaulting to caution is never wrong. Defaulting to execution has caused real data loss.

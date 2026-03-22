@@ -7,6 +7,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `rules/destructive-ops.mdc`: hard safety boundary requiring explicit user confirmation before any external state mutation (databases, Docker volumes, deployments, services). Always-apply, cannot be overridden by any skill or process level.
+- Destructive operations gate in act skill Step 2a — executor must stop and confirm before running commands that mutate external state
+- Destructive flag requirement in decide skill task decomposition — plans must tag tasks that touch external state with `**Destructive**: yes`
+- Destructive operations check in quick skill — fast path still requires confirmation for external state mutations
+- Executor agent safety constraint (first and highest-priority) — hard stop before database ops, Docker mutations, deployments, service calls
+
+### Added
 - Risk gate in act phase blocker handling — three-dimensional evaluation (reversibility, containment, confidence) as prerequisite before scope classification
 - Risk-gates-autonomy heuristic (#12) in PRINCIPLES-COMPRESSED.md
 - Risk-aware failure-detection prompt and anti-pattern

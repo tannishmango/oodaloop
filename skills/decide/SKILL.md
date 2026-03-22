@@ -41,6 +41,7 @@ For each stream, break into tasks where each task:
 - Can be verified independently
 - Has clear acceptance criteria that specify the required test type: unit tests for logic, integration tests for external systems/APIs/data pipelines. If CONTEXT.md shows the repo has integration test infrastructure for the area being changed, acceptance criteria must require integration tests pass — not just unit tests.
 - Includes a **Proof Plan** naming the strongest available verification command(s) for that task and when they will be run.
+- Flags external state mutations with `**Destructive**: yes — <what state is mutated and how>` so the act phase enforces confirmation gates. Any task involving database operations, Docker state, deployment, or service mutations MUST carry this flag.
 - Takes no more than one focused session
 
 Never downshift to weaker proof when stronger repo-native proof exists, unless explicitly justified (e.g., missing credentials, destructive side effects, excessive runtime). Any downshift must be written into acceptance criteria as a gap with rationale.

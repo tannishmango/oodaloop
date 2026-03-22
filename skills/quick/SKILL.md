@@ -17,9 +17,11 @@ description: Fast path for trivial tasks -- skip ceremony, preserve safety minim
 
 2. Read `.oodaloop/CONTEXT.md` conventions. These are binding even for quick tasks.
 
-3. Execute directly. Follow repo conventions (commit format, test patterns, linter rules).
+3. **Destructive operations check.** Even quick tasks must respect the `destructive-ops` rule. If the task involves mutating external state (databases, Docker, services, infrastructure), require explicit user confirmation before execution regardless of task simplicity. Quick does not mean unconfirmed.
 
-4. Create an ephemeral task file `.oodaloop/quick-<brief-slug>.task.md` with a compressed record:
+4. Execute directly. Follow repo conventions (commit format, test patterns, linter rules).
+
+5. Create an ephemeral task file `.oodaloop/quick-<brief-slug>.task.md` with a compressed record:
 
 ```markdown
 # Task: quick-<slug>
@@ -32,11 +34,11 @@ Updated: <date>
 <what changed, what was verified, any side effects>
 ```
 
-5. Absorb if anything durable was learned: update CONTEXT.md decisions or conventions.
+6. Absorb if anything durable was learned: update CONTEXT.md decisions or conventions.
 
-6. Delete the task file.
+7. Delete the task file.
 
-7. If complexity is discovered mid-execution, stop and escalate to `/oodaloop-observe`.
+8. If complexity is discovered mid-execution, stop and escalate to `/oodaloop-observe`.
 
 ## Output
 
