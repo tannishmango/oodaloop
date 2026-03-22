@@ -6,6 +6,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Risk gate in act phase blocker handling — three-dimensional evaluation (reversibility, containment, confidence) as prerequisite before scope classification
+- Risk-gates-autonomy heuristic (#12) in PRINCIPLES-COMPRESSED.md
+- Risk-aware failure-detection prompt and anti-pattern
+
+### Changed
+- Blocker scope classifications (trivial, blocking-small) now require low-risk qualification, not just low scope
+- Executor constraint: workarounds to missing preconditions must pass risk evaluation before autonomous action
+
 ### Fixed
 - Foundation doctrine loading (`PRINCIPLES-COMPRESSED.md`, `CODE-DESIGN.md`) moved from commands to skills — commands used bare `foundation/` paths that resolved against workspace root instead of plugin directory, causing agents in other repos to fail finding the files
 - Added `Plugin paths` resolution note to all 5 phase skills and assessor agent so agents can derive plugin root from skill `fullPath`

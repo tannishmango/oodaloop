@@ -33,6 +33,7 @@ For each task in dependency order:
 **a. Execute.** Dispatch executor agent. The executor follows the task specification and respects CONTEXT.md conventions:
 - Write and run tests during implementation, not deferred. Test type matches risk: code logic → unit tests, integration points → integration tests.
 - Execute the task's **Proof Plan** (from decide). If a required hard check cannot be run, stop and ask before substituting weaker evidence.
+- Before working around a missing precondition or unblocking execution through any means other than the planned task steps, evaluate risk: is the workaround reversible (undoable via revert), contained (limited to task-created artifacts), and confident (based on certain knowledge of current state)? If any dimension is unfavorable, stop and surface the blocker to the user. Urgency does not override risk.
 - Surface raw evidence to the user as it is produced. Do not summarize into narrative.
 - Output a structured discovery assessment after completing the task (see executor agent constraints).
 
@@ -58,11 +59,20 @@ Do not proceed to the next task until the checkpoint completes and returns `proc
 ### 3. Handle blockers
 When the checkpoint (Step 2d) routes here, or the executor surfaces a blocking discovery:
 
-**Trivial** (one-line fix, handled inline): already resolved by executor. Note in execution log, continue.
+**Risk gate** (evaluate before classifying scope): Assess the proposed resolution on three dimensions:
+- **Reversible?** Can the action be fully undone by reverting the task's own changes?
+- **Contained?** Is the effect limited to artifacts the task is creating, or does it touch pre-existing, shared, or external state?
+- **Confident?** Is the agent certain about the current state being modified and the expected outcome?
+
+If any dimension is unfavorable, the resolution requires user approval regardless of scope. Surface the blocker, the proposed fix, and which risk dimensions are unfavorable. Do not proceed autonomously.
+
+After the risk gate clears, classify by scope:
+
+**Trivial** (one-line fix, low-risk, handled inline): already resolved by executor. Note in execution log, continue.
 
 **Notable but non-blocking**: add to `.oodaloop/BACKLOG.md` Next or Later section. Continue.
 
-**Blocking-small** (clear fix, single concern, low risk): resolve with `/oodaloop-quick`, then resume the current task. No pause needed.
+**Blocking-small** (clear fix, single concern, low-risk): resolve with `/oodaloop-quick`, then resume the current task. No pause needed.
 
 **Blocking-complex** (unclear scope, multi-file, or architectural): pause the current task and spawn a child OODA cycle. Proceed as follows:
 

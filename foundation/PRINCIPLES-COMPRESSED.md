@@ -21,6 +21,7 @@ Derived from `foundation/PRINCIPLES.md`. Use this as a high-signal orientation a
 9. **Robustness to imperfect agents**: architecture should degrade gracefully.
 10. **Restartability beats continuity assumptions**: design steps to fail cleanly, retry safely, and resume from known state.
 11. **Evidence over fluency**: confidence comes from proof paths, not narrative tone.
+12. **Risk gates autonomy**: autonomous action is bounded by three dimensions — reversibility (can undo via revert), containment (effect limited to task-created state), and confidence (certain about current state and expected outcome). Any unfavorable dimension requires human approval regardless of urgency or scope.
 
 ## Execution laws
 
@@ -43,6 +44,7 @@ Derived from `foundation/PRINCIPLES.md`. Use this as a high-signal orientation a
 - Has this component accumulated a second job?
 - Could this complexity move into structured data instead of branching logic?
 - Is this step serving the task, or preserving the framework?
+- Is this action reversible, contained to task-created state, and based on certain knowledge? If any answer is no, who approved it?
 
 ## Anti-patterns to reject
 
@@ -53,6 +55,7 @@ Derived from `foundation/PRINCIPLES.md`. Use this as a high-signal orientation a
 - Easy tests substituted for hard but relevant tests.
 - Pass/fail checks with no causal learning.
 - Local optimization while system bottlenecks remain.
+- High-risk workarounds (irreversible, uncontained, or uncertain) taken to maintain execution velocity.
 
 ## Usage constraints
 
