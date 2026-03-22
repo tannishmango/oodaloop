@@ -27,6 +27,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `sync.sh` — consolidated into `install.sh`; single script handles full reinstall with cache busting
 
 ### Changed
+- README: verdicts section clarifies handling sunk-cost situations vs claiming “nothing is sunk cost”
 - Blocker scope classifications (trivial, blocking-small) now require low-risk qualification, not just low scope
 - Executor constraint: workarounds to missing preconditions must pass risk evaluation before autonomous action
 - `install.sh` now uses allowlist of plugin dirs, nukes target before reinstall, and bumps version for cache invalidation

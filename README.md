@@ -19,7 +19,7 @@ observe → orient → decide → act → loop
 
 **Subloops and quick loops.** Any phase can spawn a child loop — a blocker, a scope question, a refactor of prior work. Lightweight quick loops handle trivial blockers fast; full subagent loops handle deeper uncertainty. Children resolve bottom-up before the parent resumes. Loops within loops, as deep as needed.
 
-**Verdicts drive flow.** Each cycle ends: `CONTINUE`, `REFINE`, or `RESCOPE`. `REFINE` sends the loop back to re-examine specific tasks. `RESCOPE` rewinds to observe/orient with everything learned so far. Nothing is sunk cost.
+**Verdicts drive flow.** Each cycle ends: `CONTINUE`, `REFINE`, or `RESCOPE`. `REFINE` sends the loop back to re-examine specific tasks. `RESCOPE` rewinds to observe/orient with everything learned so far. Avoiding sunk cost situations is almost impossible; handling them when they arise is invaluable.
 
 **Adaptive rigor.** Trivial tasks skip ceremony. Complex tasks get full-cycle scrutiny. The loop scales itself.
 
