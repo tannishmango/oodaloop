@@ -7,6 +7,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Assessor Type 3 (plan mode) — dispatched by decide after plan is written; evaluates executability, recommends labor strategy (direct vs delegated), flags under-scoped tasks for pre-scoping
+- Plan assessor dispatch step in decide skill (Step 8) — writes Labor Strategy subsection into plan before phase transition
+- Delegated execution mode in act skill — parent orchestrates parallel executor subagents per batch instead of sequential single-agent execution
+- Pre-scoping flag handling in act skill (Step 2) — resolves under-scoped tasks via child OODA before execution begins
+- Plan drift routing in act skill — new checkpoint outcome that halts execution, evaluates completed work, and loops back to decide for replanning
 - `rules/destructive-ops.mdc`: hard safety boundary requiring explicit user confirmation before any external state mutation (databases, Docker volumes, deployments, services). Always-apply, cannot be overridden by any skill or process level.
 - Destructive operations gate in act skill Step 2a — executor must stop and confirm before running commands that mutate external state
 - Destructive flag requirement in decide skill task decomposition — plans must tag tasks that touch external state with `**Destructive**: yes`

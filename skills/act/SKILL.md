@@ -19,15 +19,25 @@ description: Execute plan tasks and verify each against acceptance criteria.
 
 ## Workflow
 
-### 1. Read plan and context
-Read the active task file's Plan section. Read `.oodaloop/CONTEXT.md` conventions — these are binding constraints on implementation (commit format, linter rules, test patterns, etc.).
+### 1. Read plan, context, and labor strategy
+Read the active task file's Plan section, including the **Labor Strategy** subsection (written by the plan assessor during decide). Read `.oodaloop/CONTEXT.md` conventions — these are binding constraints on implementation (commit format, linter rules, test patterns, etc.).
 Treat the `Proof Infrastructure` subsection as binding for verification selection:
 - choose the strongest available proof command relevant to each task
 - only use weaker evidence when stronger checks are unavailable or explicitly blocked
 
+If no Labor Strategy subsection exists (legacy plans or trivially small plans), default to `direct` mode.
+
 For non-trivial verification judgments and uncertainty handling, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics.
 
-### 2. Execute, assess, repeat
+### 2. Handle pre-scoping flags
+If the Labor Strategy includes pre-scoping flags, resolve each before any execution begins. For each flagged task, spawn a child OODA cycle (following the blocking-complex procedure in Step 4) scoped to that task's specific ambiguity. The child's objective is to produce a well-scoped replacement. Incorporate the result back into the plan (replace or refine the flagged task) before proceeding.
+
+If no pre-scoping flags, skip this step.
+
+### 3. Execute, assess, repeat
+Read the Labor Strategy mode (`direct` or `delegated`).
+
+#### Direct mode
 For each task in dependency order:
 
 **a. Execute.** Dispatch executor agent. The executor follows the task specification and respects CONTEXT.md conventions:
@@ -38,9 +48,22 @@ For each task in dependency order:
 - Surface raw evidence to the user as it is produced. Do not summarize into narrative.
 - Output a structured discovery assessment after completing the task (see executor agent constraints).
 
-**b. Record.** Write the execution log entry for this task (see Step 4 format).
+**b–d.** Record, Assess, Route — same as below.
 
-**c. Assess.** Dispatch **assessor agent in verify mode** to evaluate the execution results. This is mandatory after every task — it catches blockers the executor missed or underclassified. The assessor receives:
+#### Delegated mode
+The parent agent orchestrates without implementing tasks directly. For each batch in the dependency graph:
+
+**a. Dispatch.** Spawn executor subagents for each task in the batch (parallel). Each subagent receives: its task specification, acceptance criteria, proof plan, CONTEXT.md, and the executor agent constraints. One subagent per task — consistent with the executor's single-task scope.
+
+**b–d.** For each completed task in the batch (once its subagent returns): Record, Assess, Route — same as below.
+
+All tasks in a batch must complete and pass assessment before the next batch begins.
+
+#### Common steps (both modes)
+
+**b. Record.** Write the execution log entry for this task (see Step 5 format).
+
+**c. Assess.** Dispatch **assessor agent in verify mode** (Type 1) to evaluate the execution results. Mandatory after every task regardless of execution mode. The assessor receives:
 - The task's acceptance criteria and proof plan (from the Plan section)
 - The execution log entry just written (from Step b)
 - The executor's discovery assessment
@@ -48,19 +71,28 @@ For each task in dependency order:
 
 The assessor runs its 6-point check (acceptance, discovery review, plan validity, design review, goal alignment, evidence quality) and returns a result.
 
-Record the checkpoint in the execution log (see Step 4 format).
+Record the checkpoint in the execution log (see Step 5 format).
 
 **d. Route.** Based on the checkpoint result:
-- **Proceed**: no blockers, plan still valid. Continue to next task.
-- **Blocker detected**: checkpoint identified or reclassified a discovery as blocking. Halt execution and route to Step 3.
+- **Proceed**: no blockers, plan still valid. Continue to next task (or next batch in delegated mode).
+- **Blocker detected**: checkpoint identified or reclassified a discovery as blocking. Halt execution and route to Step 4.
 - **Quality concern**: execution passed but evidence is thin or a gap was flagged. Report to user and ask whether to continue or re-execute the task.
+- **Plan drift**: the assessor's plan validity or goal alignment check indicates remaining tasks are no longer valid given accumulated changes. Halt execution, evaluate which completed tasks remain aligned with the objective, and route to Step 4 (drift handling).
 
 Do not proceed to the next task until the checkpoint completes and returns `proceed`.
 
-### 3. Handle blockers
-When the checkpoint (Step 2d) routes here, or the executor surfaces a blocking discovery:
+### 4. Handle blockers and drift
+When Step 3d routes here:
 
-**Risk gate** (evaluate before classifying scope): Assess the proposed resolution on three dimensions:
+**If plan drift**: The assessor flagged that remaining tasks are invalid given what changed. Before classifying scope:
+1. List completed tasks and their outputs.
+2. Evaluate each against the *current* state of the objective — which are still aligned, which are now incompatible?
+3. Report to the user: what drifted, which completed tasks are affected, and whether affected tasks should be kept, reverted, or amended.
+4. After user decision on completed work: loop back to decide (re-dispatch the planner with the drift context and retained task outputs as constraints) for a revised plan. The revised plan goes through the plan assessor (Type 3) before act resumes.
+
+**If blocker** (not drift): evaluate the proposed resolution through the risk gate before classifying scope.
+
+**Risk gate**: Assess on three dimensions:
 - **Reversible?** Can the action be fully undone by reverting the task's own changes?
 - **Contained?** Is the effect limited to artifacts the task is creating, or does it touch pre-existing, shared, or external state?
 - **Confident?** Is the agent certain about the current state being modified and the expected outcome?
@@ -112,8 +144,8 @@ For moderate blockers where context isn't exhausted and the child cycle is expec
 3. On child CONTINUE: remove parent's Paused section, set parent phase to `act`, resume execution.
 4. On child REFINE/RESCOPE: continue the child cycle until it reaches CONTINUE, or escalate to `new-chat` if context is running low.
 
-### 4. Execution log format
-After each task (Step 2b), append to the task file. After each checkpoint (Step 2c), append the checkpoint block to the same task entry.
+### 5. Execution log format
+After each task (Step 3b), append to the task file. After each checkpoint (Step 3c), append the checkpoint block to the same task entry.
 
 ```markdown
 ## Execution Log
@@ -136,7 +168,7 @@ After each task (Step 2b), append to the task file. After each checkpoint (Step 
 ### T2: ...
 ```
 
-### 5. Update task file phase
+### 6. Update task file phase
 After all tasks complete, set task file phase to `loop`. Update timestamp.
 
 ## Output

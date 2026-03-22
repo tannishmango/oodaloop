@@ -102,11 +102,20 @@ Check before finalizing:
 - Proof plans match repo proof posture (hardest available checks are selected when relevant)
 - Failure modes identified for non-trivial plans
 
-### 8. Update task file phase
+### 8. Plan assessment
+Dispatch the **assessor agent in plan mode** (Type 3) to evaluate the plan's executability and recommend a labor strategy. The assessor receives:
+- The full task file (all sections through Plan)
+- `.oodaloop/CONTEXT.md`
+
+Read the assessor's output. Append a `### Labor Strategy` subsection at the end of the Plan section with the assessor's structured result (mode, rationale, pre-scoping flags, notes).
+
+If the assessor flags pre-scoping issues, include them in the phase transition summary so the user is aware before act begins.
+
+### 9. Update task file phase
 Set the task file phase to `act`. Update the timestamp.
 
 ## Output
 
-- Plan section appended to `.oodaloop/<slug>.task.md`
+- Plan section appended to `.oodaloop/<slug>.task.md` with Labor Strategy subsection
 - Task file phase set to `act`
 - Summary reported with recommendation to proceed to `/oodaloop-act`
