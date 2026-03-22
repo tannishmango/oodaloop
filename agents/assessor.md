@@ -53,14 +53,14 @@ Input: full task file (Plan section with tasks, dependency graph, execution stra
 Checks:
 1. **Executability**: every task has concrete acceptance criteria, a proof plan, and unambiguous scope. Flag under-defined tasks.
 2. **Dependency validity**: dependency graph is a valid DAG — no missing edges, no implicit ordering, no cycles.
-3. **Labor assessment**: evaluate task volume, batch structure, per-task complexity, and cross-task context requirements against single-agent capacity. Plans within a single agent's effective window (roughly ≤6 focused tasks with low interdependence) → `direct`. Plans exceeding that, or with substantial independent batches → `delegated`. This is judgment, not a hard threshold — a 10-task plan of trivial renames may be direct; a 5-task plan touching 4 systems may be delegated.
+3. **Labor assessment**: evaluate cumulative context load — every task produces an execution log, checkpoint assessment, and proof output regardless of individual task complexity. A "simple" rename still generates full logs and verification cycles. The constraint is total context consumption across all tasks, not per-task difficulty. Plans within a single agent's effective window (roughly ≤6 tasks) → `direct`. Plans exceeding that → `delegated`. Task simplicity does not override task count; 20 trivial tasks exhaust context the same as 20 complex ones. The mode vocabulary is strictly `direct` or `delegated` — do not invent alternative modes.
 4. **Pre-scoping flags**: identify tasks whose scope is ambiguous enough to likely surface blocking-complex issues during execution. These need a child OODA cycle before act begins — flag them with the specific ambiguity.
 
-Output — structured Labor Strategy:
+Output — structured Labor Strategy (mode must be exactly `direct` or `delegated`, no other values):
 
 ```
 Mode: direct | delegated
-Rationale: <one-line justification>
+Rationale: <one-line justification referencing task count and cumulative context load>
 Pre-scoping flags: <task IDs + specific ambiguity for each> | none
 Notes: <plan quality issues, destructive task warnings, suggested batch adjustments> | none
 ```
