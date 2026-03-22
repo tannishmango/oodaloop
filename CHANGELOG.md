@@ -11,9 +11,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Risk-gates-autonomy heuristic (#12) in PRINCIPLES-COMPRESSED.md
 - Risk-aware failure-detection prompt and anti-pattern
 
+### Removed
+- `sync.sh` — consolidated into `install.sh`; single script handles full reinstall with cache busting
+
 ### Changed
 - Blocker scope classifications (trivial, blocking-small) now require low-risk qualification, not just low scope
 - Executor constraint: workarounds to missing preconditions must pass risk evaluation before autonomous action
+- `install.sh` now uses allowlist of plugin dirs, nukes target before reinstall, and bumps version for cache invalidation
+- Pre-commit hook calls `./install.sh cursor` instead of removed `sync.sh`
 
 ### Fixed
 - Foundation doctrine loading (`PRINCIPLES-COMPRESSED.md`, `CODE-DESIGN.md`) moved from commands to skills — commands used bare `foundation/` paths that resolved against workspace root instead of plugin directory, causing agents in other repos to fail finding the files

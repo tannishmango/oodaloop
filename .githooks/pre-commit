@@ -7,11 +7,11 @@ cd "$REPO_ROOT"
 echo "[oodaloop hook] pre-commit checks starting"
 
 # 1) Keep local Cursor plugin copy in sync when installed.
-if [ -x "./sync.sh" ] && [ -d "$HOME/.cursor/plugins/local/oodaloop" ]; then
-  echo "[oodaloop hook] local install detected, running ./sync.sh"
-  ./sync.sh
+if [ -x "./install.sh" ] && [ -d "$HOME/.cursor/plugins/local/oodaloop" ]; then
+  echo "[oodaloop hook] local install detected, reinstalling plugin"
+  ./install.sh cursor
 else
-  echo "[oodaloop hook] skipping sync (no local Cursor install detected)"
+  echo "[oodaloop hook] skipping install (no local Cursor install detected)"
 fi
 
 # 2) Prevent committing ephemeral task files.

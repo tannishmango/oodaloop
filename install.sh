@@ -37,24 +37,26 @@ detect_host() {
 
 install_cursor() {
   local target="$HOME/.cursor/plugins/local/oodaloop"
-  mkdir -p "$(dirname "$target")"
-  if [ -L "$target" ]; then
-    rm "$target"
-    echo "Removed legacy symlink at $target"
+  local plugin_dirs=(".cursor-plugin" "commands" "skills" "rules" "agents" "foundation" "templates")
+
+  rm -rf "$target"
+  mkdir -p "$target"
+
+  for dir in "${plugin_dirs[@]}"; do
+    [ -d "$OODALOOP_DIR/$dir" ] && rsync -a "$OODALOOP_DIR/$dir/" "$target/$dir/"
+  done
+
+  # Bump version so Cursor invalidates its plugin cache (it caches by version, not file content).
+  local build_id
+  build_id="install.$(date -u +%Y%m%d%H%M%S)"
+  if [ -f "$target/.cursor-plugin/plugin.json" ]; then
+    if sed -e "s/\"version\": \"[^\"]*\"/\"version\": \"0.1.0+$build_id\"/" \
+         "$target/.cursor-plugin/plugin.json" > "$target/.cursor-plugin/plugin.json.tmp" 2>/dev/null; then
+      mv "$target/.cursor-plugin/plugin.json.tmp" "$target/.cursor-plugin/plugin.json"
+    fi
   fi
 
-  if [ -d "$target" ]; then
-    echo "Updating existing local plugin at $target"
-  else
-    echo "Creating local plugin at $target"
-  fi
-
-  rsync -a --delete \
-    --exclude ".git/" \
-    --exclude ".DS_Store" \
-    "$OODALOOP_DIR"/ "$target"/
-
-  echo "Synced $OODALOOP_DIR → $target"
+  echo "Installed $OODALOOP_DIR → $target (build: $build_id)"
   echo ""
   echo "Reload or restart Cursor to activate. Start with /oodaloop-start."
 }
