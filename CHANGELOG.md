@@ -6,39 +6,33 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [M4.2] - 2026-03-22
+
 ### Changed
 - Agent dispatch governance: all assessor dispatches (decide Type 3, act Type 1, loop Type 2) and executor dispatch (act delegated) now pass the agent definition as governing specification with explicit prohibition on overriding spec vocabulary in dispatch prompts
 - Assessor Plan Mode check 1: expanded from basic executability to scope quality evaluation — flags multiplicative work, deferred enumeration, combined concerns, and multi-file judgment as blocking plan quality issues
 - Decide Step 3: added scope stress test (modification count per task, concrete enumeration of vague quantifiers, concern separation)
-- Decide Step 7: added scope quality and enumeration checks to review gate
-- Decide Step 8: added mode vocabulary validation (reject non-`direct`/`delegated` values), re-dispatch loop on scope issues, assessor agent def passthrough
+- Decide Step 7: added scope quality and enumeration checks to review gate; gate is now blocking — known defects must be fixed before proceeding to Step 8
+- Decide Step 8: added mode vocabulary validation (reject non-`direct`/`delegated` values), re-dispatch loop on scope issues, assessor agent def passthrough; unresolved scope issues require task splits and re-dispatch before phase transition
 - Act Step 1: missing labor strategy on >6-task plans now halts instead of silently defaulting to direct mode
 - Act Step 3c: Type 1 assessor dispatch names valid output vocabulary (`proceed`/`blocker-detected`/`quality-concern`)
 - Loop Step 2: replaced duplicated inline check descriptions with reference to assessor Type 2 spec (single source of truth)
-- `rules/state-hygiene.mdc`: document that `.oodaloop/` lives at the workspace root (alongside `.git/`), with dotfile-aware discovery; `rules/adaptive-rigor.mdc`: follow precondition-failure paths without improvising; `skills/orient/SKILL.md`: explicit STOP when no task file exists
+- `rules/state-hygiene.mdc`: document that `.oodaloop/` lives at the workspace root; `rules/adaptive-rigor.mdc`: follow precondition-failure paths without improvising; `skills/orient/SKILL.md`: explicit STOP when no task file exists
+
+## [M4.1] - 2026-03-22
 
 ### Added
-- Assessor Type 3 (plan mode) — dispatched by decide after plan is written; evaluates executability, recommends labor strategy (direct vs delegated), flags under-scoped tasks for pre-scoping
-- Plan assessor dispatch step in decide skill (Step 8) — writes Labor Strategy subsection into plan before phase transition
-- Delegated execution mode in act skill — parent orchestrates parallel executor subagents per batch instead of sequential single-agent execution
-- Pre-scoping flag handling in act skill (Step 2) — resolves under-scoped tasks via child OODA before execution begins
-- Plan drift routing in act skill — new checkpoint outcome that halts execution, evaluates completed work, and loops back to decide for replanning
+- Risk gate in act phase blocker handling — three-dimensional evaluation (reversibility, containment, confidence) as prerequisite before scope classification
+- Risk-gates-autonomy heuristic (#12) in PRINCIPLES-COMPRESSED.md
+- Risk-aware failure-detection prompt and anti-pattern
 - `rules/destructive-ops.mdc`: hard safety boundary requiring explicit user confirmation before any external state mutation (databases, Docker volumes, deployments, services). Always-apply, cannot be overridden by any skill or process level.
 - Destructive operations gate in act skill Step 2a — executor must stop and confirm before running commands that mutate external state
 - Destructive flag requirement in decide skill task decomposition — plans must tag tasks that touch external state with `**Destructive**: yes`
 - Destructive operations check in quick skill — fast path still requires confirmation for external state mutations
 - Executor agent safety constraint (first and highest-priority) — hard stop before database ops, Docker mutations, deployments, service calls
 
-### Added
-- Risk gate in act phase blocker handling — three-dimensional evaluation (reversibility, containment, confidence) as prerequisite before scope classification
-- Risk-gates-autonomy heuristic (#12) in PRINCIPLES-COMPRESSED.md
-- Risk-aware failure-detection prompt and anti-pattern
-
-### Removed
-- `sync.sh` — consolidated into `install.sh`; single script handles full reinstall with cache busting
-
 ### Changed
-- README: verdicts section clarifies handling sunk-cost situations vs claiming “nothing is sunk cost”
+- README: verdicts section clarifies handling sunk-cost situations vs claiming "nothing is sunk cost"
 - Blocker scope classifications (trivial, blocking-small) now require low-risk qualification, not just low scope
 - Executor constraint: workarounds to missing preconditions must pass risk evaluation before autonomous action
 - `install.sh` now uses allowlist of plugin dirs, nukes target before reinstall, and bumps version for cache invalidation
@@ -48,13 +42,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Foundation doctrine loading (`PRINCIPLES-COMPRESSED.md`, `CODE-DESIGN.md`) moved from commands to skills — commands used bare `foundation/` paths that resolved against workspace root instead of plugin directory, causing agents in other repos to fail finding the files
 - Added `Plugin paths` resolution note to all 5 phase skills and assessor agent so agents can derive plugin root from skill `fullPath`
 
+### Removed
+- `sync.sh` — consolidated into `install.sh`; single script handles full reinstall with cache busting
+
+## [M4.0] - 2026-03-21
+
 ### Added
-- `agents/assessor.md`: dual-mode assessment agent (verify per-task in act, assess aggregate in loop), merged from verifier + sentinel
+- `agents/assessor.md`: tri-mode assessment agent (Type 1 verify per-task in act, Type 2 assess aggregate in loop, Type 3 plan evaluation in decide), merged from verifier + sentinel
+- Assessor Type 3 (plan mode) — dispatched by decide after plan is written; evaluates executability, recommends labor strategy (direct vs delegated), flags under-scoped tasks for pre-scoping
+- Plan assessor dispatch step in decide skill (Step 8) — writes Labor Strategy subsection into plan before phase transition
+- Delegated execution mode in act skill — parent orchestrates parallel executor subagents per batch instead of sequential single-agent execution
+- Pre-scoping flag handling in act skill (Step 2) — resolves under-scoped tasks via child OODA before execution begins
+- Plan drift routing in act skill — new checkpoint outcome that halts execution, evaluates completed work, and loops back to decide for replanning
 - Boyd-canonical one-liner anchoring in all 5 phase skills, referencing `foundation/OODALOOP.md`
 - Interactive engagement checkpoints in observe skill (3 structural pause points with adaptive compression)
 - Full proof audit procedure absorbed into observe from sync
 - `foundation/CODE-DESIGN.md`: concrete, assessable code design principles for the assess checkpoint
-- Mandatory readonly checkpoint subagent after every task in decide (execute-assess-repeat loop)
 - Three sub-cycle execution strategies: `subagent` (default), `new-chat`, `in-chat`
 - Subagent orchestration pattern for child OODA cycles via Cursor Task tool
 - Enhanced Paused section format with 8 fields for cold-start resumption
@@ -64,7 +67,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Explicit orient precondition recovery when observe output was not persisted to a task file
 
 ### Changed
-- README tightened around composable recursive OODA framing
 - Phase alignment corrected to Boyd's canonical OODA Loop: Orient = analysis/synthesis, Decide = planning, Act = execution, Loop = verification + aggregate assessment
 - Orient skill rewritten as cognitive engine — analysis, synthesis, situational assessment (was: planning)
 - Decide skill rewritten as planning phase — absorbs decomposition logic from old orient (was: execution)
@@ -74,11 +76,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Sync skill simplified to pure state reconciliation + staleness detection (sheds scanning and proof audit)
 - Init skill reframes convention scanning as researcher dispatch
 - Researcher agent expanded with analytical synthesis capability for orient phase
+- README tightened around composable recursive OODA framing
 - 5 command descriptions updated to match new phase definitions
 - Rules updated: evidence-contract phase names, state-hygiene phase-section mapping and parent resumption references
 - ARCHITECTURE.md and README.md updated: phase tables, agent tables, counts, all descriptions aligned
 - Observe now persists task state earlier and incrementally (skeleton at step 4, then requirements/observations/scope updates before checkpoints)
-- Install and sync scripts now reassert `core.hooksPath=.githooks` so pre-commit enforcement (including changelog and sync checks) self-heals on local drift
+- Install and sync scripts now reassert `core.hooksPath=.githooks` so pre-commit enforcement self-heals on local drift
 
 ### Removed
 - `agents/verifier.md` (absorbed into assessor)
