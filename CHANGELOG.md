@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- `.cursor/skills/`: project-scoped skills (commit-push, release-cut, principles-curator) now tracked in repo; excluded from plugin install via `install.sh` allowlist
+
 ## [M4.2] - 2026-03-22
 
 ### Changed
