@@ -63,7 +63,7 @@ All tasks in a batch must complete and pass assessment before the next batch beg
 
 **b. Record.** Write the execution log entry for this task (see Step 5 format).
 
-**c. Assess.** Dispatch **assessor agent in verify mode** (Type 1) to evaluate the execution results. Mandatory after every task regardless of execution mode. The assessor receives:
+**c. Assess.** Dispatch **assessor agent in verify mode** (Type 2) to evaluate the execution results. Mandatory after every task regardless of execution mode. The assessor receives:
 - The assessor agent definition (`agents/assessor.md`) — this is the governing specification. Do NOT override the assessor's 6-point check or output vocabulary in the dispatch prompt.
 - The task's acceptance criteria and proof plan (from the Plan section)
 - The execution log entry just written (from Step b)
@@ -89,7 +89,7 @@ When Step 3d routes here:
 1. List completed tasks and their outputs.
 2. Evaluate each against the *current* state of the objective — which are still aligned, which are now incompatible?
 3. Report to the user: what drifted, which completed tasks are affected, and whether affected tasks should be kept, reverted, or amended.
-4. After user decision on completed work: loop back to decide (re-dispatch the planner with the drift context and retained task outputs as constraints) for a revised plan. The revised plan goes through the plan assessor (Type 3) before act resumes.
+4. After user decision on completed work: loop back to decide (re-dispatch the planner with the drift context and retained task outputs as constraints) for a revised plan. The revised plan goes through the plan assessor (Type 1) before act resumes.
 
 **If blocker** (not drift): evaluate the proposed resolution through the risk gate before classifying scope.
 

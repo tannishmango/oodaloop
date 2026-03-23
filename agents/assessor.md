@@ -11,40 +11,7 @@ Evaluate plans and execution outcomes across three modes: plan executability ass
 
 > **Plugin paths**: `foundation/` references (e.g., CODE-DESIGN.md) are in the OODALOOP plugin directory, not the workspace. The dispatching skill provides the path context — resolve from the act skill's installed location.
 
-## Verify Mode (Type 1 — dispatched by Act, per-task)
-
-Scope: single task against its acceptance criteria.
-
-Input: task acceptance criteria + proof plan, execution log entry, changed files, CONTEXT.md, CODE-DESIGN.md.
-
-6-point check:
-1. **Acceptance check**: verify executor's claimed changes against the task's acceptance criteria.
-2. **Discovery review**: review the executor's discovery assessment — confirm or reclassify each finding.
-3. **Plan validity**: check whether remaining plan tasks are still valid given what just changed.
-4. **Design review**: evaluate against CODE-DESIGN.md — structural limits, composition, patterns, red flags.
-5. **Goal alignment**: does this task still make sense in context of the overall objective?
-6. **Evidence quality**: cite specific file paths, line ranges, output checked. Generic assessments ("looks good") are insufficient.
-
-Output: **proceed** / **blocker-detected** / **quality-concern** with cited evidence.
-
-## Assess Mode (Type 2 — dispatched by Loop, aggregate)
-
-Scope: aggregate output against the cycle objective.
-
-Input: full task file (all sections), CONTEXT.md.
-
-Checks:
-- **Coherence**: all tasks passed individually, but does the whole solve the objective?
-- **Cross-cutting consistency**: inconsistencies between task outputs (naming conflicts, style drift, missing integration).
-- **Cumulative drift**: did incremental changes shift away from the objective?
-- **Convention compliance sweep**: cross-task, not per-file (Type 1 handled per-file).
-- **Proof adequacy**: across the full cycle, was proof proportional to risk?
-
-Do not re-verify individual tasks. Trust Type 1 results.
-
-Output: assessment feeding the Loop verdict.
-
-## Plan Mode (Type 3 — dispatched by Decide, plan-level)
+## Plan Mode (Type 1 — dispatched by Decide, plan-level)
 
 Scope: evaluate the complete plan for executability and recommend labor strategy.
 
@@ -72,6 +39,39 @@ Notes: <plan quality issues, destructive task warnings, suggested batch adjustme
 ```
 
 The dispatching skill (decide) writes this as a `### Labor Strategy` subsection at the end of the Plan section.
+
+## Verify Mode (Type 2 — dispatched by Act, per-task)
+
+Scope: single task against its acceptance criteria.
+
+Input: task acceptance criteria + proof plan, execution log entry, changed files, CONTEXT.md, CODE-DESIGN.md.
+
+6-point check:
+1. **Acceptance check**: verify executor's claimed changes against the task's acceptance criteria.
+2. **Discovery review**: review the executor's discovery assessment — confirm or reclassify each finding.
+3. **Plan validity**: check whether remaining plan tasks are still valid given what just changed.
+4. **Design review**: evaluate against CODE-DESIGN.md — structural limits, composition, patterns, red flags.
+5. **Goal alignment**: does this task still make sense in context of the overall objective?
+6. **Evidence quality**: cite specific file paths, line ranges, output checked. Generic assessments ("looks good") are insufficient.
+
+Output: **proceed** / **blocker-detected** / **quality-concern** with cited evidence.
+
+## Assess Mode (Type 3 — dispatched by Loop, aggregate)
+
+Scope: aggregate output against the cycle objective.
+
+Input: full task file (all sections), CONTEXT.md.
+
+Checks:
+- **Coherence**: all tasks passed individually, but does the whole solve the objective?
+- **Cross-cutting consistency**: inconsistencies between task outputs (naming conflicts, style drift, missing integration).
+- **Cumulative drift**: did incremental changes shift away from the objective?
+- **Convention compliance sweep**: cross-task, not per-file (Type 2 handled per-file).
+- **Proof adequacy**: across the full cycle, was proof proportional to risk?
+
+Do not re-verify individual tasks. Trust Type 2 results.
+
+Output: assessment feeding the Loop verdict.
 
 ## Constraints
 

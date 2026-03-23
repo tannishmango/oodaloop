@@ -17,14 +17,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [M4.2] - 2026-03-22
 
 ### Changed
-- Agent dispatch governance: all assessor dispatches (decide Type 3, act Type 1, loop Type 2) and executor dispatch (act delegated) now pass the agent definition as governing specification with explicit prohibition on overriding spec vocabulary in dispatch prompts
+- Agent dispatch governance: all assessor dispatches (decide Type 1, act Type 2, loop Type 3) and executor dispatch (act delegated) now pass the agent definition as governing specification with explicit prohibition on overriding spec vocabulary in dispatch prompts
 - Assessor Plan Mode check 1: expanded from basic executability to scope quality evaluation — flags multiplicative work, deferred enumeration, combined concerns, and multi-file judgment as blocking plan quality issues
 - Decide Step 3: added scope stress test (modification count per task, concrete enumeration of vague quantifiers, concern separation)
 - Decide Step 7: added scope quality and enumeration checks to review gate; gate is now blocking — known defects must be fixed before proceeding to Step 8
 - Decide Step 8: added mode vocabulary validation (reject non-`direct`/`delegated` values), re-dispatch loop on scope issues, assessor agent def passthrough; unresolved scope issues require task splits and re-dispatch before phase transition
 - Act Step 1: missing labor strategy on >6-task plans now halts instead of silently defaulting to direct mode
-- Act Step 3c: Type 1 assessor dispatch names valid output vocabulary (`proceed`/`blocker-detected`/`quality-concern`)
-- Loop Step 2: replaced duplicated inline check descriptions with reference to assessor Type 2 spec (single source of truth)
+- Act Step 3c: Type 2 assessor dispatch names valid output vocabulary (`proceed`/`blocker-detected`/`quality-concern`)
+- Loop Step 2: replaced duplicated inline check descriptions with reference to assessor Type 3 spec (single source of truth)
 - `rules/state-hygiene.mdc`: document that `.oodaloop/` lives at the workspace root; `rules/adaptive-rigor.mdc`: follow precondition-failure paths without improvising; `skills/orient/SKILL.md`: explicit STOP when no task file exists
 
 ## [M4.1] - 2026-03-22
@@ -56,8 +56,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [M4.0] - 2026-03-21
 
 ### Added
-- `agents/assessor.md`: tri-mode assessment agent (Type 1 verify per-task in act, Type 2 assess aggregate in loop, Type 3 plan evaluation in decide), merged from verifier + sentinel
-- Assessor Type 3 (plan mode) — dispatched by decide after plan is written; evaluates executability, recommends labor strategy (direct vs delegated), flags under-scoped tasks for pre-scoping
+- `agents/assessor.md`: tri-mode assessment agent (Type 1 plan evaluation in decide, Type 2 verify per-task in act, Type 3 assess aggregate in loop), merged from verifier + sentinel
+- Assessor Type 1 (plan mode) — dispatched by decide after plan is written; evaluates executability, recommends labor strategy (direct vs delegated), flags under-scoped tasks for pre-scoping
 - Plan assessor dispatch step in decide skill (Step 8) — writes Labor Strategy subsection into plan before phase transition
 - Delegated execution mode in act skill — parent orchestrates parallel executor subagents per batch instead of sequential single-agent execution
 - Pre-scoping flag handling in act skill (Step 2) — resolves under-scoped tasks via child OODA before execution begins
@@ -78,7 +78,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Phase alignment corrected to Boyd's canonical OODA Loop: Orient = analysis/synthesis, Decide = planning, Act = execution, Loop = verification + aggregate assessment
 - Orient skill rewritten as cognitive engine — analysis, synthesis, situational assessment (was: planning)
 - Decide skill rewritten as planning phase — absorbs decomposition logic from old orient (was: execution)
-- Act skill rewritten as execution + Type 1 checkpoint — absorbs execution loop, blocker handling, sub-cycle management from old decide (was: verification)
+- Act skill rewritten as execution + Type 2 checkpoint — absorbs execution loop, blocker handling, sub-cycle management from old decide (was: verification)
 - Loop skill dispatches assessor in assess mode (was: sentinel), adds aggregate verification scope
 - Observe skill gains facts-only framing, phase transition to orient, proof audit ownership
 - Sync skill simplified to pure state reconciliation + staleness detection (sheds scanning and proof audit)

@@ -24,12 +24,12 @@ Read the active task file (all sections). Read `.oodaloop/CONTEXT.md` for persis
 For non-trivial rescoping and verdict decisions, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics.
 
 ### 2. Assess
-Dispatch **assessor agent in assess mode** (Type 2, readonly). The assessor receives:
+Dispatch **assessor agent in assess mode** (Type 3, readonly). The assessor receives:
 - The assessor agent definition (`agents/assessor.md`) — this is the governing specification. Do NOT override the assessor's checks or scope in the dispatch prompt.
 - The full task file (all sections)
 - `.oodaloop/CONTEXT.md`
 
-The assessor evaluates aggregate concerns per its Type 2 specification (coherence, cross-cutting consistency, cumulative drift, convention compliance, proof adequacy). It does NOT re-verify individual tasks — Type 1 checkpoints during act already handled per-task verification.
+The assessor evaluates aggregate concerns per its Type 3 specification (coherence, cross-cutting consistency, cumulative drift, convention compliance, proof adequacy). It does NOT re-verify individual tasks — Type 2 checkpoints during act already handled per-task verification.
 
 Also evaluate:
 - Are original assumptions still valid?

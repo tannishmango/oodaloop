@@ -112,7 +112,7 @@ Check before finalizing:
 If any check fails, fix the plan (re-decompose failing tasks, re-enumerate, update dependencies) and re-run this review. Do not proceed to Step 8 with known defects.
 
 ### 8. Plan assessment
-Dispatch the **assessor agent in plan mode** (Type 3) to evaluate the plan's executability and recommend a labor strategy. The assessor receives:
+Dispatch the **assessor agent in plan mode** (Type 1) to evaluate the plan's executability and recommend a labor strategy. The assessor receives:
 - The assessor agent definition (`agents/assessor.md`) — this is the governing specification for the assessment. Do NOT override the assessor's checks, mode vocabulary, or output format in the dispatch prompt.
 - The full task file (all sections through Plan)
 - `.oodaloop/CONTEXT.md`
