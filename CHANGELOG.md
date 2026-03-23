@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- `rules/state-hygiene.mdc`: document that `.oodaloop/` lives at the workspace root (alongside `.git/`), with dotfile-aware discovery; `rules/adaptive-rigor.mdc`: follow precondition-failure paths without improvising; `skills/orient/SKILL.md`: explicit STOP when no task file exists
+
 ### Added
 - Assessor Type 3 (plan mode) — dispatched by decide after plan is written; evaluates executability, recommends labor strategy (direct vs delegated), flags under-scoped tasks for pre-scoping
 - Plan assessor dispatch step in decide skill (Step 8) — writes Labor Strategy subsection into plan before phase transition

@@ -3,6 +3,16 @@ description: Keep .oodaloop/ state current and consistent. Enforce persistent vs
 alwaysApply: true
 ---
 
+## Location
+
+`.oodaloop/` lives at the **workspace root** of the repo being worked in — the same directory that contains `.git/`. It is NOT in the plugin directory, not in `~/.cursor/`, or `~/.claude/`, and not in any subdirectory.
+
+To verify it exists, use one of:
+- `ls -d .oodaloop/ 2>/dev/null` from the workspace root
+- `Glob(".oodaloop/CONTEXT.md")` scoped to the workspace root
+
+Do NOT use bare `ls` — it hides dotfiles/dotdirs by default and will miss `.oodaloop/`.
+
 ## File types
 
 - **CONTEXT.md** is persistent. It survives across tasks and is never deleted. It is updated incrementally by observe (convention drift), loop (learning absorption), and init (creation). Never overwrite wholesale -- update sections.

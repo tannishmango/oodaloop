@@ -9,3 +9,4 @@ alwaysApply: true
 - Never force heavyweight process on lightweight work. Never skip verification on risky work.
 - If a task escalates in complexity mid-execution, pause and upgrade the process level.
 - If process feels like overhead without safety benefit, reduce it.
+- When a skill defines a precondition-failure path, follow it exactly. Do not reinterpret user intent, read adjacent skills, or improvise recovery to justify bypassing the gate. Report the failure, recommend the prescribed fix, and stop.
