@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Consolidated commit/push project skill guidance into `.cursor/skills/oodaloop-commit-push/` and removed the duplicate `commit-push` skill path.
+
 ## [M4.3] - 2026-03-22
 
 ### Added
