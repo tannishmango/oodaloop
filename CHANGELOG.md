@@ -6,8 +6,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [M4.4] - 2026-03-23
+
 ### Changed
 - Consolidated commit/push project skill guidance into `.cursor/skills/oodaloop-commit-push/` and removed the duplicate `commit-push` skill path.
+- Renumbered assessor modes to reflect canonical decide→act→loop order: Type 1 = Plan Mode (Decide), Type 2 = Verify Mode (Act), Type 3 = Assess Mode (Loop); reordered sections in `agents/assessor.md` and updated all references in skills and changelog.
 
 ## [M4.3] - 2026-03-22
 
