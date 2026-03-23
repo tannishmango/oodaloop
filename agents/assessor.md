@@ -51,7 +51,13 @@ Scope: evaluate the complete plan for executability and recommend labor strategy
 Input: full task file (Plan section with tasks, dependency graph, execution strategy), CONTEXT.md.
 
 Checks:
-1. **Executability**: every task has concrete acceptance criteria, a proof plan, and unambiguous scope. Flag under-defined tasks.
+1. **Executability and scope quality**: every task has concrete acceptance criteria, a proof plan, and unambiguous scope. Flag under-defined tasks. Critically evaluate whether tasks are actually scoped for single-pass executor completion — under-scoped tasks are the primary cause of execution drift and the most common planning failure. Plans routinely look well-scoped but explode during implementation. Red flags:
+   - **Multiplicative work as single concern**: "modify N call sites" or "rename N files" is N distinct modifications, not one. Tasks requiring >3-4 distinct code modifications with per-site judgment should justify bundling or be split.
+   - **Deferred enumeration**: acceptance criteria saying "every X" or "all Y" without listing concrete instances push scope discovery to the executor, causing drift.
+   - **Combined separable concerns**: two independently verifiable concerns bundled in one task (e.g., "remove PII and demote log levels" across multiple files).
+   - **Multi-file judgment work**: task touches >3-4 files where each requires understanding local context to modify correctly (not mechanical find-replace).
+
+   The test: given only the task spec and CONTEXT.md, would an executor complete this in one pass without discovering sub-tasks or expanding scope? If uncertain, flag as under-scoped — this is a blocking plan quality issue, not a minor note.
 2. **Dependency validity**: dependency graph is a valid DAG — no missing edges, no implicit ordering, no cycles.
 3. **Labor assessment**: evaluate cumulative context load — every task produces an execution log, checkpoint assessment, and proof output regardless of individual task complexity. A "simple" rename still generates full logs and verification cycles. The constraint is total context consumption across all tasks, not per-task difficulty. Plans within a single agent's effective window (roughly ≤6 tasks) → `direct`. Plans exceeding that → `delegated`. Task simplicity does not override task count; 20 trivial tasks exhaust context the same as 20 complex ones. The mode vocabulary is strictly `direct` or `delegated` — do not invent alternative modes.
 4. **Pre-scoping flags**: identify tasks whose scope is ambiguous enough to likely surface blocking-complex issues during execution. These need a child OODA cycle before act begins — flag them with the specific ambiguity.

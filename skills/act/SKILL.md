@@ -25,7 +25,7 @@ Treat the `Proof Infrastructure` subsection as binding for verification selectio
 - choose the strongest available proof command relevant to each task
 - only use weaker evidence when stronger checks are unavailable or explicitly blocked
 
-If no Labor Strategy subsection exists (legacy plans or trivially small plans), default to `direct` mode.
+If no Labor Strategy subsection exists: count total tasks in the Plan section. If the plan has more than 6 tasks, STOP — report to the user that the plan exceeds the direct-mode threshold without a labor strategy and recommend re-running `/oodaloop-decide` Step 8 to generate one. For plans with ≤6 tasks, default to `direct` mode.
 
 For non-trivial verification judgments and uncertainty handling, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics.
 
@@ -53,7 +53,7 @@ For each task in dependency order:
 #### Delegated mode
 The parent agent orchestrates without implementing tasks directly. For each batch in the dependency graph:
 
-**a. Dispatch.** Spawn executor subagents for each task in the batch (parallel). Each subagent receives: its task specification, acceptance criteria, proof plan, CONTEXT.md, and the executor agent constraints. One subagent per task — consistent with the executor's single-task scope.
+**a. Dispatch.** Spawn executor subagents for each task in the batch (parallel). Each subagent receives: the executor agent definition (`agents/executor.md`) as the governing constraint set, its task specification, acceptance criteria, proof plan, and CONTEXT.md. One subagent per task — consistent with the executor's single-task scope.
 
 **b–d.** For each completed task in the batch (once its subagent returns): Record, Assess, Route — same as below.
 
@@ -64,12 +64,13 @@ All tasks in a batch must complete and pass assessment before the next batch beg
 **b. Record.** Write the execution log entry for this task (see Step 5 format).
 
 **c. Assess.** Dispatch **assessor agent in verify mode** (Type 1) to evaluate the execution results. Mandatory after every task regardless of execution mode. The assessor receives:
+- The assessor agent definition (`agents/assessor.md`) — this is the governing specification. Do NOT override the assessor's 6-point check or output vocabulary in the dispatch prompt.
 - The task's acceptance criteria and proof plan (from the Plan section)
 - The execution log entry just written (from Step b)
 - The executor's discovery assessment
 - Read access to the changed files, CONTEXT.md, and `foundation/CODE-DESIGN.md`
 
-The assessor runs its 6-point check (acceptance, discovery review, plan validity, design review, goal alignment, evidence quality) and returns a result.
+The assessor runs its 6-point check and returns one of: **proceed**, **blocker-detected**, or **quality-concern** with cited evidence.
 
 Record the checkpoint in the execution log (see Step 5 format).
 

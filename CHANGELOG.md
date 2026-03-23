@@ -7,6 +7,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- Agent dispatch governance: all assessor dispatches (decide Type 3, act Type 1, loop Type 2) and executor dispatch (act delegated) now pass the agent definition as governing specification with explicit prohibition on overriding spec vocabulary in dispatch prompts
+- Assessor Plan Mode check 1: expanded from basic executability to scope quality evaluation — flags multiplicative work, deferred enumeration, combined concerns, and multi-file judgment as blocking plan quality issues
+- Decide Step 3: added scope stress test (modification count per task, concrete enumeration of vague quantifiers, concern separation)
+- Decide Step 7: added scope quality and enumeration checks to review gate
+- Decide Step 8: added mode vocabulary validation (reject non-`direct`/`delegated` values), re-dispatch loop on scope issues, assessor agent def passthrough
+- Act Step 1: missing labor strategy on >6-task plans now halts instead of silently defaulting to direct mode
+- Act Step 3c: Type 1 assessor dispatch names valid output vocabulary (`proceed`/`blocker-detected`/`quality-concern`)
+- Loop Step 2: replaced duplicated inline check descriptions with reference to assessor Type 2 spec (single source of truth)
 - `rules/state-hygiene.mdc`: document that `.oodaloop/` lives at the workspace root (alongside `.git/`), with dotfile-aware discovery; `rules/adaptive-rigor.mdc`: follow precondition-failure paths without improvising; `skills/orient/SKILL.md`: explicit STOP when no task file exists
 
 ### Added
