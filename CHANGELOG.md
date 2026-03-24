@@ -6,8 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [M4.5] - 2026-03-24
+
 ### Added
-- `walkthrough.html`: interactive OODALOOP walkthrough with animated phase diagrams (Observe, Orient, Decide, Act, Loop), SVG connector wires, sticky floating control bars with Back/Next·progress/Reset/Continue buttons, side-column step notes, and a DAG visualization of atomic task decomposition in the Decide phase
+- `walkthrough.html`: interactive field-manual walkthrough for Observe→Loop — animated phase boards, SVG connector wires, sticky phase controls, Decide-phase atomic task DAG, Observe user-prompt scope strip, and copy tying labor strategy to reasoning-orchestrator versus fast subagent execution on atomic leaves (hero line from README scope-control doctrine)
 
 ## [M4.4] - 2026-03-23
 

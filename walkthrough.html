@@ -412,6 +412,21 @@ section:last-of-type{padding-bottom:1.45rem}
   background:var(--panel);
   transition:all .3s;
 }
+.obs-prompt{
+  grid-column:1 / -1;
+  padding:.72rem .85rem;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--panel);
+  display:flex;
+  align-items:baseline;
+  gap:.65rem;
+  transition:all .3s;
+}
+.obs-prompt .file-top{
+  flex-shrink:0;
+  margin-bottom:0;
+}
 .file-top{
   font:.56rem/1 'Space Mono',monospace;
   letter-spacing:.16em;
@@ -1016,7 +1031,7 @@ section:last-of-type{padding-bottom:1.45rem}
     <div class="hero-kicker">Field Manual</div>
     <h1 class="serif">OODALOOP</h1>
     <p class="hero-line">Observe. Orient. Decide. Act. Loop.</p>
-    <p class="hero-copy">The walkthrough itself moves the same way the system moves. Finish a phase, then hand off to the next. When reality pushes back, the system loops to the right place instead of bluffing forward.</p>
+    <p class="hero-copy">Scope control for agent-driven delivery. The loop stops before bad plans compound, re-evaluates on new evidence, and routes blockers into targeted subloops.</p>
     <div class="hero-strip">
       <span>research</span>
       <span>model</span>
@@ -1034,7 +1049,7 @@ section:last-of-type{padding-bottom:1.45rem}
     <div class="phase-copy">
       <div class="phase-kicker fi">Observe</div>
       <h2 class="fi">See the environment before shaping it.</h2>
-      <p class="lead fi">Read the repo, tests, docs, and recent history. Save what you found before you start explaining it.</p>
+      <p class="lead fi">The user's request scopes the scan. Read the repo, tests, docs, and recent history for what it actually touches. Save findings before explaining them.</p>
       <div class="phase-meta fi">
         <span class="pill">researcher</span>
         <span class="pill">readonly</span>
@@ -1050,6 +1065,10 @@ section:last-of-type{padding-bottom:1.45rem}
         <button class="btn next" id="observe-next-top" onclick="goTo('orient')" disabled>Continue to Orient</button>
       </div>
       <div class="board observe-board fi">
+        <div class="obs-prompt" id="obs-prompt">
+          <div class="file-top">User prompt</div>
+          <div class="file-body">"Add role-based access to admin routes and cover the 401 paths with tests."</div>
+        </div>
         <div class="obs-col">
           <div class="lane-title">Environment</div>
           <div class="obs-card" id="obs-repo">repo</div>
@@ -1136,7 +1155,7 @@ section:last-of-type{padding-bottom:1.45rem}
     <div class="phase-copy">
       <div class="phase-kicker fi">Decide</div>
       <h2 class="fi">Scope until the gate can no longer reject.</h2>
-      <p class="lead fi">Break the work down until the assessor can stop saying no. After approval, Decide also writes the labor strategy that Act will follow.</p>
+      <p class="lead fi">Break the work down until the assessor can stop saying no. Then write the labor strategy: the reasoning model orchestrates, cheaper subagents execute the atomic leaf tasks.</p>
       <div class="phase-meta fi">
         <span class="pill">planner</span>
         <span class="pill">assessor gate</span>
@@ -1208,7 +1227,7 @@ section:last-of-type{padding-bottom:1.45rem}
                 </div>
               </div>
             </div>
-            <div class="dispatch-copy" id="decide-dispatch-copy">Act waits until the parent agent packages both the plan and the labor strategy.</div>
+            <div class="dispatch-copy" id="decide-dispatch-copy">Act waits until the orchestrating agent packages the plan and the subagent delegation strategy.</div>
           </div>
         </div>
       </div>
@@ -1221,7 +1240,7 @@ section:last-of-type{padding-bottom:1.45rem}
     <div class="phase-copy">
       <div class="phase-kicker fi">Act</div>
       <h2 class="fi">Write only what survived the gate.</h2>
-      <p class="lead fi">Act receives the approved plan and the labor strategy. It executes, verifies, logs non-blockers to backlog, and stops fast when reality invalidates the plan.</p>
+      <p class="lead fi">The reasoning model orchestrates while cheaper, faster subagents execute the atomic tasks. Each return is verified. Non-blockers go to backlog, and Act halts fast on reality drift.</p>
       <div class="phase-meta fi">
         <span class="pill">executor</span>
         <span class="pill">labor strategy</span>
@@ -1260,9 +1279,9 @@ section:last-of-type{padding-bottom:1.45rem}
             <div class="queue-block">
               <div class="lane-title">Labor strategy</div>
               <div class="strategy-list" id="act-strategy">
-                <span class="strategy-chip">parent: orchestrate</span>
-                <span class="strategy-chip">delegate route batches</span>
-                <span class="strategy-chip">verify every task</span>
+                <span class="strategy-chip">parent: reasoning model</span>
+                <span class="strategy-chip">delegate batches → fast subagents</span>
+                <span class="strategy-chip">verify every return</span>
               </div>
             </div>
           </div>
@@ -1671,7 +1690,7 @@ function strategyHtml(items){
 }
 
 function renderObserve(step){
-  resetClasses(['obs-repo','obs-docs','obs-tests','obs-git','obs-s1','obs-s2','obs-s3','obs-s4','obs-context','obs-backlog']);
+  resetClasses(['obs-repo','obs-docs','obs-tests','obs-git','obs-s1','obs-s2','obs-s3','obs-s4','obs-context','obs-backlog','obs-prompt']);
   q('obs-context-body').innerHTML='waiting for observations';
   q('obs-backlog-body').innerHTML='waiting for deferred work';
 
@@ -1681,8 +1700,9 @@ function renderObserve(step){
   }
 
   if(step===0){
+    addState('obs-prompt','is-hot');
     ['obs-repo','obs-docs','obs-tests','obs-git'].forEach((id)=>addState(id,'is-hot'));
-    setNote('observe','Sweep the repo, docs, tests, and recent changes. First just collect facts.');
+    setNote('observe','The user\u2019s request scopes the scan. Sweep repo, docs, tests, and recent changes for what it actually touches.');
   }else if(step===1){
     ['obs-s1','obs-s2','obs-s3','obs-s4'].forEach((id)=>addState(id,'is-hot'));
     setNote('observe','Patterns start to show up: boundaries, hidden assumptions, proof gaps, and follow-up work.');
@@ -1747,7 +1767,7 @@ function renderDecide(step){
   q('decide-labor-copy').innerHTML='approval unlocks strategy';
   q('decide-approved').innerHTML=planHtml([{text:'pending'}]);
   q('decide-strategy').innerHTML=strategyHtml(['pending']);
-  q('decide-dispatch-copy').textContent='Act waits until the parent agent packages both the plan and the labor strategy.';
+  q('decide-dispatch-copy').textContent='Act waits until the orchestrating agent packages the plan and the subagent delegation strategy.';
 
   if(step<0){
     setNote('decide','Start the scoping loop.');
@@ -1816,9 +1836,9 @@ function renderDecide(step){
       {label:'b3 \u2016',tasks:[{text:'admin 401 test',cls:'is-good'},{text:'admin 200 test',cls:'is-good'}]}
     ],'approved \u2022 5 tasks \u2022 3 batches \u2022 valid DAG');
     ['decide-gate','decide-labor','dw-pass-down'].forEach((id)=>addState(id,'is-good'));
-    q('decide-labor-copy').innerHTML='mode: direct<br>parent owns merges<br>delegate route batches<br>verify each return';
+    q('decide-labor-copy').innerHTML='parent: reasoning model (orchestrate + merge)<br>b2+b3 leaf tasks \u2192 fast subagents<br>verify each subagent return';
     addState('decide-pass-tag','is-vis');
-    setNote('decide','Approved. The assessor also recommends a labor strategy based on task count and context load.');
+    setNote('decide','Approved. Tasks are atomic \u2014 no reasoning needed to execute them. The labor strategy delegates leaf tasks to fast, cheap subagents while the reasoning model orchestrates.');
   }else if(step===9){
     q('decide-plan').innerHTML=dagHtml([
       {label:'b1 \u2016',tasks:[{text:'auth',cls:'is-good'},{text:'rate limit',cls:'is-good'}],arrow:'\u2193'},
@@ -1835,15 +1855,15 @@ function renderDecide(step){
       {text:'admin 200 test',cls:'is-good'}
     ]);
     q('decide-strategy').innerHTML=strategyHtml([
-      'mode: direct',
-      'parent orchestrates + merges',
-      'delegate route batches',
+      'parent: reasoning model',
+      'subagents: fast model',
+      'delegate b2+b3 \u2192 subagents',
       'verify each return'
     ]);
-    q('decide-labor-copy').innerHTML='written: direct mode<br>parent orchestrates<br>delegate route batches<br>verify each return';
-    q('decide-dispatch-copy').textContent='Act receives the leaf tasks, dependency graph, and written labor strategy.';
+    q('decide-labor-copy').innerHTML='parent: reasoning model<br>subagents: fast model \u00d7 leaf tasks<br>delegate b2+b3 \u2192 subagents<br>verify each return';
+    q('decide-dispatch-copy').textContent='Act receives the leaf tasks, dependency graph, and the labor strategy mapping tasks to subagent models.';
     addState('decide-pass-tag','is-vis');
-    setNote('decide','The parent agent writes the labor strategy and passes both plan and strategy into Act.');
+    setNote('decide','Both the plan and the subagent delegation strategy are packaged for Act.');
   }
 }
 
@@ -1855,9 +1875,9 @@ function renderAct(step){
   q('aq4').textContent='admin 401';
   q('aq5').textContent='admin 200';
   q('act-strategy').innerHTML=strategyHtml([
-    'parent: orchestrate',
-    'delegate route batches',
-    'verify every task'
+    'parent: reasoning model',
+    'delegate batches \u2192 fast subagents',
+    'verify every return'
   ]);
   q('act-backlog-line').textContent='Non-blockers still go to backlog while Act is running.';
   q('act-triage-body').textContent='keep / refactor / remove';
@@ -1871,7 +1891,7 @@ function renderAct(step){
   if(step===0){
     ['aq1','aq2'].forEach(id=>addState(id,'is-active'));
     ['act-queue','act-exec','aw-queue-down'].forEach(id=>addState(id,'is-hot'));
-    setNote('act','Batch 1 starts: auth and rate limit run in parallel per the dependency graph. The labor strategy guides delegation.');
+    setNote('act','Batch 1: auth and rate limit are delegated to fast subagents running in parallel. The parent reasoning model orchestrates and verifies returns.');
   }else if(step===1){
     addState('aq1','is-done');
     addState('aq2','is-done');
@@ -1913,9 +1933,9 @@ function renderAct(step){
     addState('aq4','is-hot');
     addState('aq5','is-hot');
     q('act-strategy').innerHTML=strategyHtml([
-      'parent: merge + orchestrate',
-      'delegate admin 401 / 200',
-      'verify after each merge'
+      'parent: reasoning model',
+      'delegate 401+200 \u2192 fast subagents',
+      'verify each return'
     ]);
     addState('act-queue','is-good');
     addState('act-child','is-good');
