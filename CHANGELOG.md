@@ -6,6 +6,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [M4.6] - 2026-03-24
+
+### Changed
+- `walkthrough.html`: mobile-friendly layout via extra breakpoints (wrapped sticky controls, wider diagram nodes and taller frames on small screens, touch-sized buttons, tighter section padding) while preserving desktop presentation
+
 ## [M4.5] - 2026-03-24
 
 ### Added

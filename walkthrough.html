@@ -1020,6 +1020,76 @@ section:last-of-type{padding-bottom:1.45rem}
   .node-copy,.triage-body,.file-body,.bucket-body,.phase-note{font-size:.82rem}
   .plan-chip,.task-chip,.queue-chip,.raw-chip,.dag-chip{font-size:.54rem}
   .dag-label{font-size:.4rem;width:2.2rem}
+  .controls-top{flex-wrap:wrap}
+}
+
+@media(max-width:520px){
+  section{padding:2rem .75rem 1.5rem}
+  .board{padding:.7rem;border-radius:18px}
+
+  .controls-top{
+    gap:.3rem;
+    padding:.3rem;
+  }
+  .controls-top .btn{
+    padding:.55rem .7rem;
+    font-size:.55rem;
+    min-height:2.5rem;
+  }
+  .controls-top .btn.next{
+    flex:1 0 100%;
+    text-align:center;
+  }
+
+  .hero-strip span{padding:.32rem .44rem;font-size:.54rem}
+  .hero-note{font-size:.56rem;padding:0 .25rem}
+
+  .decide-frame,
+  .act-frame,
+  .verdict-frame{
+    aspect-ratio:auto;
+    min-height:34rem;
+  }
+
+  .d-entry{width:30%;left:3%}
+  .d-planner{width:48%;left:2%}
+  .d-gate{width:34%;right:2%}
+  .d-split{width:26%;left:46%}
+
+  .act-exec{width:36%;left:2%}
+  .act-verify{width:34%;right:2%;left:auto}
+  .act-triage{width:48%;left:2%}
+  .act-child{width:44%;right:2%}
+
+  .verdict-entry{width:42%}
+  .verdict-core{width:48%}
+  #loop-refine{width:32%;left:2%}
+  #loop-rescope{width:32%;right:2%}
+  #loop-continue{width:28%}
+
+  .d-node,
+  .act-node,
+  .verdict-entry,
+  .verdict-core,
+  .verdict-branch{
+    padding:.55rem .6rem;
+    border-radius:14px;
+  }
+  .node-top{font-size:.44rem;letter-spacing:.1em;margin-bottom:.25rem}
+  .node-title{font-size:.78rem}
+  .node-copy{font-size:.72rem}
+
+  .orient-lens{min-height:6rem;font-size:1.4rem;border-radius:16px}
+  .obs-prompt{flex-direction:column;gap:.3rem}
+  .obs-col{padding:.7rem;border-radius:14px}
+
+  .wire-tag{font-size:.42rem;letter-spacing:.06em}
+  .dispatch.is-vis{max-height:32rem}
+  .dispatch-copy,.queue-foot{font-size:.76rem}
+
+  .phase-kicker{font-size:.65rem}
+  .lead{font-size:.92rem}
+  .pill{font-size:.52rem;padding:.3rem .45rem}
 }
 </style>
 </head>
