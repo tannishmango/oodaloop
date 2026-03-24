@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- `walkthrough.html`: interactive OODALOOP walkthrough with animated phase diagrams (Observe, Orient, Decide, Act, Loop), SVG connector wires, sticky floating control bars with Back/Next·progress/Reset/Continue buttons, side-column step notes, and a DAG visualization of atomic task decomposition in the Decide phase
+
 ## [M4.4] - 2026-03-23
 
 ### Changed

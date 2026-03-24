@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OODALOOP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#d8d3c8;
+  --bg-top:#ece8df;
+  --panel:#f6f3ec;
+  --panel-soft:#ece7dc;
+  --line:#b1aa9b;
+  --line-strong:#807869;
+  --ink:#15130f;
+  --ink-soft:#3a362e;
+  --muted:#6a6559;
+  --olive:#55624f;
+  --olive-soft:rgba(85,98,79,.14);
+  --olive-line:#697662;
+  --rust:#8a5a51;
+  --rust-soft:rgba(138,90,81,.14);
+  --green:#45604f;
+  --green-soft:rgba(69,96,79,.14);
+  --shadow:0 18px 44px rgba(31,24,15,.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,.58), transparent 34%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 100%);
+  color:var(--ink);
+  font-family:'DM Sans',sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+.mono{font-family:'Space Mono',monospace}
+.serif{font-family:'Instrument Serif',serif;font-weight:400}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.2)}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:999px}
+
+.nav{
+  position:fixed;
+  right:max(.45rem, calc((100vw - 74rem) / 2 - 3.4rem));
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+  z-index:100;
+}
+.nav button{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  border:none;
+  background:rgba(21,19,15,.18);
+  cursor:pointer;
+  transition:all .25s;
+  position:relative;
+}
+.nav button.on{
+  background:var(--ink);
+  transform:scale(1.15);
+}
+.nav button .tip{
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%);
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid rgba(128,120,105,.65);
+  background:rgba(246,243,236,.96);
+  color:var(--ink-soft);
+  font:.58rem/1 'Space Mono',monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .15s;
+}
+.nav button:hover .tip{opacity:1}
+
+section{
+  min-height:100svh;
+  padding:2.8rem 1.4rem 2rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+section:last-of-type{padding-bottom:1.45rem}
+
+.hero{
+  padding-top:2rem;
+  padding-bottom:2rem;
+  text-align:center;
+}
+.hero-shell{
+  width:min(100%,58rem);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.hero-kicker{
+  font:.62rem/1 'Space Mono',monospace;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:1rem;
+}
+.hero h1{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(3.5rem,9vw,7rem);
+  font-weight:400;
+  letter-spacing:-.04em;
+  line-height:.95;
+  margin-bottom:.95rem;
+}
+.hero-line{
+  font-size:clamp(1.05rem,2vw,1.3rem);
+  color:var(--ink-soft);
+  margin-bottom:1rem;
+}
+.hero-copy{
+  max-width:39rem;
+  font-size:1.02rem;
+  color:var(--ink-soft);
+  line-height:1.72;
+  margin-bottom:1.3rem;
+}
+.hero-strip{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:.5rem;
+  margin-bottom:1rem;
+}
+.hero-strip span{
+  padding:.42rem .6rem;
+  border-radius:999px;
+  border:1px solid rgba(128,120,105,.65);
+  background:rgba(246,243,236,.72);
+  font:.62rem/1 'Space Mono',monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.hero-note{
+  font-size:.66rem;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:1.25rem;
+  line-height:1.7;
+}
+
+.phase-shell{
+  width:min(100%,74rem);
+  display:grid;
+  grid-template-columns:minmax(18rem,24rem) minmax(0,1fr);
+  gap:1.45rem;
+  align-items:center;
+}
+.phase-copy{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  padding-bottom:2.25rem;
+  transform:translateY(-1.35rem);
+}
+.phase-viz{display:flex;flex-direction:column;width:100%}
+.phase-kicker{
+  font:.74rem/1 'Space Mono',monospace;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-bottom:1rem;
+}
+.phase-copy h2{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(2.1rem,4vw,3.5rem);
+  font-weight:400;
+  letter-spacing:-.03em;
+  line-height:1.02;
+  margin-bottom:.85rem;
+}
+.lead{
+  color:var(--ink-soft);
+  font-size:1rem;
+  line-height:1.72;
+  max-width:22rem;
+}
+.phase-meta{
+  margin-top:1rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.45rem;
+}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  padding:.35rem .55rem;
+  border-radius:999px;
+  border:1px solid rgba(128,120,105,.65);
+  background:rgba(246,243,236,.72);
+  font:.58rem/1 'Space Mono',monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.phase-status{
+  margin-top:.85rem;
+  color:var(--olive);
+  font-size:.64rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.phase-note{
+  margin-top:1rem;
+  padding-top:.85rem;
+  border-top:1px solid var(--line);
+  min-height:2.4rem;
+  color:var(--ink-soft);
+  font-size:.92rem;
+  line-height:1.65;
+}
+.controls{
+  margin-top:.9rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.55rem;
+}
+.controls-top{
+  margin:0 0 .85rem;
+  justify-content:flex-end;
+  align-self:flex-end;
+  position:sticky;
+  top:.85rem;
+  z-index:5;
+  padding:.38rem;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:rgba(246,243,236,.92);
+  box-shadow:0 12px 26px rgba(36,31,26,.1);
+  backdrop-filter:blur(10px);
+}
+.controls-top .btn{
+  padding:.64rem .92rem;
+}
+.btn{
+  appearance:none;
+  border:1px solid var(--line-strong);
+  border-radius:999px;
+  background:rgba(246,243,236,.9);
+  color:var(--ink);
+  padding:.72rem 1rem;
+  font:.62rem/1 'Space Mono',monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all .18s;
+}
+.btn:hover{
+  background:var(--ink);
+  border-color:var(--ink);
+  color:var(--panel);
+}
+.btn.secondary{
+  background:transparent;
+  color:var(--ink-soft);
+}
+.btn.next{
+  background:var(--ink);
+  border-color:var(--ink);
+  color:var(--panel);
+}
+.btn.next:hover{
+  background:var(--olive);
+  border-color:var(--olive);
+}
+.btn:disabled{
+  opacity:.33;
+  cursor:not-allowed;
+}
+.btn:disabled:hover{
+  background:rgba(246,243,236,.9);
+  border-color:var(--line-strong);
+  color:var(--ink);
+}
+.board{
+  background:rgba(246,243,236,.86);
+  border:1px solid rgba(128,120,105,.68);
+  border-radius:24px;
+  padding:1rem;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.board::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(255,255,255,.4), transparent 30%);
+  pointer-events:none;
+}
+.lane-title{
+  font:.58rem/1 'Space Mono',monospace;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:.7rem;
+}
+.node-top{
+  font:.54rem/1 'Space Mono',monospace;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:.45rem;
+}
+.node-title{
+  font-size:1rem;
+  color:var(--ink);
+  line-height:1.25;
+}
+.node-copy{
+  margin-top:.45rem;
+  font-size:.83rem;
+  color:var(--ink-soft);
+  line-height:1.5;
+}
+
+.is-hot{
+  border-color:var(--olive) !important;
+  background:var(--olive-soft) !important;
+  color:var(--ink) !important;
+  box-shadow:0 0 0 1px rgba(85,98,79,.14) inset;
+}
+.is-bad{
+  border-color:var(--rust) !important;
+  background:var(--rust-soft) !important;
+  color:var(--ink) !important;
+}
+.is-good{
+  border-color:var(--green) !important;
+  background:var(--green-soft) !important;
+  color:var(--ink) !important;
+}
+.is-vis{opacity:1 !important;transform:none !important}
+.is-done{
+  border-color:var(--green) !important;
+  background:var(--green-soft) !important;
+  color:var(--green) !important;
+}
+.is-active{
+  border-color:var(--olive) !important;
+  background:var(--olive-soft) !important;
+  color:var(--ink) !important;
+}
+.is-stale{
+  border-color:var(--rust) !important;
+  background:rgba(255,255,255,.25) !important;
+  color:var(--rust) !important;
+  text-decoration:line-through;
+}
+
+/* Observe */
+.observe-board{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.8rem;
+}
+.obs-col{
+  padding:.95rem;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(236,231,220,.62);
+  display:flex;
+  flex-direction:column;
+  gap:.55rem;
+  min-height:18.75rem;
+}
+.obs-card,
+.obs-signal{
+  padding:.72rem .78rem;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--ink-soft);
+  transition:all .3s;
+}
+.obs-signal{
+  font:.62rem/1 'Space Mono',monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.obs-file{
+  padding:.85rem;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--panel);
+  transition:all .3s;
+}
+.file-top{
+  font:.56rem/1 'Space Mono',monospace;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:.65rem;
+}
+.file-body{
+  font-size:.84rem;
+  color:var(--ink-soft);
+  line-height:1.55;
+}
+
+/* Orient */
+.orient-board{
+  display:grid;
+  grid-template-columns:1.08fr .66fr 1.18fr;
+  gap:.8rem;
+  align-items:stretch;
+}
+.orient-raw{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(236,231,220,.62);
+  padding:.95rem;
+}
+.raw-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.45rem;
+}
+.raw-chip{
+  display:inline-flex;
+  align-items:center;
+  padding:.42rem .58rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  font:.6rem/1 'Space Mono',monospace;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  transition:all .3s;
+}
+.orient-lens{
+  border:1px solid var(--line-strong);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,.48), rgba(236,231,220,.5));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Instrument Serif',serif;
+  font-size:2rem;
+  letter-spacing:-.03em;
+  color:var(--ink);
+  min-height:12rem;
+  transition:all .3s;
+}
+.orient-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.5rem;
+}
+.bucket{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(236,231,220,.62);
+  padding:.85rem;
+  min-height:0;
+  transition:all .3s;
+}
+.bucket-title{
+  font:.56rem/1 'Space Mono',monospace;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:.6rem;
+}
+.bucket-body{
+  font-size:.82rem;
+  line-height:1.5;
+  color:var(--ink-soft);
+  overflow-wrap:anywhere;
+}
+.orient-summary{
+  grid-column:1 / span 2;
+  border:1px solid var(--line-strong);
+  border-radius:18px;
+  background:var(--panel);
+  padding:1rem;
+  color:var(--ink-soft);
+  line-height:1.6;
+  transition:all .3s;
+}
+
+/* Decide */
+.decide-board{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+.decide-frame,
+.act-frame,
+.verdict-frame{
+  position:relative;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,.32), rgba(236,231,220,.26));
+  overflow:hidden;
+}
+.decide-frame{
+  aspect-ratio:11/10;
+  min-height:30rem;
+}
+.frame-tag{
+  position:absolute;
+  top:.9rem;
+  left:1rem;
+  font:.58rem/1 'Space Mono',monospace;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--muted);
+  z-index:3;
+}
+.d-node{
+  position:absolute;
+  border:1px solid var(--line-strong);
+  border-radius:18px;
+  background:var(--panel);
+  padding:.85rem .92rem;
+  transition:all .32s;
+  z-index:2;
+}
+.d-entry{top:7%;left:8%;width:22%}
+.d-planner{top:28%;left:6%;width:38%;min-height:25%}
+.d-gate{top:24%;right:6%;width:24%}
+.d-split{top:70%;left:50%;width:18%}
+.decide-post{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:.75rem;
+}
+.d-labor{
+  position:relative;
+  width:min(100%,20rem);
+  border:1px solid var(--line-strong);
+  border-radius:18px;
+  background:var(--panel);
+  padding:.85rem .92rem;
+  transition:all .32s;
+  opacity:.42;
+  z-index:2;
+  margin-top:.12rem;
+}
+.plan-stack{
+  margin-top:.75rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.42rem;
+}
+.plan-dag{
+  margin-top:.65rem;
+  display:flex;
+  flex-direction:column;
+  gap:.22rem;
+  font:.55rem/1.2 'Space Mono',monospace;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.dag-batch{
+  display:flex;
+  align-items:center;
+  gap:.35rem;
+  padding:.28rem .44rem;
+  border-radius:10px;
+  background:rgba(246,243,236,.48);
+}
+.dag-batch + .dag-batch{
+  border-top:1px dashed var(--line);
+}
+.dag-label{
+  flex-shrink:0;
+  color:var(--muted);
+  font-size:.44rem;
+  letter-spacing:.12em;
+  width:2.6rem;
+  text-align:right;
+  padding-right:.35rem;
+}
+.dag-tasks{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.28rem;
+  align-items:center;
+}
+.dag-chip{
+  display:inline-flex;
+  align-items:center;
+  padding:.28rem .44rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--panel-soft);
+  color:var(--ink-soft);
+  transition:all .3s;
+  font-size:.54rem;
+}
+.dag-chip.is-bad{
+  border-color:var(--rust);
+  color:var(--rust);
+}
+.dag-chip.is-good{
+  border-color:var(--green);
+  color:var(--green);
+}
+.dag-chip.is-stale{
+  opacity:.38;
+  text-decoration:line-through;
+}
+.dag-arrow{
+  color:var(--muted);
+  font-size:.48rem;
+  line-height:1;
+}
+.dag-note{
+  color:var(--muted);
+  font-size:.44rem;
+  letter-spacing:.08em;
+  padding:.14rem .44rem;
+}
+.plan-chip,
+.strategy-chip,
+.task-chip,
+.queue-chip{
+  display:inline-flex;
+  align-items:center;
+  padding:.4rem .56rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--panel-soft);
+  color:var(--ink-soft);
+  font:.6rem/1 'Space Mono',monospace;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  transition:all .3s;
+}
+.strategy-chip{
+  background:rgba(236,231,220,.78);
+  font-size:.57rem;
+}
+.strategy-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.42rem;
+}
+.dispatch{
+  position:relative;
+  width:100%;
+  border:1px solid transparent;
+  border-radius:18px;
+  background:var(--panel);
+  padding:0 .9rem;
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transform:translateY(6px);
+  transition:max-height .32s,padding .32s,border-color .32s,opacity .32s,transform .32s;
+  z-index:2;
+}
+.dispatch.is-vis{
+  max-height:18rem;
+  padding:.8rem .9rem;
+  border-color:var(--line-strong);
+}
+.dispatch-grid{
+  display:grid;
+  grid-template-columns:1.05fr 1fr;
+  gap:.75rem;
+  align-items:start;
+}
+.dispatch-block + .dispatch-block{
+  padding-left:.8rem;
+  border-left:1px solid var(--line);
+}
+.dispatch .plan-stack,
+.dispatch .strategy-list{
+  margin-top:0;
+}
+.dispatch-copy,
+.queue-foot{
+  margin-top:.65rem;
+  font-size:.8rem;
+  line-height:1.55;
+  color:var(--ink-soft);
+}
+.task-chip{
+  border-color:var(--green);
+  background:var(--green-soft);
+  color:var(--green);
+}
+.flow-svg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+.decide-wire{
+  fill:none;
+  stroke:var(--line);
+  stroke-width:1.15;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+  opacity:.26;
+  transition:stroke .32s,opacity .32s,filter .32s;
+}
+.decide-wire.dw-entry,
+.decide-wire.dw-plan-gate,
+.decide-wire.dw-reject-down,
+.decide-wire.dw-reject-left,
+.decide-wire.dw-loop-left,
+.decide-wire.dw-loop-up,
+.decide-wire.dw-pass-down,
+.decide-wire.dw-pass-out,
+.act-wire.aw-queue-down,
+.act-wire.aw-exec-verify,
+.act-wire.aw-verify-child,
+.act-wire.aw-child-triage,
+.act-wire.aw-child-up,
+.loop-wire.lw-left-down,
+.loop-wire.lw-left-out,
+.loop-wire.lw-right-down,
+.loop-wire.lw-right-out,
+.loop-wire.lw-down,
+.loop-wire.lw-learn{
+  opacity:0;
+}
+.wire-tag{
+  position:absolute;
+  color:var(--muted);
+  font:.52rem/1 'Space Mono',monospace;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  opacity:0;
+  transition:all .32s;
+  z-index:3;
+}
+.wire-tag.reject{top:56%;left:70%}
+.wire-tag.return{top:73%;left:30%}
+.wire-tag.pass{bottom:1.2rem;left:62%}
+
+/* Act */
+.act-board{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+.queue-card,
+.act-node,
+.verdict-entry,
+.verdict-core,
+.verdict-branch,
+.learn-card{
+  border:1px solid var(--line-strong);
+  border-radius:18px;
+  background:var(--panel);
+  padding:.85rem .92rem;
+  transition:all .32s;
+  z-index:2;
+}
+.queue-card,
+.learn-card{
+  position:relative;
+}
+.act-node,
+.verdict-entry,
+.verdict-core,
+.verdict-branch{
+  position:absolute;
+}
+.act-frame{
+  aspect-ratio:11/10;
+  min-height:29rem;
+}
+.queue-grid{
+  display:grid;
+  grid-template-columns:1.18fr .96fr;
+  gap:.85rem;
+  align-items:start;
+}
+.queue-block{
+  display:flex;
+  flex-direction:column;
+}
+.queue-list{
+  margin-top:.65rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.45rem;
+}
+.queue-foot{
+  padding-top:.72rem;
+  border-top:1px solid var(--line);
+  transition:all .3s;
+}
+.queue-foot.is-hot{
+  border-top-color:var(--olive);
+  color:var(--ink);
+}
+.act-exec{top:19%;left:5%;width:28%}
+.act-verify{top:19%;left:62%;width:28%}
+.act-triage{top:68%;left:5%;width:39%}
+.act-child{top:68%;right:5%;width:37%}
+.triage-body{
+  margin-top:.62rem;
+  min-height:2.7rem;
+  color:var(--ink-soft);
+  font-size:.84rem;
+  line-height:1.55;
+}
+.mini{
+  display:inline-flex;
+  align-items:center;
+  padding:.22rem .4rem;
+  border-radius:999px;
+  font:.56rem/1 'Space Mono',monospace;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin-right:.25rem;
+  margin-bottom:.25rem;
+}
+.mini.keep{background:var(--green-soft);color:var(--green)}
+.mini.refactor{background:var(--olive-soft);color:var(--olive)}
+.mini.remove{background:var(--rust-soft);color:var(--rust)}
+.act-wire,
+.loop-wire{
+  fill:none;
+  stroke:var(--line);
+  stroke-width:1.15;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+  opacity:.26;
+  transition:stroke .32s,opacity .32s,filter .32s;
+}
+.wire-tag.drift{top:50%;right:27%;transform:translateY(-50%)}
+
+/* Loop */
+.loop-board{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+.verdict-frame{
+  aspect-ratio:11/10;
+  min-height:28rem;
+}
+.verdict-entry{
+  top:8%;
+  left:50%;
+  width:26%;
+  transform:translateX(-50%);
+  text-align:center;
+}
+.verdict-core{
+  top:24%;
+  left:50%;
+  width:31%;
+  transform:translateX(-50%);
+  text-align:center;
+}
+.verdict-branch{text-align:center}
+#loop-refine{top:74%;left:5%;width:24%}
+#loop-rescope{top:74%;right:5%;width:24%}
+#loop-continue{top:58%;left:50%;width:18%;transform:translateX(-50%)}
+.loop-post{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  padding-top:.12rem;
+}
+.learn-card{
+  width:min(100%,22rem);
+  max-height:0;
+  padding:0 .92rem;
+  overflow:hidden;
+  border-color:transparent;
+  opacity:0;
+  transform:none;
+  align-self:center;
+  margin-top:.12rem;
+}
+.learn-card.is-vis{
+  max-height:12rem;
+  padding:.85rem .92rem;
+  border-color:var(--line-strong);
+  opacity:1 !important;
+  transform:none !important;
+}
+.decide-wire.is-hot,
+.act-wire.is-hot,
+.loop-wire.is-hot{
+  stroke:var(--olive-line) !important;
+  opacity:1;
+  filter:drop-shadow(0 0 10px rgba(105,118,98,.16));
+}
+.decide-wire.is-bad,
+.act-wire.is-bad,
+.loop-wire.is-bad{
+  stroke:var(--rust) !important;
+  opacity:1;
+  filter:drop-shadow(0 0 10px rgba(138,90,81,.15));
+}
+.decide-wire.is-good,
+.act-wire.is-good,
+.loop-wire.is-good{
+  stroke:var(--green) !important;
+  opacity:1;
+  filter:drop-shadow(0 0 10px rgba(69,96,79,.15));
+}
+.wire-tag.is-vis{opacity:.86 !important}
+.wire-tag.reject.is-vis{color:var(--rust)}
+.wire-tag.return.is-vis{color:var(--olive)}
+.wire-tag.pass.is-vis,
+.wire-tag.drift.is-vis{color:var(--green)}
+
+/* Reveal */
+.fi{
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .55s,transform .55s;
+}
+.fi.vis{
+  opacity:1;
+  transform:translateY(0);
+}
+
+@media(max-width:920px){
+  .phase-shell{grid-template-columns:1fr;gap:1.1rem}
+  .phase-copy{align-items:center;text-align:center;padding-bottom:0;transform:none}
+  .lead{max-width:36rem}
+  .phase-meta{justify-content:center}
+  .controls-top{
+    align-self:stretch;
+    justify-content:center;
+  }
+}
+
+@media(max-width:1220px){
+  .nav{display:none}
+}
+
+@media(max-width:760px){
+  .observe-board,
+  .orient-board{
+    grid-template-columns:1fr;
+  }
+  .obs-col{min-height:0}
+  .orient-summary{grid-column:auto}
+  .decide-frame,
+  .act-frame,
+  .verdict-frame{
+    aspect-ratio:1/1.22;
+    min-height:32rem;
+  }
+  .d-node,
+  .queue-card,
+  .act-node,
+  .verdict-entry,
+  .verdict-core,
+  .verdict-branch,
+  .learn-card{
+    padding:.72rem .78rem;
+  }
+  .queue-grid{grid-template-columns:1fr}
+  .dispatch-grid{grid-template-columns:1fr}
+  .dispatch-block + .dispatch-block{
+    padding-left:0;
+    padding-top:.55rem;
+    border-left:none;
+    border-top:1px solid var(--line);
+  }
+  .decide-post{align-items:stretch}
+  .d-labor,
+  .learn-card{width:100%}
+  .node-title{font-size:.92rem}
+  .node-copy,.triage-body,.file-body,.bucket-body,.phase-note{font-size:.82rem}
+  .plan-chip,.task-chip,.queue-chip,.raw-chip,.dag-chip{font-size:.54rem}
+  .dag-label{font-size:.4rem;width:2.2rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav"></nav>
+
+<section class="hero" data-s="hero" data-l="Top">
+  <div class="hero-shell fi">
+    <div class="hero-kicker">Field Manual</div>
+    <h1 class="serif">OODALOOP</h1>
+    <p class="hero-line">Observe. Orient. Decide. Act. Loop.</p>
+    <p class="hero-copy">The walkthrough itself moves the same way the system moves. Finish a phase, then hand off to the next. When reality pushes back, the system loops to the right place instead of bluffing forward.</p>
+    <div class="hero-strip">
+      <span>research</span>
+      <span>model</span>
+      <span>scope</span>
+      <span>execute</span>
+      <span>assess</span>
+    </div>
+    <div class="hero-note mono">Rigor scales with risk: quick when trivial, full loop when the work shape demands it.</div>
+    <button class="btn next" onclick="goTo('observe')">Enter Observe</button>
+  </div>
+</section>
+
+<section class="phase" data-s="observe" data-l="Observe">
+  <div class="phase-shell">
+    <div class="phase-copy">
+      <div class="phase-kicker fi">Observe</div>
+      <h2 class="fi">See the environment before shaping it.</h2>
+      <p class="lead fi">Read the repo, tests, docs, and recent history. Save what you found before you start explaining it.</p>
+      <div class="phase-meta fi">
+        <span class="pill">researcher</span>
+        <span class="pill">readonly</span>
+        <span class="pill">persist state</span>
+      </div>
+      <p class="phase-note fi" id="observe-note">Start the scan.</p>
+    </div>
+    <div class="phase-viz">
+      <div class="controls controls-top fi">
+        <button class="btn secondary" id="observe-back-top" onclick="goBack('observe')" disabled>Back</button>
+        <button class="btn" id="observe-step-top" onclick="advance('observe')">Start</button>
+        <button class="btn secondary" id="observe-reset-top" onclick="resetPhase('observe')" disabled>Reset</button>
+        <button class="btn next" id="observe-next-top" onclick="goTo('orient')" disabled>Continue to Orient</button>
+      </div>
+      <div class="board observe-board fi">
+        <div class="obs-col">
+          <div class="lane-title">Environment</div>
+          <div class="obs-card" id="obs-repo">repo</div>
+          <div class="obs-card" id="obs-docs">docs</div>
+          <div class="obs-card" id="obs-tests">tests</div>
+          <div class="obs-card" id="obs-git">git</div>
+        </div>
+        <div class="obs-col">
+          <div class="lane-title">Signals</div>
+          <div class="obs-signal" id="obs-s1">route boundaries</div>
+          <div class="obs-signal" id="obs-s2">role hierarchy</div>
+          <div class="obs-signal" id="obs-s3">proof gaps</div>
+          <div class="obs-signal" id="obs-s4">follow-up work</div>
+        </div>
+        <div class="obs-col">
+          <div class="lane-title">State</div>
+          <div class="obs-file" id="obs-context">
+            <div class="file-top">CONTEXT.md</div>
+            <div class="file-body" id="obs-context-body">waiting for observations</div>
+          </div>
+          <div class="obs-file" id="obs-backlog">
+            <div class="file-top">BACKLOG.md</div>
+            <div class="file-body" id="obs-backlog-body">waiting for deferred work</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="phase" data-s="orient" data-l="Orient">
+  <div class="phase-shell">
+    <div class="phase-copy">
+      <div class="phase-kicker fi">Orient</div>
+      <h2 class="fi">Compress raw signals into a usable model.</h2>
+      <p class="lead fi">Turn scattered findings into a usable picture: what is solid, what is risky, and what still needs proof.</p>
+      <div class="phase-meta fi">
+        <span class="pill">researcher</span>
+        <span class="pill">readonly</span>
+        <span class="pill">working model</span>
+      </div>
+      <p class="phase-note fi" id="orient-note">Start to build the model.</p>
+    </div>
+    <div class="phase-viz">
+      <div class="controls controls-top fi">
+        <button class="btn secondary" id="orient-back-top" onclick="goBack('orient')" disabled>Back</button>
+        <button class="btn" id="orient-step-top" onclick="advance('orient')">Start</button>
+        <button class="btn secondary" id="orient-reset-top" onclick="resetPhase('orient')" disabled>Reset</button>
+        <button class="btn next" id="orient-next-top" onclick="goTo('decide')" disabled>Continue to Decide</button>
+      </div>
+      <div class="board orient-board fi">
+        <div class="orient-raw">
+          <div class="lane-title">Raw observations</div>
+          <div class="raw-list">
+            <span class="raw-chip" id="or-1">flat roles in login</span>
+            <span class="raw-chip" id="or-2">hierarchy in policies</span>
+            <span class="raw-chip" id="or-3">cache keys changed</span>
+            <span class="raw-chip" id="or-4">401 tests missing</span>
+          </div>
+        </div>
+        <div class="orient-lens" id="orient-lens">orient</div>
+        <div class="orient-grid">
+          <div class="bucket" id="orient-facts">
+            <div class="bucket-title">Facts</div>
+            <div class="bucket-body" id="orient-facts-body">none yet</div>
+          </div>
+          <div class="bucket" id="orient-risks">
+            <div class="bucket-title">Risks</div>
+            <div class="bucket-body" id="orient-risks-body">none yet</div>
+          </div>
+          <div class="bucket" id="orient-unknowns">
+            <div class="bucket-title">Unknowns</div>
+            <div class="bucket-body" id="orient-unknowns-body">none yet</div>
+          </div>
+        </div>
+        <div class="orient-summary" id="orient-summary">No working model yet.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="phase" data-s="decide" data-l="Decide">
+  <div class="phase-shell">
+    <div class="phase-copy">
+      <div class="phase-kicker fi">Decide</div>
+      <h2 class="fi">Scope until the gate can no longer reject.</h2>
+      <p class="lead fi">Break the work down until the assessor can stop saying no. After approval, Decide also writes the labor strategy that Act will follow.</p>
+      <div class="phase-meta fi">
+        <span class="pill">planner</span>
+        <span class="pill">assessor gate</span>
+        <span class="pill">labor strategy</span>
+      </div>
+      <p class="phase-note fi" id="decide-note">Start the scoping loop.</p>
+    </div>
+    <div class="phase-viz">
+      <div class="controls controls-top fi">
+        <button class="btn secondary" id="decide-back-top" onclick="goBack('decide')" disabled>Back</button>
+        <button class="btn" id="decide-step-top" onclick="advance('decide')">Start</button>
+        <button class="btn secondary" id="decide-reset-top" onclick="resetPhase('decide')" disabled>Reset</button>
+        <button class="btn next" id="decide-next-top" onclick="goTo('act')" disabled>Continue to Act</button>
+      </div>
+      <div class="board decide-board fi" id="decide-board">
+        <svg class="flow-svg" id="decide-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="decide-wire dw-entry" id="dw-entry" d=""></path>
+          <path class="decide-wire dw-plan-gate" id="dw-plan-gate" d=""></path>
+          <path class="decide-wire dw-reject-down" id="dw-reject-down" d=""></path>
+          <path class="decide-wire dw-reject-left" id="dw-reject-left" d=""></path>
+          <path class="decide-wire dw-loop-left" id="dw-loop-left" d=""></path>
+          <path class="decide-wire dw-loop-up" id="dw-loop-up" d=""></path>
+          <path class="decide-wire dw-pass-down" id="dw-pass-down" d=""></path>
+          <path class="decide-wire dw-pass-out" id="dw-pass-out" d=""></path>
+        </svg>
+        <div class="decide-frame">
+          <div class="frame-tag">Decide agent</div>
+          <div class="d-node d-entry" id="decide-entry">
+            <div class="node-top">Input</div>
+            <div class="node-title">Oriented model</div>
+          </div>
+          <div class="d-node d-planner" id="decide-planner">
+            <div class="node-top">Planner</div>
+            <div class="node-title">Decompose</div>
+            <div class="plan-dag" id="decide-plan"></div>
+          </div>
+          <div class="d-node d-gate" id="decide-gate">
+            <div class="node-top">Assessor</div>
+            <div class="node-title">Atomic gate</div>
+            <div class="node-copy">Can this execute without reinterpretation?</div>
+          </div>
+          <div class="d-node d-split" id="decide-split">
+            <div class="node-top">Reject path</div>
+            <div class="node-title">Split boundary</div>
+          </div>
+          <div class="wire-tag reject" id="decide-reject-tag">reject</div>
+          <div class="wire-tag return" id="decide-return-tag">back to planner</div>
+          <div class="wire-tag pass" id="decide-pass-tag">to Act handoff</div>
+        </div>
+        <div class="decide-post" id="decide-post">
+          <div class="d-labor" id="decide-labor">
+            <div class="node-top">After approval</div>
+            <div class="node-title">Write labor strategy</div>
+            <div class="node-copy" id="decide-labor-copy">approval unlocks strategy</div>
+          </div>
+          <div class="dispatch" id="decide-dispatch">
+            <div class="lane-title">Act handoff</div>
+            <div class="dispatch-grid">
+              <div class="dispatch-block">
+                <div class="file-top">Concrete plan</div>
+                <div class="plan-stack" id="decide-approved">
+                  <span class="plan-chip">pending</span>
+                </div>
+              </div>
+              <div class="dispatch-block">
+                <div class="file-top">Labor strategy</div>
+                <div class="strategy-list" id="decide-strategy">
+                  <span class="strategy-chip">pending</span>
+                </div>
+              </div>
+            </div>
+            <div class="dispatch-copy" id="decide-dispatch-copy">Act waits until the parent agent packages both the plan and the labor strategy.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="phase" data-s="act" data-l="Act">
+  <div class="phase-shell">
+    <div class="phase-copy">
+      <div class="phase-kicker fi">Act</div>
+      <h2 class="fi">Write only what survived the gate.</h2>
+      <p class="lead fi">Act receives the approved plan and the labor strategy. It executes, verifies, logs non-blockers to backlog, and stops fast when reality invalidates the plan.</p>
+      <div class="phase-meta fi">
+        <span class="pill">executor</span>
+        <span class="pill">labor strategy</span>
+        <span class="pill">task assessor</span>
+        <span class="pill">backlog stays live</span>
+      </div>
+      <p class="phase-note fi" id="act-note">Start execution.</p>
+    </div>
+    <div class="phase-viz">
+      <div class="controls controls-top fi">
+        <button class="btn secondary" id="act-back-top" onclick="goBack('act')" disabled>Back</button>
+        <button class="btn" id="act-step-top" onclick="advance('act')">Start</button>
+        <button class="btn secondary" id="act-reset-top" onclick="resetPhase('act')" disabled>Reset</button>
+        <button class="btn next" id="act-next-top" onclick="goTo('loop')" disabled>Continue to Loop</button>
+      </div>
+      <div class="board act-board fi" id="act-board">
+        <svg class="flow-svg" id="act-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="act-wire aw-queue-down" id="aw-queue-down" d=""></path>
+          <path class="act-wire aw-exec-verify" id="aw-exec-verify" d=""></path>
+          <path class="act-wire aw-verify-child" id="aw-verify-child" d=""></path>
+          <path class="act-wire aw-child-triage" id="aw-child-triage" d=""></path>
+          <path class="act-wire aw-child-up" id="aw-child-up" d=""></path>
+        </svg>
+        <div class="queue-card" id="act-queue">
+          <div class="queue-grid">
+            <div class="queue-block">
+              <div class="lane-title">Approved plan</div>
+              <div class="queue-list">
+                <span class="queue-chip" id="aq1">auth</span>
+                <span class="queue-chip" id="aq2">rate limit</span>
+                <span class="queue-chip" id="aq3">public routes</span>
+                <span class="queue-chip" id="aq4">admin 401</span>
+                <span class="queue-chip" id="aq5">admin 200</span>
+              </div>
+            </div>
+            <div class="queue-block">
+              <div class="lane-title">Labor strategy</div>
+              <div class="strategy-list" id="act-strategy">
+                <span class="strategy-chip">parent: orchestrate</span>
+                <span class="strategy-chip">delegate route batches</span>
+                <span class="strategy-chip">verify every task</span>
+              </div>
+            </div>
+          </div>
+          <div class="queue-foot" id="act-backlog-line">Non-blockers still go to backlog while Act is running.</div>
+        </div>
+        <div class="act-frame">
+          <div class="act-node act-exec" id="act-exec">
+            <div class="node-top">Executor</div>
+            <div class="node-title">Implement task</div>
+          </div>
+          <div class="act-node act-verify" id="act-verify">
+            <div class="node-top">Assessor</div>
+            <div class="node-title">Verify implementation</div>
+          </div>
+          <div class="act-node act-triage" id="act-triage">
+            <div class="node-top">On drift</div>
+            <div class="node-title">Triage completed work</div>
+            <div class="triage-body" id="act-triage-body">keep / refactor / remove</div>
+          </div>
+          <div class="act-node act-child" id="act-child">
+            <div class="node-top">If deeper</div>
+            <div class="node-title">Spawn child loop</div>
+            <div class="triage-body" id="act-child-body">D+1 stays idle</div>
+          </div>
+          <div class="wire-tag drift" id="act-drift-tag">stop, loop, rescope</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="phase" data-s="loop" data-l="Loop">
+  <div class="phase-shell">
+    <div class="phase-copy">
+      <div class="phase-kicker fi">Loop</div>
+      <h2 class="fi">Choose the correct re-entry point.</h2>
+      <p class="lead fi">Loop decides where to re-enter: keep going, tighten the plan, or go back and reshape the problem.</p>
+      <div class="phase-meta fi">
+        <span class="pill">aggregate assessor</span>
+        <span class="pill">refine or rescope</span>
+        <span class="pill">absorb learnings</span>
+      </div>
+      <p class="phase-note fi" id="loop-note">Start the verdict.</p>
+    </div>
+    <div class="phase-viz">
+      <div class="controls controls-top fi">
+        <button class="btn secondary" id="loop-back-top" onclick="goBack('loop')" disabled>Back</button>
+        <button class="btn" id="loop-step-top" onclick="advance('loop')">Start</button>
+        <button class="btn secondary" id="loop-reset-top" onclick="resetPhase('loop')" disabled>Reset</button>
+        <button class="btn next" id="loop-next-top" onclick="backToTop()" disabled>Back to Top</button>
+      </div>
+      <div class="board loop-board fi" id="loop-board">
+        <svg class="flow-svg" id="loop-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="loop-wire lw-entry" id="lw-entry" d=""></path>
+          <path class="loop-wire lw-left-down" id="lw-left-down" d=""></path>
+          <path class="loop-wire lw-left-out" id="lw-left-out" d=""></path>
+          <path class="loop-wire lw-right-down" id="lw-right-down" d=""></path>
+          <path class="loop-wire lw-right-out" id="lw-right-out" d=""></path>
+          <path class="loop-wire lw-down" id="lw-down" d=""></path>
+          <path class="loop-wire lw-learn" id="lw-learn" d=""></path>
+        </svg>
+        <div class="verdict-frame">
+          <div class="verdict-entry" id="loop-entry">
+            <div class="node-top">Input</div>
+            <div class="node-title">Evidence from Act</div>
+          </div>
+          <div class="verdict-core" id="loop-core">
+            <div class="node-top">Loop</div>
+            <div class="node-title">Aggregate assessor</div>
+            <div class="node-copy">Is the overall trajectory correct?</div>
+          </div>
+          <div class="verdict-branch" id="loop-refine">
+            <div class="node-top">Verdict</div>
+            <div class="node-title">REFINE → Decide</div>
+          </div>
+          <div class="verdict-branch" id="loop-rescope">
+            <div class="node-top">Verdict</div>
+            <div class="node-title">RESCOPE → Observe</div>
+          </div>
+          <div class="verdict-branch" id="loop-continue">
+            <div class="node-top">Verdict</div>
+            <div class="node-title">CONTINUE</div>
+            <div class="node-copy">trajectory holds</div>
+          </div>
+        </div>
+        <div class="loop-post" id="loop-post">
+          <div class="learn-card" id="loop-learn">
+            <div class="file-top">CONTEXT.md</div>
+            <div class="file-body">learning absorbed, backlog curated, task removed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const q=(id)=>document.getElementById(id);
+const phaseState={observe:-1,orient:-1,decide:-1,act:-1,loop:-1};
+const phaseTotals={observe:4,orient:4,decide:10,act:6,loop:4};
+const phases=['observe','orient','decide','act','loop'];
+
+function goTo(id){
+  document.querySelector(`[data-s="${id}"]`).scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function backToTop(){
+  resetAllPhases();
+  goTo('hero');
+}
+
+function resetClasses(ids){
+  ids.forEach((id)=>{
+    const el=q(id);
+    if(el)el.classList.remove('is-hot','is-bad','is-good','is-vis','is-done','is-active','is-stale');
+  });
+}
+
+function goBack(id){
+  if(phaseState[id]<0)return;
+  phaseState[id]-=1;
+  renderPhase(id,phaseState[id]);
+  updateButtons(id);
+  scheduleWireLayout();
+}
+function setNote(id,text){q(`${id}-note`).textContent=text}
+function addState(id,...classes){q(id).classList.add(...classes)}
+function setText(ids,text){ids.forEach((id)=>{const el=q(id);if(el)el.textContent=text;});}
+function setDisabled(ids,disabled){ids.forEach((id)=>{const el=q(id);if(el)el.disabled=disabled;});}
+
+const clamp=(value,min,max)=>Math.min(Math.max(value,min),max);
+
+function getBox(id,containerId){
+  const el=q(id);
+  const container=q(containerId);
+  if(!el||!container)return null;
+  const rect=el.getBoundingClientRect();
+  const containerRect=container.getBoundingClientRect();
+  return {
+    left:rect.left-containerRect.left,
+    top:rect.top-containerRect.top,
+    right:rect.right-containerRect.left,
+    bottom:rect.bottom-containerRect.top,
+    width:rect.width,
+    height:rect.height,
+    centerX:rect.left-containerRect.left+(rect.width/2),
+    centerY:rect.top-containerRect.top+(rect.height/2)
+  };
+}
+
+function point(box,edge,ratio=0.5){
+  if(edge==='top')return {x:box.left+(box.width*ratio),y:box.top};
+  if(edge==='bottom')return {x:box.left+(box.width*ratio),y:box.bottom};
+  if(edge==='left')return {x:box.left,y:box.top+(box.height*ratio)};
+  return {x:box.right,y:box.top+(box.height*ratio)};
+}
+
+function setSvgFrame(boardId,svgId){
+  const board=q(boardId);
+  const svg=q(svgId);
+  if(!board||!svg)return;
+  const rect=board.getBoundingClientRect();
+  svg.setAttribute('viewBox',`0 0 ${rect.width.toFixed(1)} ${rect.height.toFixed(1)}`);
+}
+
+function pathString(points){
+  return points.map((pt,index)=>`${index===0?'M':'L'} ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`).join(' ');
+}
+
+function setPath(id,points){
+  const el=q(id);
+  if(el&&points?.length>1)el.setAttribute('d',pathString(points));
+}
+
+function layoutDecideWires(){
+  const boardId='decide-board';
+  setSvgFrame(boardId,'decide-svg');
+  const entry=getBox('decide-entry',boardId);
+  const planner=getBox('decide-planner',boardId);
+  const gate=getBox('decide-gate',boardId);
+  const split=getBox('decide-split',boardId);
+  const labor=getBox('decide-labor',boardId);
+  const dispatch=getBox('decide-dispatch',boardId);
+  if(!entry||!planner||!gate||!split||!labor||!dispatch)return;
+
+  const entryX=clamp(entry.centerX,planner.left+28,planner.right-28);
+  setPath('dw-entry',[
+    {x:entryX,y:entry.bottom},
+    {x:entryX,y:planner.top}
+  ]);
+
+  const planStart=point(planner,'right',0.48);
+  const planEnd=point(gate,'left',0.46);
+  const planMidX=(planStart.x+planEnd.x)/2;
+  setPath('dw-plan-gate',[
+    planStart,
+    {x:planMidX,y:planStart.y},
+    {x:planMidX,y:planEnd.y},
+    planEnd
+  ]);
+
+  const rejectStart=point(gate,'bottom',0.45);
+  const splitTop=point(split,'top',0.54);
+  const rejectTurnY=splitTop.y-22;
+  setPath('dw-reject-down',[
+    rejectStart,
+    {x:rejectStart.x,y:rejectTurnY},
+    {x:splitTop.x,y:rejectTurnY},
+    splitTop
+  ]);
+
+  const splitLeft=point(split,'left',0.6);
+  const plannerReturn=point(planner,'bottom',0.62);
+  setPath('dw-reject-left',[
+    splitLeft,
+    {x:plannerReturn.x,y:splitLeft.y}
+  ]);
+  setPath('dw-loop-left',[
+    splitLeft,
+    {x:plannerReturn.x,y:splitLeft.y}
+  ]);
+  setPath('dw-loop-up',[
+    {x:plannerReturn.x,y:splitLeft.y},
+    plannerReturn
+  ]);
+
+  const passStart=point(gate,'bottom',0.62);
+  const laborTop=point(labor,'top',0.82);
+  const laborTurnY=Math.max(passStart.y+18,laborTop.y-14);
+  setPath('dw-pass-down',[
+    passStart,
+    {x:passStart.x,y:laborTurnY},
+    {x:laborTop.x,y:laborTurnY},
+    laborTop
+  ]);
+
+  const laborExit=point(labor,'left',0.78);
+  const dispatchRouteX=clamp(labor.left-36,dispatch.left+48,dispatch.right-48);
+  setPath('dw-pass-out',[
+    laborExit,
+    {x:dispatchRouteX,y:laborExit.y},
+    {x:dispatchRouteX,y:dispatch.top}
+  ]);
+}
+
+function layoutActWires(){
+  const boardId='act-board';
+  setSvgFrame(boardId,'act-svg');
+  const queue=getBox('act-queue',boardId);
+  const exec=getBox('act-exec',boardId);
+  const verify=getBox('act-verify',boardId);
+  const triage=getBox('act-triage',boardId);
+  const child=getBox('act-child',boardId);
+  if(!queue||!exec||!verify||!triage||!child)return;
+
+  const queueDownX=clamp(exec.centerX,queue.left+34,queue.right-34);
+  setPath('aw-queue-down',[
+    {x:queueDownX,y:queue.bottom},
+    {x:queueDownX,y:exec.top}
+  ]);
+
+  const execRight=point(exec,'right',0.48);
+  const verifyLeft=point(verify,'left',0.48);
+  const evY=(execRight.y+verifyLeft.y)/2;
+  setPath('aw-exec-verify',[
+    {x:execRight.x,y:evY},
+    {x:verifyLeft.x,y:evY}
+  ]);
+
+  setPath('aw-verify-child',[
+    point(verify,'bottom',0.5),
+    point(child,'top',0.5)
+  ]);
+
+  const triageRight=point(triage,'right',0.54);
+  const childLeft=point(child,'left',0.54);
+  const triageSharedY=(triageRight.y+childLeft.y)/2;
+  setPath('aw-child-triage',[
+    {x:triageRight.x,y:triageSharedY},
+    {x:childLeft.x,y:triageSharedY}
+  ]);
+
+  const childUpX=verify.right+14;
+  setPath('aw-child-up',[
+    {x:childUpX,y:child.top},
+    {x:childUpX,y:queue.bottom}
+  ]);
+}
+
+function layoutLoopWires(){
+  const boardId='loop-board';
+  setSvgFrame(boardId,'loop-svg');
+  const entry=getBox('loop-entry',boardId);
+  const core=getBox('loop-core',boardId);
+  const refine=getBox('loop-refine',boardId);
+  const rescope=getBox('loop-rescope',boardId);
+  const cont=getBox('loop-continue',boardId);
+  const learn=getBox('loop-learn',boardId);
+  if(!entry||!core||!refine||!rescope||!cont||!learn)return;
+
+  const entryBottom=point(entry,'bottom',0.5);
+  const coreTop=point(core,'top',0.5);
+  setPath('lw-entry',[
+    entryBottom,
+    coreTop
+  ]);
+
+  const refineTop=point(refine,'top',0.5);
+  const leftStart=point(core,'left',0.76);
+  const leftLaneX=refineTop.x;
+  setPath('lw-left-down',[
+    leftStart,
+    {x:leftLaneX,y:leftStart.y}
+  ]);
+  setPath('lw-left-out',[
+    {x:leftLaneX,y:leftStart.y},
+    {x:leftLaneX,y:refineTop.y-18},
+    refineTop
+  ]);
+
+  const rescopeTop=point(rescope,'top',0.5);
+  const rightStart=point(core,'right',0.76);
+  const rightLaneX=rescopeTop.x;
+  setPath('lw-right-down',[
+    rightStart,
+    {x:rightLaneX,y:rightStart.y}
+  ]);
+  setPath('lw-right-out',[
+    {x:rightLaneX,y:rightStart.y},
+    {x:rightLaneX,y:rescopeTop.y-18},
+    rescopeTop
+  ]);
+
+  const continueTop=point(cont,'top',0.5);
+  const continueBottom=point(cont,'bottom',0.5);
+  setPath('lw-down',[
+    {x:core.centerX,y:core.bottom},
+    {x:core.centerX,y:continueTop.y},
+    continueTop
+  ]);
+
+  const learnTop=point(learn,'top',0.5);
+  const learnTurnY=learnTop.y-16;
+  setPath('lw-learn',[
+    continueBottom,
+    {x:continueBottom.x,y:learnTurnY},
+    {x:learnTop.x,y:learnTurnY},
+    learnTop
+  ]);
+}
+
+let wireRaf=0;
+function scheduleWireLayout(){
+  cancelAnimationFrame(wireRaf);
+  wireRaf=requestAnimationFrame(()=>{
+    layoutDecideWires();
+    layoutActWires();
+    layoutLoopWires();
+  });
+}
+
+function updateButtons(id){
+  const current=phaseState[id];
+  const total=phaseTotals[id];
+  const done=current>=total-1;
+  const started=current>=0;
+  setDisabled([`${id}-back-top`],!started);
+  const stepLabel=!started?'Start':done?'Done':`Next \u00b7 ${current+1} / ${total}`;
+  setText([`${id}-step-top`],stepLabel);
+  setDisabled([`${id}-step-top`],done);
+  setDisabled([`${id}-reset-top`],!started);
+  setDisabled([`${id}-next-top`],!done);
+}
+
+function advance(id){
+  if(phaseState[id]>=phaseTotals[id]-1)return;
+  phaseState[id]+=1;
+  renderPhase(id,phaseState[id]);
+  updateButtons(id);
+  scheduleWireLayout();
+}
+
+function resetPhase(id){
+  phaseState[id]=-1;
+  renderPhase(id,-1);
+  updateButtons(id);
+  scheduleWireLayout();
+}
+
+function planHtml(items){
+  return items.map(({text,cls=''})=>`<span class="plan-chip ${cls}">${text}</span>`).join('');
+}
+
+function dagHtml(batches,note){
+  let out=batches.map(b=>{
+    const chips=b.tasks.map(t=>`<span class="dag-chip ${t.cls||''}">${t.text}</span>`).join('');
+    const arrow=b.arrow?`<span class="dag-arrow">${b.arrow}</span>`:'';
+    return `<div class="dag-batch"><span class="dag-label">${b.label}</span><div class="dag-tasks">${chips}${arrow}</div></div>`;
+  }).join('');
+  if(note)out+=`<div class="dag-note">${note}</div>`;
+  return out;
+}
+
+function strategyHtml(items){
+  return items.map((text)=>`<span class="strategy-chip">${text}</span>`).join('');
+}
+
+function renderObserve(step){
+  resetClasses(['obs-repo','obs-docs','obs-tests','obs-git','obs-s1','obs-s2','obs-s3','obs-s4','obs-context','obs-backlog']);
+  q('obs-context-body').innerHTML='waiting for observations';
+  q('obs-backlog-body').innerHTML='waiting for deferred work';
+
+  if(step<0){
+    setNote('observe','Start the scan.');
+    return;
+  }
+
+  if(step===0){
+    ['obs-repo','obs-docs','obs-tests','obs-git'].forEach((id)=>addState(id,'is-hot'));
+    setNote('observe','Sweep the repo, docs, tests, and recent changes. First just collect facts.');
+  }else if(step===1){
+    ['obs-s1','obs-s2','obs-s3','obs-s4'].forEach((id)=>addState(id,'is-hot'));
+    setNote('observe','Patterns start to show up: boundaries, hidden assumptions, proof gaps, and follow-up work.');
+  }else if(step===2){
+    addState('obs-context','is-hot');
+    q('obs-context-body').innerHTML='route boundaries<br>role hierarchy<br>cache coupling';
+    setNote('observe','Save durable findings to `CONTEXT.md` so they survive the session.');
+  }else if(step===3){
+    addState('obs-context','is-good');
+    addState('obs-backlog','is-hot');
+    q('obs-context-body').innerHTML='route boundaries<br>role hierarchy<br>cache coupling';
+    q('obs-backlog-body').innerHTML='started here<br>error-path tests<br>rate-limit gap';
+    setNote('observe','Start the backlog here, then keep it live through later phases like Act whenever non-blockers appear.');
+  }
+}
+
+function renderOrient(step){
+  resetClasses(['or-1','or-2','or-3','or-4','orient-lens','orient-facts','orient-risks','orient-unknowns','orient-summary']);
+  q('orient-facts-body').innerHTML='none yet';
+  q('orient-risks-body').innerHTML='none yet';
+  q('orient-unknowns-body').innerHTML='none yet';
+  q('orient-summary').textContent='No working model yet.';
+
+  if(step<0){
+    setNote('orient','Start to build the model.');
+    return;
+  }
+
+  if(step===0){
+    ['or-1','or-2','or-3','or-4','orient-lens'].forEach((id)=>addState(id,'is-hot'));
+    setNote('orient','Put the raw findings side by side so the shape of the job starts to appear.');
+  }else if(step===1){
+    ['orient-facts','orient-risks','orient-unknowns','orient-lens'].forEach((id)=>addState(id,'is-hot'));
+    q('orient-facts-body').innerHTML='policies use hierarchy<br>cache keys changed';
+    q('orient-risks-body').innerHTML='flat-role plan will drift';
+    q('orient-unknowns-body').innerHTML='401 paths still need proof';
+    setNote('orient','Sort the findings into what is true, what could bite you, and what still needs proof.');
+  }else if(step===2){
+    ['orient-facts','orient-risks','orient-summary'].forEach((id)=>addState(id,'is-hot'));
+    q('orient-facts-body').innerHTML='policies use hierarchy<br>cache keys changed';
+    q('orient-risks-body').innerHTML='flat-role plan will drift';
+    q('orient-unknowns-body').innerHTML='401 paths still need proof';
+    q('orient-summary').textContent='Working picture: this is really route-boundary and role-hierarchy work, with a proof gap on the 401 paths.';
+    setNote('orient','Now the job is compressed into a usable picture without hiding the dangerous parts.');
+  }else if(step===3){
+    ['orient-summary','orient-lens'].forEach((id)=>addState(id,'is-good'));
+    q('orient-facts-body').innerHTML='policies use hierarchy<br>cache keys changed';
+    q('orient-risks-body').innerHTML='flat-role plan will drift';
+    q('orient-unknowns-body').innerHTML='401 paths still need proof';
+    q('orient-summary').textContent='Decide now gets a clear picture: route boundaries, role hierarchy, and exact proof work for 401 behavior.';
+    setNote('orient','Decide receives a clear picture, not a loose pile of notes.');
+  }
+}
+
+function renderDecide(step){
+  resetClasses(['decide-entry','decide-planner','decide-gate','decide-split','decide-labor','decide-dispatch','dw-entry','dw-plan-gate','dw-reject-down','dw-reject-left','dw-loop-left','dw-loop-up','dw-pass-down','dw-pass-out','decide-reject-tag','decide-return-tag','decide-pass-tag']);
+
+  const coarse=dagHtml([
+    {label:'all',tasks:[{text:'auth'},{text:'guard routes'},{text:'rate limit'}]}
+  ],'no dependencies defined yet');
+  q('decide-plan').innerHTML=coarse;
+  q('decide-labor-copy').innerHTML='approval unlocks strategy';
+  q('decide-approved').innerHTML=planHtml([{text:'pending'}]);
+  q('decide-strategy').innerHTML=strategyHtml(['pending']);
+  q('decide-dispatch-copy').textContent='Act waits until the parent agent packages both the plan and the labor strategy.';
+
+  if(step<0){
+    setNote('decide','Start the scoping loop.');
+    return;
+  }
+
+  if(step===0){
+    q('decide-plan').innerHTML=coarse;
+    ['decide-entry','decide-planner','dw-entry'].forEach((id)=>addState(id,'is-hot'));
+    setNote('decide','The planner drafts a first cut: three coarse tasks with no dependency graph yet.');
+  }else if(step===1){
+    q('decide-plan').innerHTML=coarse;
+    ['decide-planner','decide-gate','dw-plan-gate'].forEach((id)=>addState(id,'is-hot'));
+    setNote('decide','The assessor tests each task. Can it execute without reinterpretation?');
+  }else if(step===2){
+    q('decide-plan').innerHTML=dagHtml([
+      {label:'all',tasks:[{text:'auth'},{text:'guard routes',cls:'is-bad'},{text:'rate limit'}]}
+    ],'"guard routes" covers multiple concerns \u2014 not atomic');
+    ['decide-gate','decide-split','dw-plan-gate','dw-reject-down'].forEach((id)=>addState(id,'is-bad'));
+    addState('decide-reject-tag','is-vis');
+    setNote('decide','Rejected. "guard routes" hides multiple concerns behind one name. It must split.');
+  }else if(step===3){
+    q('decide-plan').innerHTML=dagHtml([
+      {label:'b1 \u2016',tasks:[{text:'auth'},{text:'rate limit'}],arrow:'\u2193'},
+      {label:'b2 \u2016',tasks:[{text:'public routes'},{text:'admin routes',cls:'is-bad'}]}
+    ],'b2 depends on auth \u2022 public \u2016 admin run in parallel');
+    ['decide-planner','decide-split','dw-loop-left','dw-loop-up'].forEach((id)=>addState(id,'is-hot'));
+    addState('decide-return-tag','is-vis');
+    setNote('decide','Back to planner. "guard routes" splits into two children grouped by dependency. The graph takes shape.');
+  }else if(step===4){
+    q('decide-plan').innerHTML=dagHtml([
+      {label:'b1 \u2016',tasks:[{text:'auth'},{text:'rate limit'}],arrow:'\u2193'},
+      {label:'b2 \u2016',tasks:[{text:'public routes'},{text:'admin routes'}]}
+    ],'b2 depends on auth \u2022 public \u2016 admin run in parallel');
+    ['decide-planner','decide-gate','dw-plan-gate'].forEach((id)=>addState(id,'is-hot'));
+    setNote('decide','Second pass. Dependencies are explicit now. The assessor checks again.');
+  }else if(step===5){
+    q('decide-plan').innerHTML=dagHtml([
+      {label:'b1 \u2016',tasks:[{text:'auth'},{text:'rate limit'}],arrow:'\u2193'},
+      {label:'b2 \u2016',tasks:[{text:'public routes'},{text:'admin routes',cls:'is-bad'}]}
+    ],'"admin routes" has no proof plan \u2014 what does pass look like?');
+    ['decide-gate','decide-split','dw-plan-gate','dw-reject-down'].forEach((id)=>addState(id,'is-bad'));
+    addState('decide-reject-tag','is-vis');
+    setNote('decide','Rejected again. "admin routes" says what to build but not how to prove it works.');
+  }else if(step===6){
+    q('decide-plan').innerHTML=dagHtml([
+      {label:'b1 \u2016',tasks:[{text:'auth'},{text:'rate limit'}],arrow:'\u2193'},
+      {label:'b2',tasks:[{text:'public routes'}],arrow:'\u2193'},
+      {label:'b3 \u2016',tasks:[{text:'admin 401 test'},{text:'admin 200 test'}]}
+    ],'b3 depends on auth + public \u2022 401 \u2016 200 run in parallel');
+    ['decide-planner','decide-split','dw-loop-left','dw-loop-up'].forEach((id)=>addState(id,'is-hot'));
+    addState('decide-return-tag','is-vis');
+    setNote('decide','Back to planner. "admin routes" splits into two proof-specific tasks. The graph gains a third batch.');
+  }else if(step===7){
+    q('decide-plan').innerHTML=dagHtml([
+      {label:'b1 \u2016',tasks:[{text:'auth'},{text:'rate limit'}],arrow:'\u2193'},
+      {label:'b2',tasks:[{text:'public routes'}],arrow:'\u2193'},
+      {label:'b3 \u2016',tasks:[{text:'admin 401 test'},{text:'admin 200 test'}]}
+    ],'every leaf is atomic \u2022 every batch has explicit dependencies');
+    ['decide-planner','decide-gate','dw-plan-gate'].forEach((id)=>addState(id,'is-hot'));
+    setNote('decide','Third pass. Every task is atomic, every dependency is explicit, every batch is defined. The gate has enough.');
+  }else if(step===8){
+    q('decide-plan').innerHTML=dagHtml([
+      {label:'b1 \u2016',tasks:[{text:'auth',cls:'is-good'},{text:'rate limit',cls:'is-good'}],arrow:'\u2193'},
+      {label:'b2',tasks:[{text:'public routes',cls:'is-good'}],arrow:'\u2193'},
+      {label:'b3 \u2016',tasks:[{text:'admin 401 test',cls:'is-good'},{text:'admin 200 test',cls:'is-good'}]}
+    ],'approved \u2022 5 tasks \u2022 3 batches \u2022 valid DAG');
+    ['decide-gate','decide-labor','dw-pass-down'].forEach((id)=>addState(id,'is-good'));
+    q('decide-labor-copy').innerHTML='mode: direct<br>parent owns merges<br>delegate route batches<br>verify each return';
+    addState('decide-pass-tag','is-vis');
+    setNote('decide','Approved. The assessor also recommends a labor strategy based on task count and context load.');
+  }else if(step===9){
+    q('decide-plan').innerHTML=dagHtml([
+      {label:'b1 \u2016',tasks:[{text:'auth',cls:'is-good'},{text:'rate limit',cls:'is-good'}],arrow:'\u2193'},
+      {label:'b2',tasks:[{text:'public routes',cls:'is-good'}],arrow:'\u2193'},
+      {label:'b3 \u2016',tasks:[{text:'admin 401 test',cls:'is-good'},{text:'admin 200 test',cls:'is-good'}]}
+    ],'approved \u2022 5 tasks \u2022 3 batches \u2022 valid DAG');
+    ['decide-gate','decide-labor','dw-pass-down','dw-pass-out'].forEach((id)=>addState(id,'is-good'));
+    addState('decide-dispatch','is-vis','is-good');
+    q('decide-approved').innerHTML=planHtml([
+      {text:'auth',cls:'is-good'},
+      {text:'rate limit',cls:'is-good'},
+      {text:'public routes',cls:'is-good'},
+      {text:'admin 401 test',cls:'is-good'},
+      {text:'admin 200 test',cls:'is-good'}
+    ]);
+    q('decide-strategy').innerHTML=strategyHtml([
+      'mode: direct',
+      'parent orchestrates + merges',
+      'delegate route batches',
+      'verify each return'
+    ]);
+    q('decide-labor-copy').innerHTML='written: direct mode<br>parent orchestrates<br>delegate route batches<br>verify each return';
+    q('decide-dispatch-copy').textContent='Act receives the leaf tasks, dependency graph, and written labor strategy.';
+    addState('decide-pass-tag','is-vis');
+    setNote('decide','The parent agent writes the labor strategy and passes both plan and strategy into Act.');
+  }
+}
+
+function renderAct(step){
+  resetClasses(['act-queue','aq1','aq2','aq3','aq4','aq5','act-exec','act-verify','act-triage','act-child','act-backlog-line','aw-queue-down','aw-exec-verify','aw-verify-child','aw-child-triage','aw-child-up','act-drift-tag']);
+  q('aq1').textContent='auth';
+  q('aq2').textContent='rate limit';
+  q('aq3').textContent='public routes';
+  q('aq4').textContent='admin 401';
+  q('aq5').textContent='admin 200';
+  q('act-strategy').innerHTML=strategyHtml([
+    'parent: orchestrate',
+    'delegate route batches',
+    'verify every task'
+  ]);
+  q('act-backlog-line').textContent='Non-blockers still go to backlog while Act is running.';
+  q('act-triage-body').textContent='keep / refactor / remove';
+  q('act-child-body').textContent='D+1 stays idle';
+
+  if(step<0){
+    setNote('act','Start execution.');
+    return;
+  }
+
+  if(step===0){
+    ['aq1','aq2'].forEach(id=>addState(id,'is-active'));
+    ['act-queue','act-exec','aw-queue-down'].forEach(id=>addState(id,'is-hot'));
+    setNote('act','Batch 1 starts: auth and rate limit run in parallel per the dependency graph. The labor strategy guides delegation.');
+  }else if(step===1){
+    addState('aq1','is-done');
+    addState('aq2','is-done');
+    ['act-exec','aw-exec-verify'].forEach(id=>addState(id,'is-hot'));
+    addState('act-verify','is-good');
+    addState('act-backlog-line','is-hot');
+    q('act-backlog-line').textContent='Logged to BACKLOG.md: cache-key migration noted but not a blocker.';
+    setNote('act','Batch 1 verified. Both tasks pass the assessor. Non-blockers go to backlog so nothing is lost.');
+  }else if(step===2){
+    addState('aq1','is-done');
+    addState('aq2','is-done');
+    addState('aq3','is-active');
+    addState('act-exec','is-hot');
+    ['act-verify','aw-exec-verify','aw-verify-child'].forEach(id=>addState(id,'is-bad'));
+    addState('act-drift-tag','is-vis');
+    q('act-backlog-line').textContent='Backlog stays open. Only true blockers stop Act.';
+    setNote('act','During batch 2, the assessor detects a blocker: role hierarchy assumptions are wrong. Act halts.');
+  }else if(step===3){
+    addState('aq1','is-done');
+    addState('aq2','is-done');
+    addState('aq3','is-stale');
+    ['act-triage','aw-child-triage'].forEach(id=>addState(id,'is-hot'));
+    q('act-triage-body').innerHTML='<span class="mini keep">auth keep</span><span class="mini keep">rate limit keep</span><span class="mini refactor">public refactor</span>';
+    q('act-backlog-line').textContent='Backlog keeps non-blockers alive while the blocker is resolved.';
+    setNote('act','Completed work is triaged against the blocker: keep what holds, mark what needs refactoring.');
+  }else if(step===4){
+    addState('aq1','is-done');
+    addState('aq2','is-done');
+    addState('aq3','is-stale');
+    q('act-triage-body').innerHTML='<span class="mini keep">auth keep</span><span class="mini keep">rate limit keep</span><span class="mini refactor">public refactor</span>';
+    ['act-child','aw-verify-child'].forEach(id=>addState(id,'is-hot'));
+    addState('act-drift-tag','is-vis');
+    q('act-child-body').textContent='child starts at Observe';
+    setNote('act','The blocker runs deeper than this plan. A child OODA loop spawns at Observe to resolve it. Parent Act halts.');
+  }else if(step===5){
+    addState('aq1','is-done');
+    addState('aq2','is-done');
+    addState('aq3','is-active');
+    addState('aq4','is-hot');
+    addState('aq5','is-hot');
+    q('act-strategy').innerHTML=strategyHtml([
+      'parent: merge + orchestrate',
+      'delegate admin 401 / 200',
+      'verify after each merge'
+    ]);
+    addState('act-queue','is-good');
+    addState('act-child','is-good');
+    addState('aw-child-up','is-good');
+    q('act-child-body').textContent='child resolved, parent resumes';
+    q('act-backlog-line').textContent='Backlog carries forward as Act resumes with the revised plan.';
+    setNote('act','Child loop resolved the blocker. Act resumes with the revised plan and updated labor strategy.');
+  }
+}
+
+function renderLoop(step){
+  resetClasses(['loop-entry','loop-core','loop-refine','loop-rescope','loop-continue','loop-learn','lw-entry','lw-left-down','lw-left-out','lw-right-down','lw-right-out','lw-down','lw-learn']);
+
+  if(step<0){
+    setNote('loop','Start the verdict.');
+    return;
+  }
+
+  if(step===0){
+    ['loop-entry','loop-core','lw-entry'].forEach((id)=>addState(id,'is-hot'));
+    setNote('loop','Loop looks at the whole direction, not just a checklist.');
+  }else if(step===1){
+    ['loop-core','loop-refine','lw-left-down','lw-left-out'].forEach((id)=>addState(id,'is-hot'));
+    setNote('loop','REFINE means the goal still holds, but Decide needs a better plan.');
+  }else if(step===2){
+    addState('loop-core','is-hot');
+    ['loop-rescope','lw-right-down','lw-right-out'].forEach((id)=>addState(id,'is-bad'));
+    setNote('loop','RESCOPE means the model was wrong, so the system goes farther back.');
+  }else if(step===3){
+    addState('loop-core','is-good');
+    addState('loop-continue','is-good');
+    addState('loop-learn','is-good','is-vis');
+    addState('lw-down','is-good');
+    addState('lw-learn','is-good');
+    setNote('loop','CONTINUE updates durable state, curates backlog, and clears the ephemeral task so the next cycle starts clean.');
+  }
+}
+
+function renderPhase(id,step){
+  if(id==='observe')renderObserve(step);
+  if(id==='orient')renderOrient(step);
+  if(id==='decide')renderDecide(step);
+  if(id==='act')renderAct(step);
+  if(id==='loop')renderLoop(step);
+}
+
+function resetAllPhases(){
+  phases.forEach((id)=>{
+    phaseState[id]=-1;
+    renderPhase(id,-1);
+    updateButtons(id);
+  });
+  scheduleWireLayout();
+}
+
+resetAllPhases();
+window.addEventListener('resize',scheduleWireLayout);
+if(window.ResizeObserver){
+  const wireObserver=new ResizeObserver(()=>scheduleWireLayout());
+  ['decide-board','act-board','loop-board'].forEach((id)=>wireObserver.observe(q(id)));
+}
+if(document.fonts?.ready)document.fonts.ready.then(()=>scheduleWireLayout());
+scheduleWireLayout();
+
+const revealObserver=new IntersectionObserver((entries)=>{
+  entries.forEach((entry)=>{
+    if(entry.isIntersecting)entry.target.classList.add('vis');
+  });
+},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fi').forEach((el)=>revealObserver.observe(el));
+
+const sections=[...document.querySelectorAll('section[data-s]')];
+const nav=q('nav');
+sections.forEach((section)=>{
+  const dot=document.createElement('button');
+  dot.innerHTML=`<span class="tip">${section.dataset.l}</span>`;
+  dot.onclick=()=>section.scrollIntoView({behavior:'smooth',block:'start'});
+  nav.appendChild(dot);
+});
+const dots=[...nav.querySelectorAll('button')];
+const navObserver=new IntersectionObserver((entries)=>{
+  entries.forEach((entry)=>{
+    if(entry.isIntersecting){
+      const idx=sections.indexOf(entry.target);
+      dots.forEach((dot,i)=>dot.classList.toggle('on',i===idx));
+    }
+  });
+},{threshold:.45});
+sections.forEach((section)=>navObserver.observe(section));
+</script>
+</body>
+</html>
