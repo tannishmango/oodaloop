@@ -11,8 +11,7 @@ description: Reconcile and refresh OODALOOP state after interruptions or context
 
 ## Preconditions
 
-- `.oodaloop/` must exist. If not, report "No OODALOOP state found. Run `/oodaloop-start` first." and stop.
-- `.oodaloop/CONTEXT.md` must exist.
+- `.oodaloop/CONTEXT.md` must exist. **Verify by reading it** — if the Read tool returns an error, report "No OODALOOP state found. Run `/oodaloop-start` first." and stop. Do not glob for `.oodaloop/**` (glob skips hidden directories).
 
 ## Workflow
 

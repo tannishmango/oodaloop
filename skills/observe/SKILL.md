@@ -13,8 +13,7 @@ description: Research and gather requirements through structured discovery.
 
 ## Preconditions
 
-- `.oodaloop/` must exist. If not, prompt for `/oodaloop-start`.
-- `.oodaloop/CONTEXT.md` must exist.
+- `.oodaloop/CONTEXT.md` must exist. **Verify by reading it** — if the Read tool returns an error, prompt for `/oodaloop-start`. Do not glob for `.oodaloop/**` (glob skips hidden directories).
 
 ## Workflow
 

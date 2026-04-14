@@ -13,13 +13,12 @@ description: Kick off a new OODALOOP flow with guided intake and next-step routi
 
 ### 1. Ensure state exists
 
-Check whether `.oodaloop/` exists in the workspace root.
+Read `.oodaloop/CONTEXT.md` directly. Do not glob for `.oodaloop/**` (glob skips hidden directories).
 
-- If missing: explain that OODALOOP state is not initialized and recommend running `/oodaloop-init` now.
-- If the user agrees, run `/oodaloop-init` first, then continue this start flow.
-- If the user does not agree, stop with a concise note: "Cannot start OODALOOP flow without initialization."
-
-If `.oodaloop/` exists, continue.
+- If the Read tool returns an error (file not found): explain that OODALOOP state is not initialized and recommend running `/oodaloop-init` now.
+  - If the user agrees, run `/oodaloop-init` first, then continue this start flow.
+  - If the user does not agree, stop with a concise note: "Cannot start OODALOOP flow without initialization."
+- If it returns content: `.oodaloop/` exists. Continue.
 
 ### 2. Reconcile existing state (sync-first)
 

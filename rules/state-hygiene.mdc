@@ -7,11 +7,13 @@ alwaysApply: true
 
 `.oodaloop/` lives at the **workspace root** of the repo being worked in — the same directory that contains `.git/`. It is NOT in the plugin directory, not in `~/.cursor/`, or `~/.claude/`, and not in any subdirectory.
 
-To verify it exists, use one of:
-- `ls -d .oodaloop/ 2>/dev/null` from the workspace root
-- `Glob(".oodaloop/CONTEXT.md")` scoped to the workspace root
+### Detecting `.oodaloop/`
 
-Do NOT use bare `ls` — it hides dotfiles/dotdirs by default and will miss `.oodaloop/`.
+**Preferred**: Read `.oodaloop/CONTEXT.md` directly using the Read tool. If it returns content, the directory exists. If it errors, it doesn't. Every skill needs CONTEXT.md content anyway — reading it is both the existence check and the first workflow step.
+
+**Fallback**: `ls -d .oodaloop/ 2>/dev/null` from the workspace root.
+
+**Do NOT** glob for `.oodaloop/**` or `.oodaloop/*` — glob's `**` wildcard skips hidden directories (those starting with `.`), so patterns that enumerate dotdir contents silently return zero results even when the directory exists. Do NOT use bare `ls` — it hides dotfiles/dotdirs by default.
 
 ## File types
 

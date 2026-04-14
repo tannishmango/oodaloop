@@ -11,9 +11,9 @@ User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
 
 1. Determine the project name from the workspace root directory name (e.g., `my-app`). If the user provides a name, use that instead.
 
-2. Check if `.oodaloop/` already exists in the workspace root.
-   - If it exists: warn the user and **stop**. Do not overwrite existing state.
-   - If it does not exist: proceed.
+2. Check if `.oodaloop/` already exists by reading `.oodaloop/CONTEXT.md`. Do not glob for `.oodaloop/**` (glob skips hidden directories).
+   - If the Read tool returns content: warn the user and **stop**. Do not overwrite existing state.
+   - If it returns an error (file not found): proceed.
 
 3. **Scan for plugin conflicts.** Check which plugins are active in this workspace. For each, assess interference risk against OODALOOP:
    - **High risk** (recommend disable): injects mandatory context via hooks, enforces unconditional hard gates, or overrides workflow autonomy.
