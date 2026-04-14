@@ -6,6 +6,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [M4.7] - 2026-04-14
+
 ### Fixed
 - Dotdir detection: skills and state-hygiene rule now instruct agents to read `.oodaloop/CONTEXT.md` directly instead of globbing `.oodaloop/**` (glob silently skips hidden directories, causing false "not found" in other projects)
 
