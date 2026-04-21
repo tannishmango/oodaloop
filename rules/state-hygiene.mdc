@@ -50,23 +50,26 @@ alwaysApply: true
 When you encounter inconsistent state, do not silently continue or halt without guidance. Detect, report, and recommend.
 
 ### Detection checks
-Run these when a skill's preconditions feel wrong or state seems off:
+Run these when a skill's preconditions feel wrong or state seems off.
+
+Rows marked *(mechanized)* are enforced at commit time on fixtures under `tests/fixtures/state-hygiene/`. Live `.oodaloop/*.task.md` files are forbidden from commits by hook block #2, so runtime detection of these violations remains the responsibility of skills (advisory only).
 
 | Check | Inconsistency |
 |---|---|
 | `.oodaloop/` exists but `CONTEXT.md` missing | Partial init -- directory created but setup incomplete |
 | `.oodaloop/` exists but `BACKLOG.md` missing | Pre-backlog init or accidental deletion |
 | Phase transition invoked (orient, decide, etc.) but no task file exists on disk | Observe ran in conversation but never persisted the task file -- re-run observe |
-| Task file phase says `orient` but no Observations section | Observe didn't complete |
-| Task file phase says `decide` but no Assessment section | Orient didn't complete |
-| Task file phase says `act` but no Plan section | Decide didn't complete |
-| Task file phase says `loop` but no Execution Log section | Act didn't complete |
-| Task file phase says `paused` but no Paused section | Pause metadata lost |
+| Task file phase says `orient` but no Observations section | Observe didn't complete *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
+| Task file phase says `decide` but no Assessment section | Orient didn't complete *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
+| Task file phase says `act` but no Plan section | Decide didn't complete *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
+| Task file phase says `loop` but no Execution Log section | Act didn't complete *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
+| Task file phase says `paused` but no Paused section | Pause metadata lost *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
 | Task file has `Parent: <slug>` but parent task file doesn't exist | Parent was deleted without resuming child, or child is orphaned |
 | Task file has Paused section with `Child-slug: <slug>` but child task doesn't exist | Child completed but parent wasn't un-paused |
-| Following `Parent:` references forms a cycle (A → B → A) | Circular chain -- should never happen, indicates corruption |
-| Chain depth exceeds 3 without evidence of user consent in the deepest task file | Runaway recursion -- act skill should have asked before going this deep |
-| Paused section exists but is missing required fields (`Reason`, `Child-slug`, `Strategy`, `Resume-instructions`) | Incomplete pause -- cold start will fail |
+| Following `Parent:` references forms a cycle (A → B → A) | Circular chain -- should never happen, indicates corruption *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
+| Chain depth exceeds 3 without evidence of user consent in the deepest task file | Runaway recursion -- act skill should have asked before going this deep *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
+| Paused section exists but is missing required fields (`Reason`, `Child-slug`, `Strategy`, `Resume-instructions`) | Incomplete pause -- cold start will fail *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
+| `Mode:` line in any task file has a value other than `direct` or `delegated` | Mode vocabulary violation — assessor agent spec forbids any other value *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
 | Paused section `Strategy` is `subagent` but child task file doesn't exist and no error was recorded | Subagent failed to create child task file -- dispatch failure |
 | Child task file exists but its phase timestamp is stale (>24h with no progress) and parent `Strategy` is `subagent` | Subagent likely failed or hung mid-child-cycle |
 | Execution log has a checkpoint with `blocker-detected` but the next task was still executed (no pause, no Step 3 handling) | Checkpoint blocker was ignored -- execution integrity violation |

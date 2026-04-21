@@ -75,4 +75,179 @@ else
   echo "[oodaloop hook] SKIP_CHANGELOG set, bypassing changelog check"
 fi
 
+# 6) Validate .task.md structure for staged fixture files.
+#    Reads staged content via `git show ":$file"` (M4.7 / block #4 precedent).
+#    Scope: tests/fixtures/state-hygiene/*.task.md only.
+#    Live .oodaloop/*.task.md files are rejected by block #2 before reaching here.
+#
+#    Error format: [oodaloop hook] ERROR: <file>: <validator>: <violation> (expected: <expected>)
+#
+#    Validators:
+#      mode-vocabulary   — Mode: must be exactly "direct" or "delegated"
+#      paused-completeness — ## Paused section must contain all 8 required fields
+#      phase-section     — phase metadata must imply the required section is present
+#      parent-depth      — Parent: chain must be a DAG with depth ≤ 3 unless Depth-consent: present
+
+validate_task_file() {
+  local file="$1"
+  local content
+  # Read staged content; fall back to working-tree for newly-added files where git show returns empty.
+  content="$(git show ":$file" 2>/dev/null)"
+  if [ -z "$content" ] && [ -f "$file" ]; then
+    content="$(cat "$file")"
+  fi
+  [ -z "$content" ] && return 0
+
+  local errors=0
+
+  # --- mode-vocabulary ---
+  local mode_line
+  mode_line="$(printf '%s\n' "$content" | grep -m1 '^Mode:')" || true
+  if [ -n "$mode_line" ]; then
+    local mode_val
+    mode_val="$(printf '%s\n' "$mode_line" | sed 's/^Mode:[[:space:]]*//' | tr -d '[:space:]')"
+    if [ "$mode_val" != "direct" ] && [ "$mode_val" != "delegated" ]; then
+      echo "[oodaloop hook] ERROR: $file: mode-vocabulary: Mode: $mode_val (expected: direct or delegated)"
+      errors=$((errors + 1))
+    fi
+  fi
+
+  # --- paused-completeness ---
+  if printf '%s\n' "$content" | grep -q '^## Paused$'; then
+    # Extract Paused section: from "## Paused" until next "## " header or EOF.
+    local paused_section
+    paused_section="$(printf '%s\n' "$content" | awk '/^## Paused$/{found=1; next} found && /^## /{exit} found{print}')"
+    local required_fields="Reason Blocked-during Completed-before-pause Child-objective Child-slug Strategy Paused-at Resume-instructions"
+    for field in $required_fields; do
+      if ! printf '%s\n' "$paused_section" | grep -q "^${field}:"; then
+        echo "[oodaloop hook] ERROR: $file: paused-completeness: missing field '${field}' in ## Paused section (expected: all 8 required fields present)"
+        errors=$((errors + 1))
+      fi
+    done
+  fi
+
+  # --- phase-section ---
+  local phase_line
+  phase_line="$(printf '%s\n' "$content" | grep -m1 '^## Phase:')" || true
+  if [ -n "$phase_line" ]; then
+    local phase_val
+    phase_val="$(printf '%s\n' "$phase_line" | sed 's/^## Phase:[[:space:]]*//' | tr -d '[:space:]')"
+    local required_section=""
+    case "$phase_val" in
+      orient)  required_section="## Observations" ;;
+      decide)  required_section="## Assessment" ;;
+      act)     required_section="## Plan" ;;
+      loop)    required_section="## Execution Log" ;;
+      paused)  required_section="## Paused" ;;
+    esac
+    if [ -n "$required_section" ]; then
+      # Match the section header as an exact line (prevents false positives from content
+      # that merely mentions the header name, e.g. "no ## Plan section" in Objective text).
+      if ! printf '%s\n' "$content" | grep -q "^${required_section}$"; then
+        echo "[oodaloop hook] ERROR: $file: phase-section: phase '$phase_val' requires '${required_section}' section (expected: section present)"
+        errors=$((errors + 1))
+      fi
+    fi
+  fi
+
+  return $errors
+}
+
+_get_file_content() {
+  # Returns content of a .task.md file: staged copy takes precedence over working tree.
+  local f="$1"
+  local c
+  c="$(git show ":$f" 2>/dev/null)"
+  if [ -z "$c" ] && [ -f "$f" ]; then
+    c="$(cat "$f")"
+  fi
+  printf '%s\n' "$c"
+}
+
+_depth_walk() {
+  # Walk Parent: chain from file $1.
+  # Outputs: "CYCLE" on circular reference, or "<depth>:<consent>" where
+  #   depth = number of hops to root, consent = 1 if any file has Depth-consent: else 0.
+  # Encodes both values in stdout to survive subshell invocation.
+  local current_file="$1"
+  local depth=0
+  local consent=0
+  local visited=""
+
+  while true; do
+    # Cycle detection.
+    case "$visited" in
+      *"|$current_file|"*) echo "CYCLE"; return ;;
+    esac
+    visited="${visited}|${current_file}|"
+
+    local content
+    content="$(_get_file_content "$current_file")"
+    [ -z "$content" ] && break
+
+    if printf '%s\n' "$content" | grep -q '^Depth-consent:'; then
+      consent=1
+    fi
+
+    local parent_line
+    parent_line="$(printf '%s\n' "$content" | grep -m1 '^Parent:')" || true
+    [ -z "$parent_line" ] && break
+
+    local parent_slug
+    parent_slug="$(printf '%s\n' "$parent_line" | sed 's/^Parent:[[:space:]]*//' | tr -d '[:space:]')"
+    [ -z "$parent_slug" ] && break
+
+    # Locate parent file: check staged fixtures first, then working-tree fixtures.
+    local parent_file="tests/fixtures/state-hygiene/${parent_slug}.task.md"
+    if ! git show ":$parent_file" >/dev/null 2>&1 && [ ! -f "$parent_file" ]; then
+      # Parent not found — chain unresolvable.
+      break
+    fi
+
+    depth=$((depth + 1))
+    current_file="$parent_file"
+  done
+
+  echo "${depth}:${consent}"
+}
+
+validate_depth() {
+  local file="$1"
+  local result
+  result="$(_depth_walk "$file")"
+
+  if [ "$result" = "CYCLE" ]; then
+    echo "[oodaloop hook] ERROR: $file: parent-depth: circular Parent: reference detected (expected: acyclic chain)"
+    return 1
+  fi
+
+  local depth consent
+  depth="${result%%:*}"
+  consent="${result##*:}"
+
+  if [ "$depth" -gt 3 ] && [ "$consent" -eq 0 ]; then
+    echo "[oodaloop hook] ERROR: $file: parent-depth: chain depth $depth exceeds 3 without Depth-consent: marker in deepest file (expected: depth ≤ 3 or Depth-consent: present)"
+    return 1
+  fi
+  return 0
+}
+
+# Validate only valid-*.task.md fixtures on commit (regression: validator must still pass
+# well-formed files). The invalid-*.task.md fixtures are manual-test-only tools — staging
+# them to test the validator is intentional and should not block their commit.
+fixture_errors=0
+while IFS= read -r file; do
+  [ -z "$file" ] && continue
+  case "$file" in
+    tests/fixtures/state-hygiene/valid*.task.md)
+      validate_task_file "$file" || fixture_errors=$((fixture_errors + 1))
+      validate_depth "$file" || fixture_errors=$((fixture_errors + 1))
+      ;;
+  esac
+done <<< "$staged_files"
+
+if [ "$fixture_errors" -gt 0 ]; then
+  exit 1
+fi
+
 echo "[oodaloop hook] pre-commit checks passed"

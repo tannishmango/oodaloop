@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- **Cycle log**: `skills/loop/SKILL.md` Step 6 now appends one line per verdict to `.oodaloop/CYCLES.log` (gitignored; append-only). Field semantics defined inline: `depth` (Parent: chain hops at verdict time), `subloops` (distinct Child-slug values), `tasks` (plan task count), `refines`/`rescopes` (prior verdict markers). Unrecoverable fields write `?`. Foundational signal for I-3, I-4, I-12, and I-13 audits.
+- **Pre-commit validator block #6**: `.githooks/pre-commit` now validates staged `tests/fixtures/state-hygiene/*.task.md` files for: Mode vocabulary (must be `direct` or `delegated`), Paused 8-field completeness, phase↔section pairing (orient→Observations, decide→Assessment, act→Plan, loop→Execution Log, paused→Paused), and Parent DAG/depth (≤3 or `Depth-consent:` present). Standard error format: `[oodaloop hook] ERROR: <file>: <validator>: <violation> (expected: <expected>)`.
+- **State-hygiene fixture set**: `tests/fixtures/state-hygiene/` — one valid baseline (`valid.task.md`), four malformed fixtures (invalid-mode, invalid-paused, invalid-phase-section, invalid-depth chain), one valid depth-consent chain, and a `README.md` documenting harness invocation via `SKIP_CHANGELOG=1 git add <fixture> && .githooks/pre-commit`.
+- **State-hygiene rule** (`rules/state-hygiene.mdc`): detection table rows for phase↔section pairing, Paused completeness, cycle detection, and depth-consent now marked *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)*. New row added for Mode vocabulary violation. Explanatory note above the table clarifies the mechanical-vs-advisory split.
+
+File touchpoints: `skills/loop/SKILL.md`, `.githooks/pre-commit`, `.gitignore`, `rules/state-hygiene.mdc`, `tests/fixtures/state-hygiene/*` (new directory), `docs/IMPROVEMENTS.md`.
+
 ## [M4.7] - 2026-04-14
 
 ### Fixed

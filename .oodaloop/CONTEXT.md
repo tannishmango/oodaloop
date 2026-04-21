@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-03-19 (M3.14 subcycle redesign)
+> Last refreshed: 2026-04-21 (I-1: cycle log + state-hygiene validators)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -11,10 +11,10 @@ Build OODALOOP into a functional plugin that orchestrates project delivery using
 Standard git workflow. No branch protection. Commit messages are descriptive, imperative mood. No `.gitattributes`. No `CONTRIBUTING.md`.
 
 ### Code Quality
-Pre-commit hook at `.githooks/pre-commit` enforces: sync to local Cursor install, blocks committing ephemeral `.oodaloop/*.task.md` files, validates command→skill linkage, blocks deprecated naming, requires `CHANGELOG.md` in staged files (bypass with `SKIP_CHANGELOG=1`). No linters or formatters (plugin is pure markdown/declarative).
+Pre-commit hook at `.githooks/pre-commit` enforces: sync to local Cursor install, blocks committing ephemeral `.oodaloop/*.task.md` files, validates command→skill linkage, blocks deprecated naming, requires `CHANGELOG.md` in staged files (bypass with `SKIP_CHANGELOG=1`), validates `tests/fixtures/state-hygiene/*.task.md` for Mode vocabulary, Paused completeness, phase↔section pairing, and Parent depth/DAG (block #6). No linters or formatters (plugin is pure markdown/declarative).
 
 ### Testing
-No automated test framework. Plugin is tested by running commands against target projects (e.g., `/oodaloop-init` on `autotracing` repo). Structural validation via file existence checks.
+No automated test framework. Plugin is tested by running commands against target projects (e.g., `/oodaloop-init` on `autotracing` repo). Structural validation via file existence checks. State-hygiene validator fixtures live at `tests/fixtures/state-hygiene/`; invoked via `SKIP_CHANGELOG=1 git add <fixture> && .githooks/pre-commit` (see README in that directory).
 
 ### CI/CD
 None detected. No `.github/workflows/`, no CI pipeline.
@@ -26,7 +26,7 @@ None. Pure markdown plugin with no package manager, no lockfiles, no runtime dep
 This plugin has commands, skills, agents, rules, and templates, and supports local plugin loading for development.
 
 ## Architecture
-Plugin follows commands → skills → agents pattern. Commands are thin wrappers invoking skills. Skills contain procedural logic. Agents define roles with readonly constraints (only executor writes). Doctrine lives in `foundation/` (PRINCIPLES.md, PRINCIPLES-COMPRESSED.md, SYSTEMS-REFERENCE.md, CODE-DESIGN.md). State lives in `.oodaloop/` using CONTEXT.md (persistent) + BACKLOG.md (persistent) + task files (ephemeral). Task files support pause/resume for recursive sub-cycles via Parent/Paused metadata. `CHANGELOG.md` tracks releases.
+Plugin follows commands → skills → agents pattern. Commands are thin wrappers invoking skills. Skills contain procedural logic. Agents define roles with readonly constraints (only executor writes). Doctrine lives in `foundation/` (PRINCIPLES.md, PRINCIPLES-COMPRESSED.md, SYSTEMS-REFERENCE.md, CODE-DESIGN.md). State lives in `.oodaloop/` using CONTEXT.md (persistent) + BACKLOG.md (persistent) + task files (ephemeral). Task files support pause/resume for recursive sub-cycles via Parent/Paused metadata. `CHANGELOG.md` tracks releases. `.oodaloop/CYCLES.log` is an append-only self-observation signal written by `loop/SKILL.md` Step 6 (gitignored; one line per verdict). Structural validation lives in `tests/fixtures/state-hygiene/` (enforced by pre-commit block #6).
 
 ## Decisions
 
@@ -144,6 +144,13 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-03-19: Agents reduced from 5 to 4. Verifier + sentinel merged into assessor (dual-mode: verify per-task in act, assess aggregate in loop). Researcher expanded with analytical synthesis capability for orient.
 - 2026-03-19: Scanning consolidated. Sync sheds convention scanning and proof auditing (now pure state reconciliation + staleness detection). Observe owns active-cycle scanning. Init dispatches researcher for bootstrap.
 - 2026-03-19: Each phase skill anchored with Boyd-canonical one-liner referencing foundation/OODALOOP.md.
+
+### I-1 (cycle log + state-hygiene validators)
+- 2026-04-21: `loop/SKILL.md` Step 6 appends one line per verdict to `.oodaloop/CYCLES.log` (gitignored). Field semantics: depth=Parent chain hops, subloops=distinct Child-slug values, tasks=T<n> headings in Plan, refines/rescopes=prior verdict markers. `?` for any unrecoverable field.
+- 2026-04-21: Pre-commit block #6 validates staged `tests/fixtures/state-hygiene/*.task.md`: Mode vocabulary (direct|delegated), Paused 8-field completeness, phase↔section pairing, Parent DAG/depth (>3 without Depth-consent: marker = violation). Depth threshold is `depth > 3` (i.e., 5+ file chains require consent).
+- 2026-04-21: `tests/` directory added (never before committed). Commit must include `git add tests/`.
+- 2026-04-21: `docs/` directory now tracked (IMPROVEMENTS.md). Commit must include `git add docs/`.
+- 2026-04-21: Mechanism precedent established: binding contracts enforced by build (pre-commit), not agent prose. Future contract additions default to mechanism unless judgment-only.
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level

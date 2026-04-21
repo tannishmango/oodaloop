@@ -72,7 +72,25 @@ Read `.oodaloop/BACKLOG.md`. Update it:
 
 When recommending next steps to the user, reference the top items from the Next section.
 
-### 6. Handle task file lifecycle
+### 6. Append cycle log entry
+
+Before any task file lifecycle handling, append exactly one line to `.oodaloop/CYCLES.log`:
+
+```
+<ISO date> slug=<task-slug> verdict=<CONTINUE|REFINE|RESCOPE> depth=<n|?> subloops=<n|?> tasks=<n|?> refines=<n|?> rescopes=<n|?>
+```
+
+**Field semantics** (read from the current task file at verdict time):
+
+- `depth` — Count of `Parent:` hops walkable from this task file to root (0 if no `Parent:` field; 1 if direct child; etc.). If an intermediate task file is missing, write `?`.
+- `subloops` — Count of distinct `Child-slug:` values that appear in all `## Paused` sections in this task file's history. Each unique slug counts once.
+- `tasks` — Count of `### T<n>:` headings in the `## Plan` section of this task file.
+- `refines` — Count of lines matching `^Verdict: REFINE` in this task file's body prior to the current verdict being appended.
+- `rescopes` — Count of lines matching `^Verdict: RESCOPE` in this task file's body prior to the current verdict being appended.
+
+Write `?` (literal question mark) for any field that cannot be determined — never leave a field blank or omit it. The log is append-only; never rewrite or truncate it.
+
+### 7. Handle task file lifecycle
 - If verdict is **REFINE**: append verdict, keep task file, update phase to `decide`.
 - If verdict is **RESCOPE**: append verdict, keep task file, update phase to `observe`.
 - If verdict is **CONTINUE** and all work is complete: append the verdict to the task file. Then handle parent resumption:
@@ -93,7 +111,7 @@ When recommending next steps to the user, reference the top items from the Next 
     This section is read by `/oodaloop-start` (via sync) when the user opens a new conversation. Recommend the user run `/oodaloop-start` to resume.
   - **`in-chat`**: delete the child task file and resume execution of the parent task inline.
 
-### 7. Report
+### 8. Report
 Report verdict, absorbed learnings, and next step to the user.
 
 ## Output

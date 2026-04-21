@@ -5,6 +5,7 @@ Items discovered during OODA cycles, user conversations, and execution. Curated 
 ## Next
 Prioritized, ready to cycle into.
 
+- **pre-commit-content-loading-dedup**: `validate_task_file` and `_get_file_content` in `.githooks/pre-commit` both contain the same 4-line `git show ":$file"; if empty, cat $file` pattern. Extract into a single call to `_get_file_content` from `validate_task_file` to avoid divergence if the fallback behavior ever changes. [2026-04-21]
 - **subcycle-live-test**: Run a real OODALOOP cycle on a target project (e.g., extracting status command into a skill) to validate checkpoint assessor fires, discovery classification works, and sub-cycle trigger path is reachable. [2026-03-19]
 
 ## Later
@@ -16,6 +17,7 @@ Valuable, not urgent. Promote to Next when dependencies clear or priority shifts
 - **agent-tuning**: Evidence-based model selection per agent after enough real cycles to generate data. [2026-03-16]
 
 ## Done
+- **mechanize-i1**: Cycle log (`loop/SKILL.md` Step 6 → `.oodaloop/CYCLES.log`), pre-commit validator block #6 (Mode vocabulary, Paused completeness, phase↔section, Parent DAG/depth), state-hygiene rule labeling, fixture set at `tests/fixtures/state-hygiene/`. [done 2026-04-21]
 - **subcycle-redesign**: Mandatory per-task checkpoint with readonly assessor, three execution strategies (subagent/new-chat/in-chat), enhanced Paused section for cold-start, CODE-DESIGN.md for design review, 6 new recovery checks. 8 files, 1 new. [done 2026-03-19]
 - **adaptive-principle-injection**: Implemented selective injection of compressed doctrine for non-trivial OODA commands via `foundation/PRINCIPLES-COMPRESSED.md`, with runtime smoke validation for `/oodaloop-observe` and `/oodaloop-quick`. [done 2026-03-18]
 - **state-sync**: Added `/oodaloop-sync` + `sync` skill to reconcile state after interruptions. Includes targeted convention drift refresh, unambiguous task metadata repairs, and done/ready/blocked status reporting without deleting task files. [done 2026-03-18]
