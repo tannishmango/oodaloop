@@ -1,111 +1,85 @@
 ---
 name: init
-description: Initialize OODALOOP state directory in a target project.
+description: Create the minimal persistent OODALOOP state needed for restartable work.
 ---
 
 ## Trigger
 
-User runs `/oodaloop-init` or starting a new OODALOOP-tracked project.
+`/oodaloop-init` only after work has actually been routed into OODALOOP, or when the user explicitly asks to initialize state.
+
+Initialization is not a repository audit.
 
 ## Workflow
 
-1. Determine the project name from the workspace root directory name (e.g., `my-app`). If the user provides a name, use that instead.
+### 1. Refuse duplicate initialization
 
-2. Check if `.oodaloop/` already exists by reading `.oodaloop/CONTEXT.md`. Do not glob for `.oodaloop/**` (glob skips hidden directories).
-   - If the Read tool returns content: warn the user and **stop**. Do not overwrite existing state.
-   - If it returns an error (file not found): proceed.
+Read `.oodaloop/CONTEXT.md` directly.
 
-3. **Scan for plugin conflicts.** Check which plugins are active in this workspace. For each, assess interference risk against OODALOOP:
-   - **High risk** (recommend disable): injects mandatory context via hooks, enforces unconditional hard gates, or overrides workflow autonomy.
-   - **Medium risk** (recommend deprioritize): runs background processes or follow-up loops that add noise.
-   - **Low risk** (keep): provides scoped, opt-in capabilities that don't conflict.
+- If it exists, stop rather than overwriting it.
+- If it does not exist, continue.
 
-   Report as a table: `| Plugin | Risk | Recommendation | Reason |`
-   Let the user decide. Do not disable anything automatically.
+### 2. Establish only cheap baseline facts
 
-4. **Detect host environment.** Determine which agent environment is running OODALOOP by checking for host-specific markers:
-   - `.cursor-plugin/` or `~/.cursor/` → Cursor
-   - `.claude/` or `~/.claude/` → Claude Code
-   - `.opencode/` or `~/.config/opencode/` → OpenCode
-   - If ambiguous, ask the user.
-   Record the detected host in the Workspace Tooling section of CONTEXT.md. This informs convention scanning and future command references.
+Determine:
+- project name from workspace root (unless user supplied one),
+- current host when it is obvious from the running environment or nearby host markers,
+- today's date.
 
-5. **Scan repo conventions.** Dispatch the researcher agent for the bootstrap convention scan. The researcher scans each category below, checking for known config files and extracting key facts. If nothing found for a category, record "None detected."
+Do not ask the user to resolve host ambiguity unless the answer is required for the current operation; record `unknown` when harmless.
 
-   **Git**: `.gitattributes`, recent commit messages (sample 5 for format patterns), branch naming from `git branch -a`, any `CONTRIBUTING.md`.
-   **Code Quality**: `.pre-commit-config.yaml` (list hooks), linter configs (`ruff.toml`, `.eslintrc*`, `.prettierrc*`, `pyproject.toml [tool.ruff]`, `pyproject.toml [tool.black]`, `.flake8`).
-   **Testing**: test runner config (`pytest.ini`, `pyproject.toml [tool.pytest]`, `jest.config.*`, `vitest.config.*`), test directories (`tests/`, `__tests__/`, `test/`, `spec/`), coverage config.
-   **Proof Infrastructure**: identify highest-truth verification mechanisms and how to run them. At minimum scan for:
-   - integration/e2e/contract suites (`integration/`, `e2e/`, `playwright/`, `cypress/`, `contract/`, `tests/integration/`, `tests/e2e/`)
-   - test commands in manifests (`scripts.test:*`, `make test-*`, CI jobs that run integration/e2e checks)
-   - project skills and agent workflow sources that may define/wrap test commands (local `skills/**/SKILL.md`, command files, `AGENTS.md`, workspace automation docs)
-   - sandbox harnesses where integration is simulated (`docker-compose*.yml`, testcontainers, localstack, mock servers)
-   - environment requirements (credentials, services, docker compose, seeded databases)
-   - mapping from major repo areas to strongest available proof command
-   - explicit boundaries between sandboxed validation and real-system validation
-   Then classify posture:
-   - `none`: no meaningful automated proof beyond basic unit checks or ad-hoc manual testing
-   - `weak`: proof exists but misses major integration surfaces, is flaky, or is rarely run
-   - `adequate`: integration surfaces mostly covered with executable commands
-   - `strong`: clear high-signal integration proof exists for critical paths and is enforced in CI
-   Include explicit upgrade opportunities when posture is `none` or `weak`.
-   **CI/CD**: `.github/workflows/` (list files), `.gitlab-ci.yml`, `Jenkinsfile`, `.circleci/`.
-   **Dependencies**: manifest (`pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `requirements.txt`), lockfiles (`poetry.lock`, `uv.lock`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `Cargo.lock`).
-   **Workspace Tooling**: workspace rule files, `AGENTS.md`, and local agent/tooling settings files.
+### 3. Optional lightweight sentinel scan
 
-6. Create the `.oodaloop/` directory.
+Capture only repository facts that are both cheap to obtain and broadly useful across future tasks, for example:
+- primary dependency manifest/package manager,
+- obvious test command/config,
+- obvious formatter/linter config,
+- obvious CI directory,
+- `AGENTS.md` / project instruction files,
+- obvious workspace host tooling.
 
-7. Create `.oodaloop/CONTEXT.md` with the following content, substituting project name, today's date, convention scan findings, host environment, and deconfliction findings:
+Do not:
+- dispatch a researcher merely to initialize state,
+- inspect recent commit history by default,
+- perform a full plugin-conflict/deconfliction survey,
+- inventory every proof command or map every subsystem,
+- ask the user to approve a plugin table,
+- scan the entire repository for architecture.
+
+Objective-relevant conventions, proof infrastructure, architecture, and host conflicts belong in Observe when they can actually affect a qualifying task.
+
+### 4. Create minimal state
+
+Create `.oodaloop/CONTEXT.md`:
 
 ```markdown
 # Context: <project_name>
 
 > Last refreshed: <today YYYY-MM-DD>
 
-## Objective
-To be defined during Observe phase.
+## Workspace
+Host: <host | unknown>
+<cheap durable tooling facts, if any>
 
 ## Conventions
+<only cheap broadly reusable facts found at init; otherwise "Not yet inventoried — discover on demand.">
 
-### Git
-<findings or "None detected.">
-
-### Code Quality
-<findings or "None detected.">
-
-### Testing
-<findings or "None detected.">
-
-### Proof Infrastructure
-Posture: <none|weak|adequate|strong>
-<strongest available proof commands, coverage map, environment requirements, and upgrade opportunities>
-
-### CI/CD
-<findings or "None detected.">
-
-### Dependencies
-<findings or "None detected.">
-
-### Workspace Tooling
-Host: <detected host environment>
-<findings or "None detected.">
+## Proof Infrastructure
+<obvious test/validation command if cheaply known; otherwise "Discover on demand for the affected area.">
 
 ## Architecture
-To be populated during Observe phase.
+Discover on demand.
 
 ## Decisions
 No decisions recorded.
 
-## Deconfliction
-<for each plugin: name, risk, decision>
+## Surprising / Non-obvious Knowledge
+None recorded.
 ```
 
-8. Create `.oodaloop/BACKLOG.md` with:
+Create `.oodaloop/BACKLOG.md`:
 
 ```markdown
 # Backlog
-
-Items discovered during OODA cycles and conversations. Curated by loop phase.
 
 ## Next
 No items yet.
@@ -117,12 +91,17 @@ No items yet.
 No completed items.
 ```
 
-9. Confirm initialization: project name, host environment, files created (CONTEXT.md, BACKLOG.md), convention summary, proof-infrastructure posture and strongest commands, deconfliction summary, current state ("ready for observe"), recommended next step (`/oodaloop-observe`).
+Do not create task files during init.
+
+### 5. Continue the qualifying work
+
+Report only:
+- state initialized,
+- any cheap baseline facts captured,
+- next step: the Observe/resume operation that caused initialization to be needed.
+
+Do not produce a convention report or framework deconfliction ceremony.
 
 ## Output
 
-- Plugin conflict assessment table reported to user
-- Convention scan findings reported to user
-- `.oodaloop/CONTEXT.md` initialized with conventions and deconfliction
-- `.oodaloop/BACKLOG.md` initialized empty
-- Confirmation with next-step recommendation
+Minimal persistent state that makes later OODALOOP work restartable without front-loading research unrelated to the current objective.
