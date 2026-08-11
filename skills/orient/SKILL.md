@@ -1,96 +1,95 @@
 ---
 name: orient
-description: Analyze observations and form a situational assessment.
+description: Turn observations into the minimum sufficient understanding needed to make consequential decisions safely.
 ---
 
-> Boyd's Orient: Process observations through experience and mental models to form a perception of reality. The cognitive engine of the OODA Loop. (foundation/OODALOOP.md)
-
-> **Plugin paths**: `foundation/` references in this skill are relative to the OODALOOP plugin root, not the workspace. Resolve from this skill file's installed path.
+> Boyd's Orient: interpret observations through context and mental models. This is where OODALOOP should spend reasoning when uncertainty actually warrants it.
 
 ## Trigger
 
-`/oodaloop-orient` or transitioning from Observe phase.
+`/oodaloop-orient` after Observe, or targeted re-entry when new evidence changes the current map.
 
 ## Preconditions
 
-- An active task file (`.oodaloop/<slug>.task.md`) must exist with populated Requirements, Observations, and Scope sections.
-- `.oodaloop/CONTEXT.md` must exist.
-- If an Assessment section already exists (re-entry after rescope), note it — the previous assessment is being revised, not started from scratch.
+- Active task file contains Objective, Observations, and enough Requirements/Scope to interpret the work.
+- `.oodaloop/CONTEXT.md` exists.
 
-**If no task file exists**: STOP. Do not read other skills, improvise recovery, or reinterpret the user's intent to justify continuing. This means Observe did not persist its output. Follow these steps exactly:
-1. Report the gap: "Observe completed in conversation but the task file was not written to disk."
-2. Recommend re-running `/oodaloop-observe` to persist findings properly.
-3. Do not proceed with Orient until the task file exists on disk with the required sections.
+If these are missing, return only to the missing evidence source. Do not improvise a full recovery workflow.
 
 ## Workflow
 
-### 1. Read observations and context
-Read the active task file: requirements, observations, scope, and any existing assessment.
+### 1. Interpret, do not restate
 
-Read `.oodaloop/CONTEXT.md` for prior decisions, architecture patterns, and conventions — Boyd's "repertoire of mental models." This is the experience dimension that transforms raw observation into understanding.
+Read the task evidence and relevant persistent context.
 
-For non-trivial planning and trade-off decisions, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics.
+For each important observation, state what it implies for the objective. Distinguish facts from interpretations.
 
-### 2. Interpret findings
-Transform facts into meaning. For each significant observation, state what it means for the current work — not what was found, but what it implies.
+### 2. Identify residual consequential decision load
 
-If a sentence in the interpretation could appear unchanged in the Observations section, it is not interpretation. "The test suite has no integration tests" is an observation. "We cannot verify API behavior with existing infrastructure" is interpretation.
+Ask:
 
-When codebase investigation is needed during analysis, dispatch the researcher agent (readonly).
+> What consequential judgment would an implementer still have to invent if work started now?
 
-### 3. Compare against prior decisions
-Review decisions recorded in CONTEXT.md. For each relevant prior decision:
-- Does it constrain the current work? (e.g., "chose library X" limits technology choices)
-- Does it enable a faster path? (e.g., "pattern Z adopted" means we follow it, not reinvent)
-- Does it conflict with what the observations suggest?
+Consider:
+- unresolved requirements,
+- architectural/cross-system choices,
+- assumptions that could change the approach,
+- unclear interfaces or ownership,
+- proof gaps,
+- risk/blast-radius questions,
+- dependencies that affect ordering or decomposition.
 
-### 4. Narrow the option space
-Evaluate viable approaches for the current work:
-- For each approach: what it entails, its trade-offs, and constraints that apply.
-- If only one approach is viable, state why alternatives were eliminated.
-- Recommend one approach with rationale. Orient recommends; Decide commits.
+Do not score this numerically. The purpose is to expose the decisions, not manufacture a complexity metric.
 
-### 5. Identify risks to the understanding
-Stress-test the interpretation, not a plan (there is no plan yet):
-- What could be wrong about the assessment?
-- What assumptions are being made, and what would invalidate them?
-- Where is confidence lowest, and what additional information would help?
+### 3. Narrow the option space without overcommitting
 
-### 6. Assess sufficiency
-Is the understanding clear enough for Decide to produce a plan?
-- If yes: proceed to write the Assessment section.
-- If no: state what's missing and recommend returning to `/oodaloop-observe` for targeted research.
+Evaluate viable approaches only where a real choice remains. Prefer the weakest sufficient commitment:
 
-### Mid-execution re-entry
-When re-entering after a rescope (existing execution log and Paused section in the task file), read the execution log and Paused section. Account for existing work:
-- What is salvageable and still valid?
-- What needs modification given the new understanding?
-- What should be discarded?
+> resolve what must be resolved for safe execution; preserve implementation optionality where evidence does not justify a prescription.
 
-The revised assessment must reflect the current state, not just the original observations.
+A recommendation may strongly constrain behavior, invariants, interfaces, safety, and proof while intentionally leaving local implementation details to the executor.
 
-## Output
+### 4. Re-check assumptions
 
-Append to the task file:
+For important assumptions, ensure an invalidation condition exists: what observable evidence would make this assumption unsafe to continue using?
+
+If current evidence already triggers an invalidation condition, revise the interpretation before planning.
+
+### 5. Decide whether planning is ready
+
+Ready for Decide when:
+- the objective is coherent,
+- consequential unresolved decisions are either resolved or explicitly delegated to a higher-judgment planning choice,
+- remaining local implementation choices can safely be made by executors,
+- proof expectations are understood well enough to constrain the plan.
+
+If targeted research would materially change the recommendation, return to Observe for that research only.
+
+If the user must choose among materially different outcomes, ask the specific question instead of hiding the choice in the plan.
+
+### 6. Persist a compact assessment
 
 ```markdown
 ## Assessment
 
-### Situational interpretation
-<what the observations mean — not restating findings, interpreting them>
+### Interpretation
+<what the evidence means for this objective>
 
-### Viable approaches
-<narrowed options, trade-offs, constraints per approach>
+### Consequential decisions
+- <decision + chosen resolution, or explicitly unresolved>
 
-### Risks and assumptions
-<stress-tested understanding, not plan risks>
+### Assumptions / invalidation
+- <assumption> → invalidated by <evidence>
 
-### Constraints
-<from conventions, architecture, prior decisions, proof posture>
+### Constraints and invariants
+- <what implementation must preserve>
 
 ### Recommendation
-<which approach and why — orient recommends, decide commits>
+<preferred direction and why, including what is intentionally left open>
 ```
 
-- Update task file phase from `orient` to `decide`. Update timestamp.
-- Recommend `/oodaloop-decide` to formulate the plan.
+Set phase to `decide`.
+
+## Output
+
+A decision-ready interpretation that reduces consequential ambiguity without prescribing unevidenced implementation detail.
