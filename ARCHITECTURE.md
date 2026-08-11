@@ -2,249 +2,395 @@
 
 ## Purpose
 
-OODALOOP orchestrates project delivery using an OODA-style loop: Observe, Orient, Decide, Act, Loop. It uses atomic tasking, context isolation, file-based state, and verification while dropping ceremony that does not improve outcomes.
+OODALOOP is a host-agnostic escalation and recovery harness for agentic software work under consequential uncertainty.
+
+It is **not** the default planning system. Ordinary agent planning/execution remains the default path.
+
+OODALOOP is justified when uncertainty, novelty, coupling, blast radius, proof difficulty, coordination, or implementation surprise make the cost of a wrong trajectory meaningfully larger than the cost of extra orientation.
+
+The architectural invariant is:
+
+> Act from the best current map, detect when evidence contradicts it, and re-orient before drift compounds.
 
 ---
 
-## Design Transfer Analysis
+## 1. Entry routing
 
-### Transfers directly
-- **Atomic task decomposition**: tasks are single-concern, dependency-ordered, with acceptance criteria.
-- **Context isolation**: each agent (researcher, planner, executor, assessor) operates within a focused scope.
-- **File-based shared state**: `.oodaloop/` directory is the single source of truth for project state.
-- **Verification before closure**: Act phase executes tasks with per-task verification checkpoints; Loop provides aggregate assessment.
+Routing happens **before** OODALOOP state, artifacts, or agents are invoked.
 
-### Platform adaptations
-- **Slash commands as entrypoints**: `commands/*.md` with frontmatter.
-- **Planner/executor handoff via specialized agents**: role separation uses agent definitions with `readonly` constraints.
-- **Skills as procedural layer**: deeper "how" logic lives in `skills/*/SKILL.md`, referenced by commands.
-- **Selective doctrine injection at command layer**: non-trivial OODA commands can load compressed doctrine (`foundation/PRINCIPLES-COMPRESSED.md`) while preserving quick-path lightness.
-- **Rules as boundary layer**: `rules/*.mdc` with `alwaysApply: true` enforce lightweight invariants.
+The preflight must be cheap enough that every task can implicitly afford it:
 
-### Drops
-- **Terminal-centric internals**: no shell scripts, no `tmux` session management, no process supervision.
-- **Unconditional heavyweight ceremony**: no mandatory design-approval gates for trivial tasks.
-- **Rigid sequential flow**: adaptive rigor selects process depth based on task complexity.
-
----
-
-## OODA Phase Design
-
-| Phase | Command | Agent | Skill | Purpose |
-|-------|---------|-------|-------|---------|
-| Observe | `/oodaloop-observe` | researcher | observe | Research, requirements gathering |
-| Orient | `/oodaloop-orient` | researcher | orient | Analysis, synthesis, situational assessment |
-| Decide | `/oodaloop-decide` | planner | decide | Plan decomposition, task sequencing |
-| Act | `/oodaloop-act` | executor + assessor | act | Implementation + per-task verification |
-| Loop | `/oodaloop-loop` | assessor | loop | Aggregate verification, scope reassessment |
-
-Supporting commands:
-- `/oodaloop-start`: "start here" kickoff; initializes if needed and routes to quick or observe.
-- `/oodaloop-init`: bootstrap `.oodaloop/` state in a target project.
-- `/oodaloop-status`: read-only state report.
-- `/oodaloop-sync`: state reconciliation and readiness check after interruptions.
-- `/oodaloop-quick`: fast path for trivial tasks, bypassing full ceremony.
-
-### Phase flow
-
-```
-begin → (init if needed) → observe → orient → decide → act → loop
-                              ↑               ↓
-                   (resume)   |   CONTINUE → next task / resume parent
-                              |   REFINE  → adjust plan, re-enter decide
-                              |   RESCOPE → re-enter observe
-                              |
-               blocking discovery during act:
-               small  → /oodaloop-quick → resume inline
-               complex → pause parent → observe child → ... → loop child
-                                                                ↓
-                                              CONTINUE → delete child, resume parent
-
-               arbitrary depth (child can spawn grandchild):
-               A pauses → B pauses → C completes → B resumes → B completes → A resumes
-               depth > 3 requires user consent
+```text
+Can current context support safe execution + verification
+without unresolved consequential judgment?
+        │
+        ├─ yes → NORMAL
+        │
+        └─ no
+             │
+             ├─ can lightweight local planning resolve it?
+             │       └─ yes → NORMAL + ordinary plan
+             │
+             └─ no → OODALOOP
 ```
 
-The quick path (`/oodaloop-quick`) short-circuits this for low-risk, local changes: execute, summarize, update state. It also resolves small blocking discoveries during execution without pausing the parent task.
+### Routing signals
+
+OODALOOP becomes more useful when work contains:
+- unfamiliar/poorly understood territory,
+- architecture or cross-system coupling,
+- assumptions whose failure changes the approach,
+- unclear interfaces/ownership/acceptance semantics,
+- high-asymmetry risk or blast radius,
+- difficult/missing proof paths,
+- decomposition needed to prevent executors inventing consequential intent,
+- evidence from implementation that the current map is wrong.
+
+Task count, file count, and lines changed are weak signals and never sufficient alone.
+
+### Routing outcomes
+
+- **NORMAL**: no `.oodaloop/` initialization, sync, task file, or OODALOOP agent call. Continue with host-native agent behavior.
+- **OODALOOP**: initialize/reconcile state only now, then enter at the lightest phase that can reduce the unresolved uncertainty.
 
 ---
 
-## Adaptive Rigor Model
+## 2. Semantic loop
 
-Process depth is not uniform. It scales with task complexity and risk:
-
-| Complexity | Flow | Ceremony |
-|------------|------|----------|
-| Trivial | `/oodaloop-quick` | Execute → summary → state update |
-| Medium | Observe → Orient → Decide → Act | Plan + verify, no loop |
-| Complex | Full OODA with Loop | Plan + verify + aggregate reassessment |
-
-If a task escalates mid-execution (trivial becomes complex), the executor pauses and upgrades the process level. If process feels like overhead, reduce it. The rule `adaptive-rigor.mdc` enforces this.
-
----
-
-## Agent Architecture
-
-Three of four agents are `readonly: true`. Only the executor writes.
-
-| Agent | Readonly | Model | Role |
-|-------|----------|-------|------|
-| researcher | true | fast | Codebase exploration, requirements discovery, situational assessment |
-| planner | true | fast | Task decomposition, dependency analysis |
-| executor | false | fast | Implementation of atomic tasks |
-| assessor | true | fast | Per-task verification, aggregate assessment, loop verdicts |
-
-This enforces separation of concerns: read-heavy analysis is isolated from write operations. The executor is the only mutation surface, bounded to single-task scope.
-
----
-
-## State Management
-
-Project state lives in `.oodaloop/` within the target project. Three file types:
-
+```text
+observe → orient → decide → act → loop/reconcile
 ```
+
+These names describe responsibilities, not mandatory ceremony for every node.
+
+### Observe
+
+Gather evidence that can change the approach. Perform a blind-spot pass when novelty/risk warrants it. Persist facts, important assumptions, invalidation conditions, and open consequential decisions.
+
+Do not perform exhaustive repo/proof inventories by default.
+
+### Orient
+
+Interpret evidence and identify **residual consequential decision load**: what high-impact judgment an implementer would otherwise have to invent.
+
+Narrow the option space while preserving implementation freedom not constrained by evidence.
+
+### Decide
+
+Resolve consequential choices and decompose into executable leaves.
+
+Planning invariant:
+
+> **Minimize residual consequential decisions while preserving maximum implementation optionality.**
+
+A leaf is executable when a competent executor can complete it without inventing product intent, choosing architecture, discovering substantial new scope, or making another high-impact trade-off absent from the spec.
+
+### Act
+
+Execute decision-ready leaves using the cheapest adequate host substrate/model, run proportionate proof, and detect material surprise.
+
+Routine leaves do not require semantic review.
+
+### Loop / reconcile
+
+At a meaningful boundary, compare evidence with objective/invariants and choose:
+- `CONTINUE`,
+- `REFINE` (return to Decide at the affected node),
+- `RESCOPE` (targeted Observe/Orient).
+
+Loop is lightweight when nothing changed. It is not a mandatory second audit of all leaves.
+
+---
+
+## 3. Task tree and recursion
+
+Large work naturally forms a task tree:
+
+```text
+root objective
+  ├─ branch
+  │   ├─ leaf
+  │   └─ leaf
+  └─ leaf
+```
+
+OODALOOP does not impose a fixed swarm topology. The tree grows only as the problem requires.
+
+### Leaf → branch promotion
+
+A planned leaf may reveal during execution that it still contains consequential uncertainty. That is evidence the leaf was not actually executable.
+
+The leaf can be promoted back into a branch:
+- re-decompose at Decide,
+- gather targeted evidence at Observe/Orient,
+- or create a separately persisted child node when independence/restartability justify it.
+
+### Child nodes
+
+A child is not automatically a full OODA cycle.
+
+Children begin at the lightest phase their uncertainty requires and resolve bottom-up. Parent reconciliation uses only the returned result/evidence that can affect parent assumptions/invariants.
+
+Separate child persistence is justified only when it materially improves coordination or restartability.
+
+No arbitrary recursion-depth cap is part of the semantic model. If recursion grows without reducing uncertainty, the correct response is to rescope/simplify—not to add more procedural depth.
+
+---
+
+## 4. Surprise model
+
+Planning cannot enumerate unknown unknowns. Runtime detection focuses on observable surprise.
+
+**Surprise** = evidence that materially violates the current map.
+
+Signals include:
+- assumption invalidation,
+- unexpected subsystem/dependency,
+- consequential choice absent from the leaf,
+- local work becoming cross-cutting,
+- proof failure outside the planned model,
+- repeated failure under the same interpretation,
+- workaround requiring shared/core/external mutation beyond understood scope,
+- dependency/order invalidation,
+- material mutation-scope expansion.
+
+### Surprise routing
+
+```text
+surprise
+  ├─ contained/mechanical → quick local fix
+  ├─ under-decomposed     → Decide
+  ├─ map/evidence wrong   → Observe / Orient
+  └─ high-risk/preference → user judgment
+```
+
+The invariant is not frequent escalation. It is that consequential new evidence cannot be silently absorbed into implementation.
+
+---
+
+## 5. Review architecture
+
+The previous architecture used a mandatory tri-mode assessor:
+- plan assessment,
+- per-leaf verification,
+- aggregate assessment.
+
+That created large fixed semantic-review cost and encouraged process completion rather than information gain.
+
+The new architecture uses an optional `reviewer`.
+
+### Reviewer triggers
+
+Use a fresh independent lens when review can plausibly change a consequential decision:
+- architectural commitment,
+- security/safety/high blast radius,
+- material surprise,
+- integration uncertainty,
+- ambiguous/incomplete proof,
+- planner/executor anchoring with meaningful downside.
+
+Routine leaves close on deterministic/proportionate acceptance evidence.
+
+### Review principle
+
+Prefer fresh context over the implementer's full reasoning transcript. Review the claim/evidence/decision, not the process story.
+
+Never loop until a reviewer becomes stylistically satisfied.
+
+---
+
+## 6. Agent roles
+
+| Agent | Writes | Role |
+|---|---:|---|
+| researcher | no | targeted evidence, codebase discovery, blind-spot pass |
+| planner | no | consequential decisions, weakest-sufficient plan, leaf readiness |
+| executor | yes | one decision-ready leaf + proof + surprise surfacing |
+| reviewer | no | optional independent semantic lens when triggered |
+
+No core role hardcodes a specific current model tier/name.
+
+### Model economics policy
+
+- spend stronger reasoning where it collapses ambiguity or changes architecture,
+- use the cheapest adequate model for decision-ready execution,
+- select reviewer intelligence proportional to the judgment being audited.
+
+Host/router implementations may learn this policy empirically over time.
+
+---
+
+## 7. State model
+
+Project state lives in `.oodaloop/` only after work actually enters OODALOOP.
+
+```text
 .oodaloop/
-  CONTEXT.md             ← persistent: what IS (repo state, survives across tasks)
-  BACKLOG.md             ← persistent: what SHOULD BE (future work, survives across conversations)
-  <slug>.task.md          ← ephemeral: what's HAPPENING (one per active OODA cycle)
+  CONTEXT.md       persistent curated reusable knowledge
+  BACKLOG.md       persistent real future work
+  <slug>.task.md   ephemeral active task/node
+  CYCLES.log       optional cheap trajectory telemetry
 ```
 
-### CONTEXT.md (persistent -- repo state)
+### CONTEXT.md
 
-One file holds everything that survives across tasks: project identity, repo conventions (6 categories: git, code quality, testing, CI/CD, dependencies, workspace tooling), architecture patterns, active decisions, and plugin deconfliction.
+Persist only knowledge that materially improves a future unrelated trajectory:
+- surprising repo behavior,
+- non-obvious invariants,
+- architecture constraints/decisions,
+- reusable proof requirements,
+- causal lessons from failed approaches.
 
-- Created by `/oodaloop-init` with automated convention scan.
-- Enriched by observe (convention drift check) and loop (learning absorption).
-- Updated incrementally -- sections change, file is never rewritten wholesale.
-- "Last refreshed" timestamp enables targeted staleness detection.
+Do not accumulate execution history.
 
-### BACKLOG.md (persistent -- future work)
+### Task files
 
-Tracks roadmap items, deferred work, discovered improvements, and ideas across conversations. Prevents roadmap loss when conversations end.
+Task files contain only what execution/recovery needs:
+- objective and why OODALOOP was warranted,
+- observations/requirements/assumptions when relevant,
+- assessment and consequential decisions,
+- task tree/leaves,
+- compact execution/proof evidence,
+- surprise/review results,
+- parent/child waiting/resume facts when needed.
 
-- Three tiers: **Next** (prioritized, ready), **Later** (valuable, not urgent), **Done** (completed, pruned periodically).
-- Updated by loop (discoveries, promotions, completions) and act (mid-execution notable discoveries).
-- Read when choosing next work or when loop recommends next steps. NOT read during every phase -- stays out of hot context.
-- Curated, not accumulated. Stale items pruned by loop.
+Valid phases remain `observe`, `orient`, `decide`, `act`, `loop`, but backward re-entry is allowed. Phase denotes the next consequential judgment, not a ritual completion history.
 
-### Task files (ephemeral)
+### Parent/child state
 
-Each OODA cycle creates one `<slug>.task.md` file. It contains the full lifecycle: phase tracking, objective, requirements, observations, scope, plan, execution log, verification, and verdict. All in one file per task.
+Minimal waiting record:
 
-- Created by observe, filled through orient/decide/act/loop.
-- On CONTINUE verdict, learnings are absorbed into CONTEXT.md, backlog updated, and the task file is **deleted**. If the completed task has a `Parent:` field, its parent task is un-paused and resumes at decide.
-- Multiple task files can coexist for concurrent work. Each is independent.
-- A task can be `paused` when a blocking discovery requires a sub-cycle. The parent task file records what it's waiting for. The child task file references its parent via `Parent:`. Chains can be arbitrary depth -- a child can itself pause and spawn a grandchild. Each level resolves bottom-up. Depth > 3 requires user consent. Status command shows chains as a tree.
-
-### Design rationale
-- **Three types, clean separation**: CONTEXT.md = what IS, BACKLOG.md = what SHOULD BE, task files = what's HAPPENING. Each concept has one home.
-- **Flat structure**: everything lives at `.oodaloop/` root. No nested directories.
-- **Multi-task ready**: task files are per-cycle, not singleton. `ls .oodaloop/*.task.md` shows all active work.
-- **Anti-stale by design**: CONTEXT.md uses targeted refresh. Task files are ephemeral. BACKLOG.md curated by loop.
-- **Context hygiene**: BACKLOG.md is NOT part of hot context. Only CONTEXT.md is read every phase. Backlog is referenced on-demand.
-
----
-
-## Bootstrap Artifact Lifecycle
-
-Legacy bootstrap artifacts were fully absorbed into durable skills, rules, and architecture docs, then deleted.
-
----
-
-## Deconfliction Status
-
-### Active decisions (milestone 1)
-
-| Plugin | Decision | Rationale |
-|--------|----------|-----------|
-| `superpowers` | Disabled at workspace level | Session hook was injecting mandatory context. Removed to eliminate interference. |
-| `continual-learning` | Keep enabled, deprioritized | Low interference for structural work. |
-| `create-plugin` | Keep enabled | `plugin-quality-gates` rule directly supports correctness. |
-| `team-kit` | Keep enabled (selective) | Code-quality rules are non-conflicting. |
-| `database-skills` | Ignore during plugin work | Domain-specific, no interference. |
-
-### Precedence rule
-
-When behavior conflicts occur between OODALOOP and external plugins, **OODALOOP contracts win** within the plugin scope. External plugin behaviors are treated as advisory, not mandatory.
-
-### Absorbed patterns
-
-From external plugins, these patterns are absorbed into OODALOOP (without runtime dependency):
-- Debugging discipline and verification-before-completion checks (from `superpowers`)
-- Parallel task decomposition heuristics (from `superpowers`)
-- Manifest/path/frontmatter quality gates (from `create-plugin`)
-- Smoke-test and compiler-check workflows (from `team-kit`)
-
----
-
-## Cross-Environment Portability
-
-OODALOOP is host-agnostic. The core (skills, doctrine, state model, templates) works identically everywhere. Thin adapter layers map OODALOOP's components to each host's discovery paths.
-
-### Portable layer (unchanged across hosts)
-- **Skills** (`skills/*/SKILL.md`): Agent Skills open standard, supported by 27+ tools.
-- **State** (`.oodaloop/`): CONTEXT.md + task files. Pure markdown, no host dependencies.
-- **Doctrine** (`foundation/`): Principles, systems reference, and compressed principles used for selective command-layer injection.
-- **Templates** (`templates/`): State templates for target projects.
-
-### Adapter layer (thin, per-host)
-Each adapter maps five surfaces: commands (install path), skills (discovery path), agents (definition format), rules (file format), and manifest (if required). See `adapters/README.md` for the full capability matrix.
-
-### Install
-`install.sh` detects the host environment and applies the matching adapter. Manual setup is documented in `adapters/<host>/install.md`.
-
----
-
-## Anti-Patterns
-
-Reject these explicitly:
-
-1. **Process theater**: creating artifacts because frameworks expect them, not because they improve outcomes.
-2. **Context bloat**: accumulating stale context instead of curating it.
-3. **Duplicate state**: multiple files tracking the same information, drifting apart.
-4. **Ceremony for ceremony's sake**: forcing heavyweight flow on trivial tasks.
-5. **Overfitting to model weaknesses**: building mechanisms that will become redundant as models improve.
-6. **Pass/fail verification with no learning**: "it passed" tells you nothing about why or what to improve.
-7. **Optimizing busyness over bottlenecks**: local task speedups while global constraints remain.
-8. **Automating bad process**: encoding ceremony that should have been deleted.
-
----
-
-## Milestone Roadmap
-
-| Milestone | Scope | Status |
-|-----------|-------|--------|
-| M1: Ground Breaking | Plugin scaffold, component skeletons, architecture baseline, doctrine home | Complete |
-| M2: Working Observe/Orient | Functional research + planning pipeline, skill enrichment, local testing | Complete |
-| M2.5: State Architecture | Persistent/ephemeral separation, CONTEXT.md + task files, multi-task design, convention memory | Complete |
-| M3: Full Loop | End-to-end OODA cycle with loop verdicts and adaptive rigor in practice | Current |
-| M3.1: Adapter Architecture | Cross-environment portability, install script, host detection, adapter layer | Current |
-
----
-
-## Plugin Structure
-
-```
-oodaloop/
-  .cursor-plugin/plugin.json    ← Cursor manifest (host-specific)
-  .oodaloop/                    ← self-tracking state (committed)
-  adapters/                     ← per-host install instructions and mappings
-    cursor/
-    claude-code/
-    opencode/
-  foundation/                   ← permanent doctrine
-    PRINCIPLES.md
-    PRINCIPLES-COMPRESSED.md
-    SYSTEMS-REFERENCE.md
-  commands/                     ← 10 thin command invocations (portable)
-  skills/                       ← 9 procedural skills (portable, Agent Skills standard)
-  agents/                       ← 4 specialized agents
-  rules/                        ← 3 boundary rules
-  templates/oodaloop/           ← 1 state template (CONTEXT.md)
-  install.sh                    ← host-detecting install script
-  ARCHITECTURE.md               ← this document
-  README.md
-  LICENSE
+```text
+Child
+Blocked leaf
+New evidence
+Resume at
 ```
 
-Commands are thin wrappers that invoke skills. Skills contain the actual procedure. The install script detects the host environment and places components where the host can discover them.
+Execution substrate is not state. Do not store `subagent`/`in-chat`/`new-chat` or `direct`/`delegated` as semantic task fields.
+
+---
+
+## 8. Deterministic mechanisms vs semantic policy
+
+### Mechanize facts
+
+When cheap/available, deterministic mechanisms should enforce or capture:
+- task-state schema and phase/evidence pairing,
+- parent-cycle / missing-child integrity,
+- tests/type/lint command outcomes,
+- changed paths / mutation scope,
+- destructive-operation interception,
+- dependency conditions,
+- lifecycle telemetry.
+
+### Keep judgment semantic
+
+Agents decide:
+- whether surprise is consequential,
+- whether architecture/assumptions are invalidated,
+- whether the objective should change,
+- whether an alternative is meaningfully better,
+- whether new evidence warrants REFINE/RESCOPE.
+
+Do not automate shallow proxies for these judgments.
+
+---
+
+## 9. Adaptive proof
+
+Proof must be strong enough to establish the acceptance claim and proportionate to risk.
+
+Examples:
+- pure logic → unit tests may suffice,
+- integration behavior → integration proof when available/required,
+- configuration/schema → relevant validators/build checks,
+- external-state behavior → sandbox/real-system proof according to risk and user permission.
+
+Hard relevant proof beats easy irrelevant proof.
+
+Do not create blanket TDD or maximal-proof ceremony for every leaf. Proof ordering may be chosen to increase confidence where failure is expensive, but process is not an invariant.
+
+---
+
+## 10. Host adapter architecture
+
+Core semantics remain host-agnostic.
+
+Adapters map host capabilities:
+
+1. commands / entrypoints,
+2. skills,
+3. agent definitions,
+4. rules / persistent instruction surfaces,
+5. manifest / registration where required,
+6. **optional lifecycle hooks / deterministic event handlers**.
+
+### Hooks
+
+Use hooks for must-happen deterministic behavior when the host supports them, such as:
+- destructive-operation interception,
+- cheap state validation,
+- changed-path telemetry,
+- proof/lifecycle capture,
+- subagent completion/failure observation.
+
+Do not make hooks decide architecture or rescoping.
+
+### Other native substrate
+
+Subagents, nested agents, parallelism, worktrees, background execution, and model routing are adapter/execution-policy capabilities. The core task tree does not depend on any one implementation.
+
+---
+
+## 11. Telemetry and future routing
+
+Do not invent a mathematical task-entropy score in the current system.
+
+Collect cheap trajectory data first:
+- OODALOOP invoked vs NORMAL,
+- leaf count,
+- surprise count/types,
+- post-plan splits,
+- proof retries/gaps,
+- user corrections,
+- REFINE/RESCOPE,
+- reviewer calls,
+- child nodes,
+- approximate cost where the host exposes it.
+
+The future empirical routing question is:
+
+> Given what was known before implementation, what predicts that a cheaper executor can finish without requiring new consequential judgment?
+
+Learn from real trajectories before hardcoding complexity theory.
+
+---
+
+## 12. Anti-patterns
+
+Reject explicitly:
+
+1. **Framework gravity** — invoking OODALOOP because work merely needs a plan.
+2. **Process theater** — fixed artifacts/checklists that do not change decisions.
+3. **Mandatory semantic review** — second-model tax on routine leaves.
+4. **Arbitrary complexity thresholds** — task/file counts treated as reasoning complexity.
+5. **Classification bloat** — vocabularies that do not change routing.
+6. **Recursive ceremony** — full five-phase child cycles for local discoveries.
+7. **Context bloat** — transcripts and task history in persistent state.
+8. **Host reimplementation** — building custom swarm/worktree/router machinery already provided by hosts.
+9. **Hardcoded model frontier** — vendor/model names embedded as architectural truth.
+10. **Fake precision** — invented entropy/complexity scores without calibrated data.
+11. **Automation of bad process** — mechanizing rituals that should have been deleted.
+
+---
+
+## Success condition
+
+OODALOOP succeeds when:
+- hard, uncertain work gets better orientation and recovery,
+- surprise cannot silently become scope drift,
+- plans reduce consequential ambiguity without strangling implementation,
+- review and state are proportional,
+- host capabilities are leveraged without contaminating core semantics,
+- and ordinary software work usually never enters the framework at all.
