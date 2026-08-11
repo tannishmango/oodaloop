@@ -1,64 +1,49 @@
 # OODALOOP Principles (Compressed)
 
-Derived from `foundation/PRINCIPLES.md`. Use this as a high-signal orientation aid, not a replacement for canonical doctrine.
+Use only for work already inside OODALOOP or when deciding whether escalation is warranted.
 
 ## Operating intent
 
-- Optimize for faster, safer delivery under uncertainty.
-- Prefer compression: minimal process primitives, maximum signal.
-- Keep the full loop intact: observe, orient, decide, act, loop.
+- Ordinary agent behavior is the default; OODALOOP must earn its invocation.
+- Optimize for faster, safer delivery under consequential uncertainty—not process compliance.
+- The durable loop is: act from the best map, detect contradicting evidence, re-orient before drift compounds.
 
 ## Decision heuristics
 
-1. **Adaptive rigor**: match process depth to risk and complexity.
-2. **Minimum effective process**: keep only scaffolding that improves coordination, verification, or recovery.
-3. **Orientation first**: better models/heuristics beat raw loop speed.
-4. **Late commitment, fast revision**: decide with best current evidence and re-open when assumptions break.
-5. **Bottleneck focus**: optimize system constraints before local throughput.
-6. **Dependency-aware parallelism**: parallelize independent work, serialize coupled work.
-7. **Context hygiene**: curated shared context beats high context volume.
-8. **Single source of truth**: each critical concept has one canonical home.
-9. **Robustness to imperfect agents**: architecture should degrade gracefully.
-10. **Restartability beats continuity assumptions**: design steps to fail cleanly, retry safely, and resume from known state.
-11. **Evidence over fluency**: confidence comes from proof paths, not narrative tone.
-12. **Risk gates autonomy**: autonomous action is bounded by three dimensions — reversibility (can undo via revert), containment (effect limited to task-created state), and confidence (certain about current state and expected outcome). Any unfavorable dimension requires human approval regardless of urgency or scope.
+1. **Residual decision load**: ask what consequential judgment an executor would still have to invent. Do not use file/task count as a complexity proxy.
+2. **Weakest sufficient commitment**: resolve what must be decided; preserve safe implementation optionality.
+3. **Leaf readiness**: decompose until execution no longer requires product/architecture reinterpretation.
+4. **Orientation first**: spend stronger reasoning where it collapses ambiguity; use cheaper execution after decisions are resolved.
+5. **Surprise interrupt**: contradicted assumptions, unexpected coupling, consequential new choices, unexplained proof failure, or material scope expansion cannot be silently absorbed.
+6. **Targeted re-entry**: local fix, Decide split, Observe/Orient research, or user judgment—never a full child cycle by default.
+7. **Evidence over fluency**: use proportionate proof; preserve critical evidence, not transcripts.
+8. **Review earns cost**: fresh-context review only for consequential judgment, material surprise, high risk, integration uncertainty, or proof ambiguity.
+9. **Mechanize facts**: schemas, paths, test status, lifecycle, safety interception, and telemetry belong in deterministic mechanisms when available.
+10. **Curated memory**: persist surprising reusable knowledge, not ordinary execution history.
+11. **Restartability**: state describes the work, not ceremony.
+12. **Host substrate**: subagents, worktrees, hooks, parallelism, and model routing are adapter/execution-policy concerns, not core semantics.
 
 ## Execution laws
 
-- Every artifact must earn its existence.
-- Every loop must update canonical state.
-- Every phase must emit evidence.
-- Every handoff must be explicit.
-- Every plan must be executable without reinterpretation.
-- Every verification must produce actionable next steps.
-- Every scope change must be explicit and intentional.
-- Every simplification must preserve observability and recovery.
-- High-stakes claims require a falsifiable proof path.
+- Every framework invocation and artifact must earn its cost.
+- Every plan removes consequential reinterpretation, not local implementation freedom.
+- Every material surprise can interrupt the trajectory.
+- Every re-entry starts at the lightest phase that resolves the new judgment.
+- Every safety boundary prefers mechanical enforcement where the host supports it.
+- Every simplification preserves proof and recovery.
+- The framework should get smaller as agents and hosts get better.
 
-## Failure-detection prompts
+## Anti-patterns
 
-- What would disprove this conclusion?
-- What is the strongest alternative explanation?
-- What is the likely failure mode and earliest signal?
-- What uncertainty remains and what evidence would reduce it?
-- Has this component accumulated a second job?
-- Could this complexity move into structured data instead of branching logic?
-- Is this step serving the task, or preserving the framework?
-- Is this action reversible, contained to task-created state, and based on certain knowledge? If any answer is no, who approved it?
+- Framework gravity: entering OODALOOP because work merely needs a plan.
+- Mandatory assessor/reviewer calls after routine leaves.
+- Arbitrary task/file-count thresholds.
+- Classification vocabulary with no decision value.
+- Full recursive ceremony for local blockers.
+- Giant proof/state transcripts.
+- Hardcoded model names as architecture.
+- Fake complexity/entropy scores.
+- Custom swarm machinery without observed need.
+- Automating process that should have been deleted.
 
-## Anti-patterns to reject
-
-- Process theater and framework bloat.
-- Monolithic orchestration fused with task-specific judgment.
-- Context accumulation without curation.
-- Duplicate state tracking that drifts.
-- Easy tests substituted for hard but relevant tests.
-- Pass/fail checks with no causal learning.
-- Local optimization while system bottlenecks remain.
-- High-risk workarounds (irreversible, uncontained, or uncertain) taken to maintain execution velocity.
-
-## Usage constraints
-
-- Apply selectively for non-trivial decisions and uncertain trade-offs.
-- Skip for trivial quick-path work where this would add overhead.
-- If guidance conflicts with canonical doctrine, `PRINCIPLES.md` wins.
+If guidance conflicts with `PRINCIPLES.md`, the canonical file wins.
