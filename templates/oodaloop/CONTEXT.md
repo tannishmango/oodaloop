@@ -2,38 +2,21 @@
 
 > Last refreshed: {{date}}
 
-## Objective
-{{objective}}
+## Workspace
+Host: {{host}}
+Durable workspace/tooling facts discovered cheaply.
 
 ## Conventions
+Only broadly reusable conventions already known. Otherwise: `Not yet inventoried — discover on demand.`
 
-### Git
-Branch strategy, commit format, PR conventions, protected branches.
-
-### Code Quality
-Linters, formatters, pre-commit hooks, style guides.
-
-### Testing
-Framework, directory structure, naming conventions, coverage requirements.
-
-### Proof Infrastructure
-Posture: `none|weak|adequate|strong`
-Strongest available proof commands by area, required environment/prerequisites, and known gaps.
-
-### CI/CD
-Pipeline config, required checks, deployment strategy.
-
-### Dependencies
-Package manager, lockfile conventions, version constraints.
-
-### Workspace Tooling
-Workspace rule files, `AGENTS.md`, and local agent/tooling settings.
+## Proof Infrastructure
+Obvious reusable proof commands already known. Otherwise: `Discover on demand for the affected area.`
 
 ## Architecture
-Key structural patterns, entry points, critical paths.
+Discover and curate on demand. Record only structural knowledge likely to matter across future tasks.
 
 ## Decisions
 No decisions recorded.
 
-## Deconfliction
-Plugin decisions recorded during `/oodaloop-init`.
+## Surprising / Non-obvious Knowledge
+Persist surprising repo behavior, hidden invariants, reusable proof constraints, and causal lessons that materially shorten future trajectories.
