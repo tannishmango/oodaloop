@@ -1,92 +1,74 @@
 ---
 name: sync
-description: Reconcile and refresh OODALOOP state after interruptions or context resets.
+description: Reconcile minimal OODALOOP state after interruption without re-running the framework.
 ---
 
 # sync
 
 ## Trigger
 
-`/oodaloop-sync` or when resuming after unrelated work, model refresh, or long context gaps.
+`/oodaloop-sync` when resuming OODALOOP work after context loss, interruption, or a different conversation.
+
+Do not run sync for ordinary work that never entered OODALOOP.
 
 ## Preconditions
 
-- `.oodaloop/CONTEXT.md` must exist. **Verify by reading it** — if the Read tool returns an error, report "No OODALOOP state found. Run `/oodaloop-start` first." and stop. Do not glob for `.oodaloop/**` (glob skips hidden directories).
+- `.oodaloop/CONTEXT.md` exists. If not, report that no initialized OODALOOP state exists and stop.
 
 ## Workflow
 
-### 1. Read current state
+### 1. Read only active state
 
 Read:
+- `.oodaloop/CONTEXT.md`,
+- active `.oodaloop/*.task.md` files,
+- BACKLOG only when future-work reconciliation is actually relevant.
 
-- `.oodaloop/CONTEXT.md`
-- `.oodaloop/BACKLOG.md` (if present)
-- all `.oodaloop/*.task.md` files
+Build parent/child relationships from `Parent:` and `## Waiting` references.
 
-Build parent/child relationships from `Parent:` references.
+### 2. Repair factual integrity
 
-### 2. Check persistent context staleness
+Use the state-hygiene rule to check only restartability facts:
+- phase has its minimum evidence,
+- parent/child references resolve,
+- no parent cycle exists,
+- Waiting points to a real child/result,
+- resume point is understandable.
 
-Compare `.oodaloop/CONTEXT.md` "Last refreshed" timestamp against the current date.
+Repair automatically only when the correct state is unambiguous. Do not launch agents or framework phases merely to fix metadata.
 
-- If stale (>24h or different day): report "CONTEXT.md may be outdated — conventions and proof infrastructure may have changed." Recommend running `/oodaloop-observe` before continuing execution.
-- If current: no action needed.
+### 3. Determine the next consequential judgment
 
-Do not scan conventions. Do not audit proof infrastructure. Do not dispatch the researcher agent. These belong to observe during active cycles and init during bootstrap.
+For each active node, identify the lightest valid resume point:
+- missing/contradictory evidence → Observe,
+- evidence exists but interpretation changed → Orient,
+- leaf/task tree needs revision → Decide,
+- plan remains valid and a leaf is ready → Act,
+- implementation is complete and only boundary reconciliation remains → Loop,
+- waiting on child → report the child and stop that branch.
 
-### 3. Reconcile task integrity
+Do not restart from Observe by default just because time passed or CONTEXT is older than 24 hours. Check staleness only where current work depends on facts likely to have changed.
 
-For each task file, run state-hygiene checks and classify issues as:
+### 4. Resume completed children
 
-- **blocking**: missing required section for current phase, orphaned parent/child links, or cyclic parent chain
-- **non-blocking**: stale timestamps, minor metadata mismatch
+When a child completed:
+- read its result/evidence,
+- determine whether that evidence changes parent assumptions or only resolves the blocked leaf,
+- remove the parent's Waiting section when safe,
+- resume at the phase justified by the returned evidence.
 
-When repair is unambiguous, repair in place:
+Do not replay the child's full phase history into parent context.
 
-- If phase metadata is ahead of available sections, set phase back to the last fully evidenced phase.
-- If task is `paused` but has no `Paused` section, set phase back to `act`.
-- If parent has `Paused` section waiting on a child task that no longer exists, remove `Paused` and set parent phase to `act`.
-- If task has a `## Ready to Resume` section, a child cycle completed and this task is ready to continue. Report the child result and recommend `/oodaloop-act` to resume execution. Remove the `Ready to Resume` section after reporting (it's a one-time signal).
+### 5. Report compressed state
 
-When repair is ambiguous or high-risk, do not mutate; report and recommend the next command.
+Return:
+- active root/child nodes,
+- any factual repairs,
+- what each node is waiting on,
+- exact lightest next phase/command and why.
 
-Update task `Updated:` timestamp only for files actually modified.
-
-### 4. Check completion and next-step readiness
-
-For each task, determine status:
-
-- **done**: explicit `CONTINUE` verdict exists
-- **resumable**: has `## Ready to Resume` section (child cycle completed, parent ready to continue)
-- **ready-for-loop**: Execution Log is present and phase is `loop`
-- **ready-for-act**: Plan is present and phase is `act`
-- **blocked**: paused or waiting on dependency
-- **active**: otherwise
-
-Do not delete task files in sync. Deletion remains owned by `/oodaloop-loop` after verdict handling.
-
-### 5. Reconcile backlog signals
-
-If `.oodaloop/BACKLOG.md` exists:
-
-- note if top Next item appears already done in task evidence
-- note if tasks produced notable deferred work not represented in backlog
-
-Recommend promotion/completion moves, but do not rewrite backlog unless the mapping is explicit and unambiguous.
-
-### 6. Report compressed state
-
-Return a concise sync report:
-
-- what changed (if any)
-- staleness warning (if CONTEXT.md is outdated)
-- integrity issues found (blocking/non-blocking)
-- task status table (done/ready/blocked/active)
-- exact next commands (for example `/oodaloop-act`, `/oodaloop-loop`, `/oodaloop-decide`)
+Do not emit framework diagnostics that do not change the next action.
 
 ## Output
 
-- staleness warning if CONTEXT.md is outdated
-- any unambiguous task-state repairs applied
-- completion/readiness status for active task files
-- explicit next-step command recommendations
+A minimal cold-start reconstruction of where the work actually is—not a re-audit of the entire OODALOOP process.
