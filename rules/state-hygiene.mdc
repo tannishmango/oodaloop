@@ -1,91 +1,112 @@
 ---
-description: Keep .oodaloop/ state current and consistent. Enforce persistent vs ephemeral lifecycle.
+description: Keep OODALOOP state minimal, restartable, and about the work rather than the framework ceremony.
 alwaysApply: true
 ---
 
 ## Location
 
-`.oodaloop/` lives at the **workspace root** of the repo being worked in — the same directory that contains `.git/`. It is NOT in the plugin directory, not in `~/.cursor/`, or `~/.claude/`, and not in any subdirectory.
+`.oodaloop/` lives at the workspace root beside `.git/`.
 
-### Detecting `.oodaloop/`
-
-**Preferred**: Read `.oodaloop/CONTEXT.md` directly using the Read tool. If it returns content, the directory exists. If it errors, it doesn't. Every skill needs CONTEXT.md content anyway — reading it is both the existence check and the first workflow step.
-
-**Fallback**: `ls -d .oodaloop/ 2>/dev/null` from the workspace root.
-
-**Do NOT** glob for `.oodaloop/**` or `.oodaloop/*` — glob's `**` wildcard skips hidden directories (those starting with `.`), so patterns that enumerate dotdir contents silently return zero results even when the directory exists. Do NOT use bare `ls` — it hides dotfiles/dotdirs by default.
+Detect it by reading `.oodaloop/CONTEXT.md` directly. Do not rely on globbing hidden directories.
 
 ## File types
 
-- **CONTEXT.md** is persistent. It survives across tasks and is never deleted. It is updated incrementally by observe (convention drift), loop (learning absorption), and init (creation). Never overwrite wholesale -- update sections.
-- **BACKLOG.md** is persistent. It tracks future work, ideas, and deferred items across conversations. Updated by loop (discoveries, completions, promotions) and act (mid-execution discoveries). Curated, not accumulated -- prune stale items.
-- **<slug>.task.md** files are ephemeral. They are created by observe, filled through the OODA cycle, and deleted by loop on CONTINUE verdict. They represent active work, not permanent records. Valid phases: `observe`, `orient`, `decide`, `act`, `loop`, `paused`. The `paused` phase means the task is waiting for a sub-cycle to resolve a blocking discovery before it can resume.
+- **CONTEXT.md** — persistent curated knowledge that materially improves future trajectories: architecture, conventions, active decisions, proof infrastructure, surprising/non-obvious constraints.
+- **BACKLOG.md** — persistent future work. Curated, not a dump for every discovery.
+- **<slug>.task.md** — ephemeral active OODALOOP node. Delete after successful root closure once reusable learning is absorbed.
+- **CYCLES.log** — optional cheap telemetry; never hot context unless analyzing framework behavior.
 
-## Rules
+## Task state
 
-- After any phase transition within a task, update the task file's phase and timestamp.
-- Never leave a task file in an inconsistent state (e.g., phase says "act" but no Plan section exists).
-- CONTEXT.md must always have a valid "Last refreshed" timestamp.
-- When loop absorbs learnings, add to CONTEXT.md -- do not duplicate in both files.
-- Delete completed task files promptly. Do not accumulate finished task files.
-- If `.oodaloop/` doesn't exist and a command needs it, prompt for `/oodaloop-start`.
-- Multiple task files may coexist for concurrent work. Each is independent.
-- **Parent/child tasks**: Arbitrary depth is supported. A child task can itself pause and spawn a grandchild. The chain resolves bottom-up: grandchild completes → un-pauses child → child completes → un-pauses parent. Each task's `Parent:` field references its immediate parent only. When a child completes (loop CONTINUE), the parent's `Paused` section is removed and its phase returns to `act` for resumption. Before spawning beyond depth 3, the act skill asks the user for consent.
-- **Paused section format**: When a task pauses to spawn a sub-cycle, the Paused section must contain enough context for a cold start (different conversation or subagent). Required fields:
-  ```
-  ## Paused
-  Reason: <what blocks and why it can't be deferred>
-  Blocked-during: <which plan task was in progress when the blocker was found>
-  Completed-before-pause: <list of plan tasks already completed>
-  Child-objective: <what the child cycle must accomplish to unblock the parent>
-  Child-slug: <expected child task slug>
-  Strategy: <in-chat | new-chat | subagent>
-  Paused-at: <date>
-  Resume-instructions: <what the parent should do when child completes -- which plan task to resume, any context the parent agent needs>
-  ```
-  The `Strategy` field records how the child cycle is being executed. The `Resume-instructions` field must be specific enough that a different conversation can resume the parent without the original conversation context.
+Valid phases:
+
+`observe` → `orient` → `decide` → `act` → `loop`
+
+Re-entry may move backward when evidence requires it. The phase records where the **next consequential judgment** belongs; it is not proof that every prior phase must be repeated.
+
+A task file may contain:
+- `Parent: <slug>` when it is a genuine child node,
+- `## Waiting` when a parent leaf cannot resume until a child resolves.
+
+Use the minimal cold-resume shape:
+
+```markdown
+## Waiting
+Child: <child-slug>
+Blocked leaf: <task id/title>
+New evidence: <what made the leaf non-executable>
+Resume at: <leaf/phase to revisit when child resolves>
+```
+
+Do not persist execution-substrate choices (`subagent`, `in-chat`, `new-chat`) as task semantics. Do not persist `direct/delegated` labor modes.
+
+## Parent / child invariant
+
+A child exists only when discovered work has a genuinely independent objective/dependency boundary and separate persistence improves coordination or restartability.
+
+Children may begin at the phase their uncertainty requires. They do not automatically run a full Observe → Orient → Decide → Act → Loop ceremony.
+
+On child completion, propagate only:
+- result,
+- evidence that changes parent assumptions/invariants,
+- resume point.
+
+Then remove the parent's Waiting section when safe.
+
+There is no arbitrary recursion-depth quota. Runaway recursion is prevented by the stronger invariant that every child must earn separate persistence. If a chain is growing without reducing uncertainty, stop and rescope rather than adding depth.
+
+## Phase integrity
+
+Keep only checks that establish real restartability:
+
+| Phase | Minimum evidence |
+|---|---|
+| `observe` | Objective |
+| `orient` | Observations + Assessment |
+| `decide` | Assessment |
+| `act` | Plan |
+| `loop` | Execution evidence |
+
+If phase metadata is ahead of available evidence, repair it to the last evidenced phase.
+
+Other blocking inconsistencies:
+- task references a missing parent when parent context is required,
+- parent Waiting references a child that never existed or disappeared without a result,
+- parent references form a cycle,
+- completed child result cannot identify what parent judgment it resolves.
+
+Do not maintain validators for obsolete process vocabulary such as assessor modes, labor modes, eight-field pause records, or execution-strategy names.
+
+## Persistent context hygiene
+
+Before adding to CONTEXT.md ask:
+
+> Would an agent on a different future task materially benefit from knowing this?
+
+Prefer:
+- surprising repo behavior,
+- non-obvious invariants,
+- architectural decisions/constraints,
+- reusable proof paths,
+- causal lessons from failed approaches.
+
+Reject:
+- command transcripts,
+- file-by-file execution history,
+- task-specific trivia,
+- duplicate backlog information.
 
 ## Recovery
 
-When you encounter inconsistent state, do not silently continue or halt without guidance. Detect, report, and recommend.
+When state is inconsistent:
+1. report the concrete mismatch,
+2. repair automatically only when the correct state is unambiguous,
+3. otherwise route to the lightest phase that can reconstruct the missing judgment/evidence.
 
-### Detection checks
-Run these when a skill's preconditions feel wrong or state seems off.
+Do not start a full OODA cycle merely to repair metadata.
 
-Rows marked *(mechanized)* are enforced at commit time on fixtures under `tests/fixtures/state-hygiene/`. Live `.oodaloop/*.task.md` files are forbidden from commits by hook block #2, so runtime detection of these violations remains the responsibility of skills (advisory only).
+## Deterministic enforcement
 
-| Check | Inconsistency |
-|---|---|
-| `.oodaloop/` exists but `CONTEXT.md` missing | Partial init -- directory created but setup incomplete |
-| `.oodaloop/` exists but `BACKLOG.md` missing | Pre-backlog init or accidental deletion |
-| Phase transition invoked (orient, decide, etc.) but no task file exists on disk | Observe ran in conversation but never persisted the task file -- re-run observe |
-| Task file phase says `orient` but no Observations section | Observe didn't complete *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
-| Task file phase says `decide` but no Assessment section | Orient didn't complete *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
-| Task file phase says `act` but no Plan section | Decide didn't complete *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
-| Task file phase says `loop` but no Execution Log section | Act didn't complete *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
-| Task file phase says `paused` but no Paused section | Pause metadata lost *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
-| Task file has `Parent: <slug>` but parent task file doesn't exist | Parent was deleted without resuming child, or child is orphaned |
-| Task file has Paused section with `Child-slug: <slug>` but child task doesn't exist | Child completed but parent wasn't un-paused |
-| Following `Parent:` references forms a cycle (A → B → A) | Circular chain -- should never happen, indicates corruption *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
-| Chain depth exceeds 3 without evidence of user consent in the deepest task file | Runaway recursion -- act skill should have asked before going this deep *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
-| Paused section exists but is missing required fields (`Reason`, `Child-slug`, `Strategy`, `Resume-instructions`) | Incomplete pause -- cold start will fail *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
-| `Mode:` line in any task file has a value other than `direct` or `delegated` | Mode vocabulary violation — assessor agent spec forbids any other value *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)* |
-| Paused section `Strategy` is `subagent` but child task file doesn't exist and no error was recorded | Subagent failed to create child task file -- dispatch failure |
-| Child task file exists but its phase timestamp is stale (>24h with no progress) and parent `Strategy` is `subagent` | Subagent likely failed or hung mid-child-cycle |
-| Execution log has a checkpoint with `blocker-detected` but the next task was still executed (no pause, no Step 3 handling) | Checkpoint blocker was ignored -- execution integrity violation |
-| Parent task file has `## Ready to Resume` section but phase is not `act` | Ready to Resume written but parent phase wasn't updated |
-| Parent task file has `## Ready to Resume` section and a Paused section simultaneously | Conflicting state -- child completed but Paused section wasn't removed |
+When a host exposes hooks or validators, mechanize factual invariants cheaply: schema/phase pairing, parent cycles, missing child references, changed-path telemetry, and safety interception.
 
-### When inconsistency is found
-Report to the user with this structure:
-1. **What's wrong**: which file, what the expected state is, what was found instead
-2. **Impact**: can current work continue despite this, or is it blocking?
-3. **Recommended action**: one of the options below
-
-### Recovery options
-| Option | When to use | Action |
-|---|---|---|
-| **Continue with warning** | Inconsistency is non-blocking (e.g., BACKLOG.md missing but current task doesn't need it) | Note the inconsistency, proceed, fix later |
-| **Repair in place** | Inconsistency is simple and unambiguous (e.g., task file phase is wrong but sections indicate the real phase) | Fix the inconsistent field, note what was repaired, proceed |
-| **Re-enter phase** | Task file is missing a section its phase requires | Set phase back to where the missing section should have been created, recommend re-running that phase's command |
-| **Re-init** | CONTEXT.md missing or corrupted beyond section-level repair | Recommend user run `/oodaloop-start` on a fresh directory (rename or delete `.oodaloop/` first) |
+Semantic questions—whether evidence invalidates the architecture, whether a surprise is consequential, whether the objective should change—remain agent judgment.
