@@ -9,13 +9,11 @@ OpenCode discovers commands from `.opencode/commands/` (project) or `~/.config/o
 ```bash
 OODALOOP_DIR="/path/to/oodaloop"
 
-# Commands: symlink each command file
 mkdir -p ~/.config/opencode/commands
 for f in "$OODALOOP_DIR"/commands/*.md; do
   ln -sf "$f" ~/.config/opencode/commands/"$(basename "$f")"
 done
 
-# Skills: symlink each skill directory
 mkdir -p ~/.config/opencode/skills
 for d in "$OODALOOP_DIR"/skills/*/; do
   name=$(basename "$d")
@@ -29,35 +27,27 @@ Same as above but target `.opencode/` in the project root instead of `~/.config/
 
 ## Agents
 
-OpenCode agents can be registered via CLI:
+Register the four semantic roles if useful in your OpenCode setup:
 
 ```bash
-# Example for each agent (adapt model/permissions to OpenCode's format)
-opencode agent create --name oodaloop-researcher --description "Read-heavy discovery agent for codebase exploration"
-opencode agent create --name oodaloop-planner --description "Task decomposition and dependency analysis"
-opencode agent create --name oodaloop-executor --description "Implementation of atomic plan tasks"
-opencode agent create --name oodaloop-assessor --description "Per-task verification, aggregate assessment, loop verdicts"
+opencode agent create --name oodaloop-researcher --description "Targeted evidence and blind-spot discovery"
+opencode agent create --name oodaloop-planner --description "Consequential planning and executable leaf decomposition"
+opencode agent create --name oodaloop-executor --description "Execution of one decision-ready leaf"
+opencode agent create --name oodaloop-reviewer --description "Optional independent review when risk or surprise warrants it"
 ```
 
-Or add to `opencode.json`:
-
-```json
-{
-  "agents": {
-    "oodaloop-researcher": { "description": "Read-heavy discovery agent", "readonly": true },
-    "oodaloop-planner": { "description": "Task decomposition and dependency analysis", "readonly": true },
-    "oodaloop-executor": { "description": "Implementation of atomic plan tasks" },
-    "oodaloop-assessor": { "description": "Per-task verification, aggregate assessment, loop verdicts", "readonly": true }
-  }
-}
-```
+Model selection should follow host policy: stronger reasoning where it collapses ambiguity, cheapest adequate intelligence for decision-ready execution. Do not hardcode current frontier model names into the adapter.
 
 ## Rules
 
-Add to `.opencode/` config or project-level configuration as appropriate for your OpenCode version.
+Map the canonical rules into the OpenCode instruction/config surface appropriate to the installed version. Preserve the critical invariant: **normal agent behavior is the default; OODALOOP must earn invocation.**
+
+## Hooks / deterministic events
+
+If the installed OpenCode version exposes lifecycle/tool hooks, use them only for factual must-happen behavior such as destructive-operation interception, state validation, or cheap telemetry. Do not encode semantic rescoping/review decisions in callbacks.
 
 ## Notes
 
-- Command filenames determine command names (e.g., `oodaloop-observe.md` → `/oodaloop-observe`).
-- Skills use the Agent Skills standard — OpenCode supports this natively.
-- OpenCode's config merging follows: inline > `.opencode/` > project > global > remote.
+- Command filenames determine command names.
+- Skills use the Agent Skills standard.
+- Exact config/hook syntax may evolve independently of the OODALOOP core; keep host-specific details here rather than in core skills.
