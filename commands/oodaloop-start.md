@@ -1,8 +1,8 @@
 ---
 name: oodaloop-start
-description: Start here. Bootstrap state if needed, then guide task kickoff.
+description: Evaluate whether OODALOOP is warranted; ordinary agent work remains the default.
 ---
 
 # oodaloop-start
 
-Invoke the oodaloop:start skill and follow it exactly.
+Invoke the oodaloop:start skill and follow it exactly. Routing happens before OODALOOP state/bootstrap; NORMAL is a valid result.
