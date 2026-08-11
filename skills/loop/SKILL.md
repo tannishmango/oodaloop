@@ -1,123 +1,93 @@
 ---
 name: loop
-description: Assess aggregate outcomes, emit verdict, and manage task lifecycle.
+description: Reconcile implementation evidence with the objective and re-open the map only when something actually changed.
 ---
 
-> Boyd's Feedback: After acting, observe results and reorient. The loop is continuous — every action's outcome feeds the next cycle. (foundation/OODALOOP.md)
-
-> **Plugin paths**: `foundation/` references in this skill are relative to the OODALOOP plugin root, not the workspace. Resolve from this skill file's installed path.
+> Boyd's feedback loop matters because action changes what we know. The invariant is reorientation when evidence warrants it—not a mandatory second audit of every completed task.
 
 ## Trigger
 
-`/oodaloop-loop` or after Act phase completion.
+`/oodaloop-loop` after Act completes the leaves needed for the current node, or at a meaningful subtree/root integration boundary.
 
 ## Preconditions
 
-- An active task file (`.oodaloop/<slug>.task.md`) must exist with Execution Log section.
-- `.oodaloop/CONTEXT.md` must exist.
+- Active task file contains execution evidence.
+- `.oodaloop/CONTEXT.md` exists.
 
 ## Workflow
 
-### 1. Read state
-Read the active task file (all sections). Read `.oodaloop/CONTEXT.md` for persistent context and active decisions.
+### 1. Reconcile evidence with intent
 
-For non-trivial rescoping and verdict decisions, also read `foundation/PRINCIPLES-COMPRESSED.md` and apply only relevant heuristics.
+Read the Objective, Assessment/Plan invariants, and compact Execution evidence.
 
-### 2. Assess
-Dispatch **assessor agent in assess mode** (Type 3, readonly). The assessor receives:
-- The assessor agent definition (`agents/assessor.md`) — this is the governing specification. Do NOT override the assessor's checks or scope in the dispatch prompt.
-- The full task file (all sections)
-- `.oodaloop/CONTEXT.md`
+Ask only the questions that can change the next action:
+- Did the completed work satisfy the objective?
+- Did any surprise invalidate an assumption or parent decision?
+- Did actual mutation/dependency scope materially differ from the map?
+- Is proof adequate for the claims being made?
+- Do individually valid leaves compose coherently at this boundary?
 
-The assessor evaluates aggregate concerns per its Type 3 specification (coherence, cross-cutting consistency, cumulative drift, convention compliance, proof adequacy). It does NOT re-verify individual tasks — Type 2 checkpoints during act already handled per-task verification.
+Do not re-run per-leaf verification simply because Loop exists.
 
-Also evaluate:
-- Are original assumptions still valid?
-- Has scope drifted from what was planned?
-- Were there unexpected discoveries during execution?
-- Have repo conventions changed during this cycle?
+### 2. Decide whether independent review is informative
 
-### 3. Emit verdict
-Exactly one of:
-- **CONTINUE**: all tasks passed, scope held. Proceed to next task or close.
-- **REFINE**: some tasks need adjustment. Specify which tasks to re-plan or re-execute. Re-enter decide.
-- **RESCOPE**: fundamental assumptions changed. Re-enter observe with new evidence.
+There is **no mandatory aggregate assessor**.
 
-Each verdict must include:
-- **Proof references**: cite specific proof artifacts from the cycle (test output, diffs, verification results). Do not issue verdicts backed only by narrative summaries.
-- **Proof adequacy**: state whether the executed proof matched each task's Proof Plan and repo proof posture, and whether any downgraded evidence was user-approved.
-- **Rationale**: why this verdict and not the alternatives.
-- **Falsifiability**: state what evidence would disprove this verdict. If you cannot articulate what would make the verdict wrong, the verdict is not rigorous enough.
-- **Confidence level**: and what would increase it.
-- **Next recommended command**.
+Use a fresh-context reviewer only when the boundary contains material surprise, architecture/security risk, cross-leaf integration uncertainty, unexpected scope, or a proof gap where another semantic judgment can add information.
 
-### 4. Absorb learnings into CONTEXT.md
-Extract knowledge from this cycle that future tasks would need. Update CONTEXT.md:
-- **Decisions**: add if the cycle made a choice that constrains future work (e.g., "chose library X over Y", "adopted pattern Z"). Include date and one-line rationale.
-- **Architecture**: update if the cycle revealed or changed structural patterns (e.g., new module boundary, changed entry point, discovered critical path).
-- **Conventions**: update if the cycle added or changed a convention (e.g., new test pattern, new commit format rule).
+If the evidence is straightforward and all invariants/proof hold, skip review.
 
-**Do NOT absorb**: execution details (what files were changed, what commands were run), task-specific observations that only matter for this task, or anything already captured in CONTEXT.md.
+### 3. Verdict
 
-**Test**: before adding a line, ask "would an agent working on a completely different task need this?" If no, don't add it.
+Emit the lightest truthful outcome:
 
-Update the "Last refreshed" timestamp.
+- **CONTINUE** — objective/invariants hold; proof is adequate; no new evidence requires replanning.
+- **REFINE** — the objective/approach still holds, but a leaf, decomposition, integration, or proof path needs adjustment. Re-enter Decide at the affected node.
+- **RESCOPE** — new evidence invalidates a fundamental assumption, objective framing, or approach. Re-enter targeted Observe/Orient with that evidence.
 
-### 5. Update backlog
-Read `.oodaloop/BACKLOG.md`. Update it:
-- **Add**: any discoveries from this cycle that represent future work (non-blocking issues found, improvement ideas, deferred scope items).
-- **Promote**: if this cycle's results make a Later item urgent, move it to Next.
-- **Complete**: if this cycle finished a backlog item, move it to Done.
-- **Prune**: if any item is now obsolete or absorbed, remove it.
+Do not require steelman paragraphs, ritual falsifiability prose, or confidence scores for routine CONTINUE verdicts.
 
-When recommending next steps to the user, reference the top items from the Next section.
+For REFINE/RESCOPE, cite the concrete evidence that caused re-entry. For consequential CONTINUE decisions after material surprise, state why the surprise does not invalidate the parent trajectory.
 
-### 6. Append cycle log entry
+### 4. Reconcile upward
 
-Before any task file lifecycle handling, append exactly one line to `.oodaloop/CYCLES.log`:
+If this task/node has a parent, propagate only information the parent needs:
+- whether the child objective resolved,
+- evidence that changes parent assumptions/invariants,
+- the parent's resume point.
 
+A child resolving does not imply its parent must repeat every phase. Resume at the lightest phase justified by the returned evidence.
+
+### 5. Persist only reusable learning
+
+Update `.oodaloop/CONTEXT.md` only when the cycle discovered something that would materially shorten or improve a future agent trajectory, especially:
+- surprising repo behavior,
+- non-obvious invariant,
+- architectural constraint/decision,
+- reusable proof requirement,
+- failed approach with a causal lesson likely to recur.
+
+Do not persist ordinary execution history.
+
+Update BACKLOG only for real future work. Do not use it as a dumping ground for every observation.
+
+### 6. Lightweight trajectory telemetry
+
+Append one compact line to `.oodaloop/CYCLES.log` when available:
+
+```text
+<ISO date> slug=<slug> verdict=<CONTINUE|REFINE|RESCOPE> tasks=<n|?> surprises=<n|?> reviews=<n|?> children=<n|?>
 ```
-<ISO date> slug=<task-slug> verdict=<CONTINUE|REFINE|RESCOPE> depth=<n|?> subloops=<n|?> tasks=<n|?> refines=<n|?> rescopes=<n|?>
-```
 
-**Field semantics** (read from the current task file at verdict time):
+Telemetry should be automatic and cheap. It exists to answer future empirical questions about routing and escalation—not to justify more process today.
 
-- `depth` — Count of `Parent:` hops walkable from this task file to root (0 if no `Parent:` field; 1 if direct child; etc.). If an intermediate task file is missing, write `?`.
-- `subloops` — Count of distinct `Child-slug:` values that appear in all `## Paused` sections in this task file's history. Each unique slug counts once.
-- `tasks` — Count of `### T<n>:` headings in the `## Plan` section of this task file.
-- `refines` — Count of lines matching `^Verdict: REFINE` in this task file's body prior to the current verdict being appended.
-- `rescopes` — Count of lines matching `^Verdict: RESCOPE` in this task file's body prior to the current verdict being appended.
+### 7. Lifecycle
 
-Write `?` (literal question mark) for any field that cannot be determined — never leave a field blank or omit it. The log is append-only; never rewrite or truncate it.
-
-### 7. Handle task file lifecycle
-- If verdict is **REFINE**: append verdict, keep task file, update phase to `decide`.
-- If verdict is **RESCOPE**: append verdict, keep task file, update phase to `observe`.
-- If verdict is **CONTINUE** and all work is complete: append the verdict to the task file. Then handle parent resumption:
-
-  If this task has **no `Parent:` field**: delete the task file. Learnings now live in CONTEXT.md.
-
-  If this task **has a `Parent:` field**: read the parent task file's Paused section `Strategy` field. Remove the Paused section and set parent phase to `act`. Then handle per strategy:
-
-  - **`subagent`**: the parent agent is orchestrating this child through subagents and will read the verdict from the child task file. Do NOT delete the child task file -- the parent agent is responsible for cleanup after reading the verdict (decide skill Step 3, subagent strategy step 8).
-  - **`new-chat`**: delete the child task file, then append a `## Ready to Resume` section to the parent task file:
-    ```
-    ## Ready to Resume
-    Child-completed: <child-slug>
-    Child-result: <one-line summary of what the child accomplished>
-    Resume-at: <which plan task to resume, from the parent's Resume-instructions>
-    Date: <date>
-    ```
-    This section is read by `/oodaloop-start` (via sync) when the user opens a new conversation. Recommend the user run `/oodaloop-start` to resume.
-  - **`in-chat`**: delete the child task file and resume execution of the parent task inline.
-
-### 8. Report
-Report verdict, absorbed learnings, and next step to the user.
+- **REFINE**: keep task file; phase → `decide`.
+- **RESCOPE**: keep task file; phase → `observe` (or `orient` when the needed evidence is already present and only interpretation changed).
+- **CONTINUE, root complete**: absorb reusable learning, then delete the ephemeral task file.
+- **CONTINUE, child complete**: propagate the child result, delete the child file when safe, and resume the parent at the phase justified by the evidence.
 
 ## Output
 
-- Verdict appended to task file
-- `.oodaloop/CONTEXT.md` updated with absorbed learnings
-- `.oodaloop/BACKLOG.md` updated with discoveries, promotions, completions
-- Task file deleted (CONTINUE) or phase updated (REFINE/RESCOPE)
-- Verdict and next-step recommendation reported to user (referencing top backlog items)
+A cheap reconciliation boundary that closes clean work quickly and makes new evidence capable of changing the trajectory when it actually should.
