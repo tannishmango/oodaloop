@@ -1,48 +1,51 @@
 ---
 name: quick
-description: Fast path for trivial tasks -- skip ceremony, preserve safety minimums.
+description: Resolve a small, contained blocker inside an existing OODALOOP cycle without spawning more process.
 ---
 
 ## Trigger
 
-`/oodaloop-quick` or when task is assessed as low-risk and local.
+`/oodaloop-quick` when already inside OODALOOP and a blocker is clearly local, contained, reversible, and does not require new consequential judgment.
+
+This is **not** the default path for ordinary small tasks. Ordinary work should stay outside OODALOOP entirely.
 
 ## Preconditions
 
-- `.oodaloop/CONTEXT.md` must exist. **Verify by reading it** — if the Read tool returns an error, prompt for `/oodaloop-start`. Do not glob for `.oodaloop/**` (glob skips hidden directories).
+- An active OODALOOP task exists, or the user explicitly invoked `/oodaloop-quick`.
+- The proposed resolution is understood well enough to execute without research or decomposition.
 
 ## Workflow
 
-1. Assess task complexity. If non-trivial (touches multiple files, has unclear scope, or high risk), escalate to `/oodaloop-observe`.
+1. Confirm the blocker is local:
+   - no new architectural or semantic decision,
+   - no material expansion of blast radius,
+   - no contradicted parent assumption,
+   - no unresolved external-state risk.
 
-2. Read `.oodaloop/CONTEXT.md` conventions. These are binding even for quick tasks.
+2. Read only the active task context and repo conventions needed for the fix. Do not create a new child task file.
 
-3. **Destructive operations check.** Even quick tasks must respect the `destructive-ops` rule. If the task involves mutating external state (databases, Docker, services, infrastructure), require explicit user confirmation before execution regardless of task simplicity. Quick does not mean unconfirmed.
+3. Respect destructive-operation safety boundaries. If an external-state mutation requires approval, stop for approval; quick never bypasses safety.
 
-4. Execute directly. Follow repo conventions (commit format, test patterns, linter rules).
+4. Execute the contained fix and run the strongest proportionate proof available.
 
-5. Create an ephemeral task file `.oodaloop/quick-<brief-slug>.task.md` with a compressed record:
+5. Append a short note to the parent task's evidence/discovery record only if the fix matters to resumption. Do not create-and-delete a ceremonial quick task artifact.
 
-```markdown
-# Task: quick-<slug>
+6. Resume the parent leaf.
 
-## Phase: complete
-Started: <date>
-Updated: <date>
+## Surprise / escalation
 
-## Summary
-<what changed, what was verified, any side effects>
-```
+If the supposed quick fix reveals a consequential choice, contradicted assumption, cross-cutting dependency, unexplained proof failure, or material scope expansion, stop. It is no longer a quick blocker.
 
-6. Absorb if anything durable was learned: update CONTEXT.md decisions or conventions.
+Return the new evidence to the parent and route to the lightest appropriate response:
+- refine/split at Decide,
+- targeted Observe/Orient,
+- or user judgment for high-risk ambiguity.
 
-7. Delete the task file.
-
-8. If complexity is discovered mid-execution, stop and escalate to `/oodaloop-observe`.
+Do not automatically launch a full child OODA cycle.
 
 ## Output
 
-- Changes implemented following repo conventions
-- Ephemeral task file created and deleted
-- CONTEXT.md updated if learnings were produced
-- Summary reported to user
+- contained fix,
+- proportionate proof,
+- minimal parent-state update when useful,
+- or explicit escalation because the issue was not actually local.
