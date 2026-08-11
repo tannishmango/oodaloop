@@ -2,186 +2,167 @@
 
 ## Purpose
 
-OODALOOP exists to make AI-assisted feature development **faster, safer, and more adaptive** under uncertainty, without collapsing into process theater.
+OODALOOP exists to improve AI-assisted software work **when uncertainty, consequence, coordination, or surprise make ordinary agent behavior insufficient**.
+
+It is not the default planning framework. It should earn its invocation and collapse toward less process as agents, tools, and understanding improve.
+
+The durable OODA invariant is not ceremony around five named phases. It is this:
+
+> Act from the best current map, notice when evidence contradicts it, and re-orient before a bad trajectory compounds.
 
 ---
 
-## Core Principles (Extracted From Kickoff Intent)
+## Core principles
 
-1. **Compression over complexity**
-   - Prefer minimal, high-signal process primitives.
-   - If a framework needs too much explanation, it is not production-grade.
+### 1. Ordinary agent behavior is the default
 
-1. **Coverage of the full development loop**
-   - The system must cover research, scoping, planning, execution, verification, and reassessment.
-   - Any missing phase eventually becomes hidden risk.
+Needing a plan, touching multiple files, or being moderately complex does not justify OODALOOP.
 
-1. **Adaptive rigor**
-   - Process depth should match task complexity and risk.
-   - Tiny tasks should not require heavyweight ceremony.
+Enter the framework only when meaningful residual consequential uncertainty remains after cheap local reasoning.
 
-1. **Minimum effective process**
-   - The best process is no process, except for the irreducible scaffold required to maintain orientation, coordination, verification, and recovery.
-   - Every extra phase, file, handoff, or rule is guilty until it proves it increases learning rate or execution reliability.
+The routing judgment itself must be nearly free: no artifact, assessor, or workflow merely to decide whether a workflow is needed.
 
-1. **Progress tracking as infrastructure**
-   - Progress tracking is not documentation polish; it is the control surface for coordination.
-   - State must be simple enough to stay updated and rich enough to guide next actions.
+### 2. Complexity means remaining judgment, not amount of code
 
-1. **Feedback loops are non-optional**
-   - Plans are hypotheses, not truths.
-   - Execution discoveries must be able to change scope and sequencing.
+A useful conceptual variable is **residual consequential decision load**: how much high-impact judgment remains before an implementer can execute safely without inventing intent.
 
-1. **Parallelism with dependency awareness**
-   - Parallelize independent work; serialize coupled work.
-   - Naive parallelism creates merge debt and context collisions.
+File count, task count, and lines changed are weak proxies. A mechanical 20-file edit may be cheap; a 15-line authorization change may deserve deep orientation.
 
-1. **Context hygiene beats context volume**
-   - Shared context should be intentionally curated, not accumulated.
-   - Stale and duplicated context is a primary failure mode.
+Do not manufacture pseudo-precise entropy/complexity scores without calibrated evidence.
 
-1. **Single source of truth**
-   - Each critical concept has exactly one canonical home.
-   - Duplication is latency: it turns into contradiction over time.
+### 3. Spend intelligence where it collapses ambiguity
 
-1. **Instruction followability as a design constraint**
-   - Workflow quality is measured by whether agents reliably follow it.
-   - If agents routinely violate the harness, the harness is poorly designed.
+Reasoning is most valuable during discovery, architecture, decomposition, diagnosis, and rescoping—places where a good decision can make later execution mechanical.
 
-1. **Orchestration should be robust to imperfect agents**
-   - The system should degrade gracefully when outputs are partial or noisy.
-   - Reliability comes from architecture, not idealized model behavior.
+Use the cheapest adequate intelligence once consequential choices have already been resolved.
 
-1. **Epistemic rigor over assertion**
-   - The system should privilege evidence, falsifiability, and explicit uncertainty over fluent narrative.
-   - For non-trivial claims, trust should come from tests, checks, examples, or reconciliations, not confident wording.
+Model/vendor names are execution policy, not architecture.
 
----
+### 4. Plans should be high-information but weakly committed
 
-## First-Principles Extensions (Cross-Domain Synthesis)
+Planning invariant:
 
-- **12) Orientation quality is the strategic bottleneck** (Boyd + information theory)
-  - Observe/Act speed is useless if Orient is low-quality.
-  - Better heuristics and models improve loop outcomes more than raw loop frequency alone.
+> **Minimize residual consequential decisions while preserving maximum implementation optionality.**
 
-- **13) Late commitment, fast revision** (OODA + PDSA)
-  - Decide as late as practical with best available evidence.
-  - Re-open decisions when new evidence invalidates assumptions.
+Specify objective, behavior, invariants, constraints, interfaces when known, dependencies, acceptance, proof, and risk boundaries.
 
-- **14) Study, do not just check** (Deming PDSA)
-  - Verification should explain why outcomes occurred, not only pass/fail status.
-  - Every cycle should improve the next cycle's decision quality.
+Do not prescribe incidental file organization, function shapes, control flow, or abstractions unless evidence actually constrains them.
 
-- **15) Manage the bottleneck, not the busyness** (TOC)
-  - System throughput is constrained by few limiting factors.
-  - Prioritize removal or protection of current bottlenecks before local optimizations.
+This is the transferable design lesson behind the idea that explanations should be no more specific than necessary: commit strongly to what must be true, weakly to what need not be decided yet.
 
-- **16) Amdahl realism for parallel work**
-  - Overall acceleration is bounded by serial portions.
-  - Optimize handoffs and blocking dependencies before adding more parallel agents.
+### 5. Decompose to executable leaves
 
-- **17) Preoccupation with failure** (HRO)
-  - Treat anomalies and near-misses as high-value signals.
-  - Small inconsistencies often predict large failures later.
+A task is a node. A node is an executable **leaf** when a competent executor can complete it without inventing product intent, choosing architecture, discovering substantial new scope, or making another consequential trade-off absent from the spec.
 
-- **18) Reluctance to simplify interpretation** (HRO)
-  - Avoid first-story bias.
-  - Use multiple hypotheses when diagnosing failures or drift.
+Do not decompose to satisfy arbitrary file/task/modification quotas.
 
-- **19) Sensitivity to operations** (HRO)
-  - Keep a live view of current state, not just planned state.
-  - Operational awareness must outrank stale plan assumptions.
+Mechanical multiplicity is not decision complexity.
 
-- **20) Deference to expertise**
-  - In critical moments, route decisions to the agent/process with the best local signal.
-  - Hierarchy should not overrule evidence.
+### 6. Surprise is first-class evidence
 
-- **21) Commitment to resilience**
-  - Build for detection, containment, and recovery.
-  - Failure handling quality is as important as success-path quality.
+No amount of planning eliminates unknown unknowns.
 
-- **22) Restartability beats continuity assumptions** (crash-only design)
-  - Build steps so they fail cleanly, resume cheaply, and produce the same result when retried from known state.
-  - Long-running workflows should assume interruption, partial progress, and tool failure; reliability comes from idempotence and recovery speed, not continuity fantasies.
+A **surprise** is observed evidence that materially violates the current map: contradicted assumptions, unexpected coupling, consequential choices absent from the plan, unexplained proof failure, material scope expansion, or dependencies that invalidate remaining work.
 
-- **23) Falsifiability beats plausibility** (scientific method + TDD)
-  - Important claims should be expressed in a form reality can refute.
-  - Tests, invariants, and reconciliations are stronger than persuasive explanations.
+Do not require an executor to label an "unknown unknown." Require the system to stop silently absorbing evidence that changes the meaning of the work.
 
-- **24) Counterfactual comparison hardens decisions** (inversion + Bayesian updating)
-  - Strong reasoning compares the chosen path against the best alternative, not just the first coherent plan.
-  - Counterfactuals and steelmanning matter most when uncertainty, risk, or irreversibility is high.
+### 7. Re-enter only where the new judgment lives
 
-- **25) Do one thing well; compose cleanly** (Unix philosophy)
-  - Steps, tools, and artifacts should have narrow purposes and explicit interfaces.
-  - System capability should grow from composition, not from monolithic instructions or phases.
+A surprise does not imply a full recursive OODA ceremony.
 
-- **26) Separate mechanism from policy** (Unix + software architecture)
-  - Keep orchestration machinery independent from task-specific judgment and heuristics.
-  - Adaptive rigor only works when changing policy does not require rewiring the engine.
+Use the lightest response:
+- local/mechanical fix,
+- re-decompose at Decide,
+- targeted Observe/Orient,
+- or user judgment for high-risk/preference-dependent choices.
 
-- **27) Fold knowledge into data; keep logic simple** (Rule of Representation)
-  - Put variability, state, and decision context into schemas and records before adding branching logic.
-  - Richer data with simpler interpreters is easier to inspect, test, and revise.
+A supposed leaf can become a branch. Children resolve bottom-up. Not every child needs all phases.
 
-- **28) Systems drift toward self-preservation** (Gall / Systemantics)
-  - Any framework will tend to justify its own files, phases, metrics, and rituals.
-  - Repeatedly ask whether a step improves mission outcomes or merely preserves the system.
+### 8. Mechanize facts; leave semantic judgment to agents
+
+Deterministic mechanisms are appropriate for facts such as schemas, state integrity, changed paths, test results, command status, destructive-operation interception, dependency conditions, and telemetry.
+
+Agent judgment is appropriate for whether new evidence changes architecture, invalidates an assumption, warrants rescoping, or makes an alternative meaningfully better.
+
+Do not mechanize judgment proxies merely to create the appearance of rigor.
+
+### 9. Review must earn its cost
+
+Independent/fresh-context review is valuable when a second lens can change a consequential decision: architecture, high blast radius, security/safety, material surprise, integration uncertainty, or ambiguous proof.
+
+Routine leaves do not owe a second-model tax.
+
+Never loop until a reviewer becomes stylistically satisfied.
+
+### 10. Evidence over fluency
+
+Claims should have proportionate proof paths. Hard relevant checks beat easy irrelevant checks.
+
+Proof state should preserve what another agent needs to verify or resume, not giant raw transcripts.
+
+### 11. Context is curated memory, not history
+
+Persist knowledge when it materially shortens or improves a future trajectory—especially surprising repo behavior, non-obvious invariants, architectural constraints, reusable proof requirements, and causal lessons from failed approaches.
+
+Do not accumulate ordinary execution history.
+
+### 12. Restartability beats continuity assumptions
+
+Long-running work should survive context loss and interruption through compact file-backed state.
+
+State should describe the work—objective, assumptions, decisions, leaves, evidence, parent/child relationships—not the framework's ceremony.
+
+### 13. Hosts provide substrate; OODALOOP provides semantics
+
+Subagents, worktrees, parallelism, hooks, permissions, background execution, and model routers are host capabilities.
+
+Use them through adapters when useful. Do not rebuild them in the core.
+
+Hooks are especially useful for deterministic must-happen behavior; they should not become an architecture-judgment engine.
+
+### 14. Instrument before theorizing routing
+
+Collect cheap trajectory data—surprises, task splits, proof retries, user corrections, reorientation, review calls, children, and approximate costs where available.
+
+Use observed outcomes later to learn better routing/model policies rather than inventing a complexity formula now.
 
 ---
 
-## Design Laws For OODALOOP
+## Design laws
 
-1. **Every artifact and ritual must earn its existence**
-   - Keep only files that directly improve execution, coordination, or verification.
-
-2. **Every loop must update state**
-   - If a cycle does not update canonical state, it did not complete.
-
-3. **Every phase must emit evidence**
-   - Decisions require traceable evidence links (inputs, outputs, rationale, confidence).
-
-4. **Every handoff must be explicit**
-   - Define who owns next action, prerequisites, and completion criteria.
-
-5. **Every plan must be executable**
-   - Plans should be written so execution can start without reinterpretation.
-
-6. **Every verification must be actionable**
-   - Failures must generate concrete next steps, not generic warnings.
-
-7. **Every scope change must be intentional**
-   - Scope drift without explicit acknowledgment is a system defect.
-
-8. **Every simplification must preserve control**
-   - Remove ceremony aggressively, but never remove observability or recovery.
-
-9. **The framework should collapse toward less process over time**
-   - Better understanding should remove ceremony, interfaces, and approvals rather than accumulate them.
-
-10. **Every high-stakes claim needs a proof path**
-    - Use tests, runtime checks, exemplars, invariants, or reconciliations to turn assertions into evidence.
+1. **Every framework invocation must earn its cost.**
+2. **Every artifact must improve execution, proof, coordination, recovery, or reusable learning.**
+3. **Every plan must remove consequential reinterpretation, not local implementation freedom.**
+4. **Every material surprise must be capable of interrupting the current trajectory.**
+5. **Every re-entry should begin at the lightest phase that can resolve the new judgment.**
+6. **Every deterministic fact that can be enforced cheaply should avoid semantic-agent theater.**
+7. **Every safety boundary should prefer mechanical enforcement where the host exposes it.**
+8. **Every simplification should preserve observability and restartability.**
+9. **Every persistent learning should justify why a future unrelated task needs it.**
+10. **The framework should get smaller as models and hosts get better.**
 
 ---
 
-## Anti-Patterns To Reject
+## Anti-patterns
 
-- Framework bloat disguised as rigor.
-- Monolithic orchestration that fuses workflow control with task-specific judgment.
-- Creating artifacts because frameworks are expected to have them.
-- Over-serialization that ignores parallel opportunities.
-- Naive parallelism that ignores coupling and integration cost.
-- Progress tracking spread across many stale files.
-- Execution that never loops back to reassess scope.
-- "Pass/fail" verification with no learning or causal insight.
-- Plausible explanations presented as verified truth.
-- Data-producing systems with no validation or reconciliation story.
-- Optimizing local tasks while global bottlenecks remain untouched.
-- Automating or formalizing process that should have been deleted.
+Reject:
+- framework gravity: agents choosing OODALOOP merely because work needs planning,
+- process theater and mandatory ceremony for moderate work,
+- second-model review after every leaf,
+- arbitrary task/file-count complexity thresholds,
+- rich classification vocabularies without decision value,
+- full child cycles for local discoveries,
+- giant execution/proof transcripts in persistent state,
+- hardcoded current model names as architecture,
+- custom swarm/concurrency infrastructure without an observed need,
+- hooks used to make semantic architecture decisions,
+- fake mathematical complexity scores,
+- automating process that should have been deleted.
 
 ---
 
-## Meta-Principle
+## Meta-principle
 
-**OODALOOP is a learning-rate engine.**  
-Its advantage is not just writing code faster; it is improving the quality of decisions per cycle while preserving execution reliability under uncertainty.
+**OODALOOP is an escalation and recovery harness for maintaining orientation under uncertainty.**
+
+Its success is measured partly by the hard work it handles well—and partly by how often it correctly stays out of the way.
