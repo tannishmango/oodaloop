@@ -1,51 +1,32 @@
 # Task: valid-fixture
 
 ## Phase: act
-Started: 2026-04-21
-Updated: 2026-04-21
+Started: 2026-08-10
+Updated: 2026-08-10
 
 ## Objective
-A fully valid task file exercising every section type used by the validator.
+Exercise the current factual state-hygiene contract.
+
+## Why OODALOOP
+Fixture only: validates restartable state shape.
 
 ## Observations
-### O1: Fixture
-This file is a validator test harness fixture. It is not a real OODALOOP task.
-
-## Requirements
-### R1: Coverage
-Covers: valid Mode, complete Paused section, correct phase↔section pairing (act → Plan present), no Parent reference (depth 0).
-
-## Scope
-- **In**: validator pass
-- **Out**: nothing
-- **Deferred**: nothing
+- Fixture evidence exists.
 
 ## Assessment
-### Situational interpretation
+### Interpretation
 Fixture only.
-### Viable approaches
-N/A
-### Risks and assumptions
-None.
-### Constraints
-None.
-### Recommendation
-N/A
 
 ## Plan
-### T1: Example task
+
+### T1: Example leaf
 **Depends on**: none
-**Acceptance**: example
-**Proof Plan**: manual
+**Intent**: exercise plan presence
+**Acceptance**: fixture remains syntactically valid
+**Proof**: pre-commit validator passes
 
-## Paused
-Reason: Example blocking discovery that cannot be deferred.
-Blocked-during: T1: Example task
-Completed-before-pause: none
-Child-objective: Resolve the example blocker before resuming T1.
-Child-slug: valid-child
-Strategy: in-chat
-Paused-at: 2026-04-21
-Resume-instructions: After child completes, resume T1 from the top.
-
-Mode: direct
+## Waiting
+Child: example-child
+Blocked leaf: T1
+New evidence: example evidence requiring a separately persisted child
+Resume at: act / T1 after child result
