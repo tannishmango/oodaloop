@@ -1,12 +1,53 @@
 ---
-description: Match process depth to task complexity. No unconditional ceremony.
+description: Keep OODALOOP proportional: ordinary agent behavior is the default; escalate only when uncertainty or consequence earns the loop.
 alwaysApply: true
 ---
 
-- Trivial tasks (single file, low risk, clear intent) use /oodaloop-quick. No planning phase required.
-- Medium tasks (multi-file, moderate risk) use Observe -> Orient -> Decide -> Act minimum.
-- Complex tasks (architectural, high risk, multi-system) use full OODA with Loop reassessment.
-- Never force heavyweight process on lightweight work. Never skip verification on risky work.
-- If a task escalates in complexity mid-execution, pause and upgrade the process level.
-- If process feels like overhead without safety benefit, reduce it.
-- When a skill defines a precondition-failure path, follow it exactly. Do not reinterpret user intent, read adjacent skills, or improvise recovery to justify bypassing the gate. Report the failure, recommend the prescribed fix, and stop.
+## Default: stay out of the framework
+
+OODALOOP is not the default planning system.
+
+Do **not** invoke OODALOOP merely because work:
+- needs a plan,
+- touches multiple files,
+- is moderately complex,
+- has several implementation steps,
+- would benefit from normal codebase exploration.
+
+Most software work should use the host agent's ordinary planning, execution, and verification behavior.
+
+## Cheap preflight
+
+Before entering OODALOOP, make a lightweight judgment with **no artifact, no assessor, and no separate workflow**:
+
+1. Can the work be safely executed and verified without making consequential decisions that current instructions/context have not resolved?
+   - If yes: stay in ordinary execution.
+2. If not, can lightweight local planning resolve those decisions without substantial discovery, decomposition, coordination, or risk?
+   - If yes: plan normally, then execute.
+3. Use OODALOOP only when meaningful residual uncertainty or consequence remains.
+
+Signals that can justify OODALOOP include:
+- unfamiliar or poorly understood territory where blind spots are likely,
+- architecture or cross-system coupling,
+- assumptions whose failure would change the approach,
+- unclear ownership/interfaces/acceptance semantics,
+- difficult or missing proof paths,
+- high blast radius or asymmetric risk,
+- work that must be decomposed so executors do not invent consequential intent,
+- recovery after implementation evidence shows the current map is wrong.
+
+File count and task count are weak signals. A mechanical 20-file edit may stay ordinary; a 15-line authorization or migration change may warrant deeper orientation.
+
+## Mid-execution escalation
+
+Ordinary work may enter OODALOOP later if implementation produces material surprise: contradicted assumptions, unexpected coupling, consequential choices absent from the plan, unexplained proof failure, or material scope expansion.
+
+Escalation is evidence-driven, not a punishment for encountering difficulty.
+
+## Minimum effective process
+
+- Use the least process that preserves coordination, proof, recovery, and safety.
+- Prefer deterministic checks for facts and agent judgment only where semantic judgment is required.
+- Never add ceremony solely to make a judgment look rigorous.
+- If a framework step costs more than the uncertainty or risk it reduces, remove or skip it.
+- Explicit user requests for a specific OODALOOP phase should be honored, but the framework may still point out when a cheaper path would be sufficient.
