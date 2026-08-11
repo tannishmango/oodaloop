@@ -57,12 +57,12 @@ There is no arbitrary recursion-depth quota. Runaway recursion is prevented by t
 
 ## Phase integrity
 
-Keep only checks that establish real restartability:
+Keep only checks that establish real restartability. Phase means the next phase to run, so minimum evidence comes from the completed work that made that phase reachable:
 
 | Phase | Minimum evidence |
 |---|---|
 | `observe` | Objective |
-| `orient` | Observations + Assessment |
+| `orient` | Observations |
 | `decide` | Assessment |
 | `act` | Plan |
 | `loop` | Execution evidence |
