@@ -7,18 +7,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- **Default routing inverted**: ordinary agent behavior is now the default. `/oodaloop-start` performs a near-zero-cost preflight before state/bootstrap and may return `NORMAL`; needing a plan, touching multiple files, or being moderately complex no longer routes into OODALOOP.
+- **Complexity reframed** around residual consequential decision load rather than task/file counts or pseudo-numeric entropy scores.
+- **Planning invariant**: plans minimize residual consequential decisions while preserving maximum implementation optionality; decomposition stops at executable leaves rather than arbitrary atomicity quotas.
+- **Observe/Orient/Decide simplified**: targeted research, optional blind-spot pass, assumption invalidation conditions, no mandatory multi-checkpoint intake, no full proof inventory by default, no labor-strategy artifact, no mandatory plan-assessor loop.
+- **Act redesigned around surprise**: contradicted assumptions, unexpected coupling, consequential new choices, unexplained proof failure, and material scope expansion interrupt execution rather than being silently absorbed.
+- **Recursive behavior simplified**: supposed leaves can become branches; re-entry targets the lightest needed phase. Child nodes are persisted only when independence/restartability justify it and do not automatically run all five phases.
+- **Loop reduced to lightweight reconciliation**: clean work closes quickly; REFINE/RESCOPE require concrete new evidence rather than ritual aggregate review.
+- **State simplified**: removed semantic `paused` phase, `direct/delegated` labor mode, `subagent/in-chat/new-chat` child strategies, eight-field Paused records, and depth-consent machinery. Parent waiting state is now Child / Blocked leaf / New evidence / Resume at.
+- **Model selection made policy-driven**: core agent definitions no longer hardcode `model: fast`; spend stronger reasoning where it collapses ambiguity and use the cheapest adequate intelligence for decision-ready execution.
+- **Adapters gain optional lifecycle hooks** for deterministic must-happen facts/safety/telemetry while keeping architecture/rescope judgment in agents.
+- **Pre-commit hook simplified** to factual invariants; removed mandatory CHANGELOG-on-every-commit, labor-mode validation, pause-schema validation, and recursion-depth policy.
+- **Public walkthrough replaced** with a current uncertainty-first architecture page.
+- **Self-context/backlog/improvement tracker curated** to remove old process-hardening goals and focus future work on empirical routing, surprise, leaf-readiness, review economics, and learned model policy.
 - `/oodaloop-eval` now names the Cursor Task slug `cursor-grok-4.6-high` as the required under-the-hood invocation for Grok 4.6/high with Fast disabled. `cursor-grok-4.6-xhigh` is extra-high effort and is an explicit non-substitute.
 - Ignore local archive, Python bytecode, venvs, and OS junk in `.gitignore` and `.cursorignore`. The ATG assessment lives in `.archive/` so Git does not track it and Cursor does not index it.
 
 ### Added
+- `agents/reviewer.md`: optional fresh-context semantic reviewer invoked only when architecture, material surprise, high risk, integration uncertainty, or ambiguous proof makes a second lens informative.
+- `docs/UNCERTAINTY-FIRST-REDESIGN.md`: design record capturing the operational failure, source synthesis, architectural reasoning, removed process, and future empirical questions.
 - **Behavioral evaluation foundation**: deterministic relational oracle, independent canonical implementation, six paired Level-1 anchor scenarios, append-only trajectory telemetry, comparison vectors, and stdlib tests under `evals/`.
 - **One-command Cursor evaluator**: `/oodaloop-eval` prepares the full 6×3 matrix, orchestrates isolated fresh-context subagents, and privately grades results with Grok 4.6/high pinned and Fast disabled.
-- **Cycle log**: `skills/loop/SKILL.md` Step 6 now appends one line per verdict to `.oodaloop/CYCLES.log` (gitignored; append-only). Field semantics defined inline: `depth` (Parent: chain hops at verdict time), `subloops` (distinct Child-slug values), `tasks` (plan task count), `refines`/`rescopes` (prior verdict markers). Unrecoverable fields write `?`. Foundational signal for I-3, I-4, I-12, and I-13 audits.
-- **Pre-commit validator block #6**: `.githooks/pre-commit` now validates staged `tests/fixtures/state-hygiene/*.task.md` files for: Mode vocabulary (must be `direct` or `delegated`), Paused 8-field completeness, phase↔section pairing (orient→Observations, decide→Assessment, act→Plan, loop→Execution Log, paused→Paused), and Parent DAG/depth (≤3 or `Depth-consent:` present). Standard error format: `[oodaloop hook] ERROR: <file>: <validator>: <violation> (expected: <expected>)`.
-- **State-hygiene fixture set**: `tests/fixtures/state-hygiene/` — one valid baseline (`valid.task.md`), four malformed fixtures (invalid-mode, invalid-paused, invalid-phase-section, invalid-depth chain), one valid depth-consent chain, and a `README.md` documenting harness invocation via `SKIP_CHANGELOG=1 git add <fixture> && .githooks/pre-commit`.
-- **State-hygiene rule** (`rules/state-hygiene.mdc`): detection table rows for phase↔section pairing, Paused completeness, cycle detection, and depth-consent now marked *(mechanized via `.githooks/pre-commit` on staged fixtures; runtime checks remain advisory)*. New row added for Mode vocabulary violation. Explanatory note above the table clarifies the mechanical-vs-advisory split.
 
-File touchpoints: `skills/loop/SKILL.md`, `.githooks/pre-commit`, `.gitignore`, `rules/state-hygiene.mdc`, `tests/fixtures/state-hygiene/*` (new directory), `docs/IMPROVEMENTS.md`.
+### Removed
+- `agents/assessor.md` tri-mode mandatory assessor architecture (plan / per-task / aggregate).
 
 ## [M4.7] - 2026-04-14
 
@@ -119,7 +131,6 @@ File touchpoints: `skills/loop/SKILL.md`, `.githooks/pre-commit`, `.gitignore`, 
 - README tightened around composable recursive OODA framing
 - 5 command descriptions updated to match new phase definitions
 - Rules updated: evidence-contract phase names, state-hygiene phase-section mapping and parent resumption references
-- ARCHITECTURE.md and README.md updated: phase tables, agent tables, counts, all descriptions aligned
 - Observe now persists task state earlier and incrementally (skeleton at step 4, then requirements/observations/scope updates before checkpoints)
 - Install and sync scripts now reassert `core.hooksPath=.githooks` so pre-commit enforcement self-heals on local drift
 
