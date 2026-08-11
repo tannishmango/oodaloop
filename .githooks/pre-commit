@@ -85,10 +85,12 @@ validate_task_file() {
       ;;
   esac
 
+  # Phase records the next phase to run, so require the evidence that made that
+  # transition possible—not the output the next phase has not produced yet.
   local required=""
   case "$phase" in
     observe) required="## Objective" ;;
-    orient)  required="## Assessment" ;;
+    orient)  required="## Observations" ;;
     decide)  required="## Assessment" ;;
     act)     required="## Plan" ;;
     loop)    required="## Execution" ;;
