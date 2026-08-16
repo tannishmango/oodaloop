@@ -1,0 +1,1 @@
+{"id":"broad-explicit","pair":"routing","task":"Rename the public QueryError message prefix to `miniquery:` in implementation, CLI, examples, and visible tests. No compatibility alias is required.","fixture":"canonical"}

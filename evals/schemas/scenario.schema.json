@@ -1,0 +1,2 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["id","pair","public","private"],"properties":{"id":{"type":"string"},"pair":{"type":"string"},"public":{"type":"object","required":["task","fixture"],"properties":{"task":{"type":"string"},"fixture":{"type":"string"}}},"private":{"type":"object","required":["anchor"],"properties":{"anchor":{"enum":["normal","oodaloop","leaf_ready","no_silent_drift"]},"protected_paths":{"type":"array","items":{"type":"string"}}}}}}
+

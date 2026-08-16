@@ -1,0 +1,1 @@
+{"id":"small-consequential","pair":"routing","task":"Persist query results for reuse across processes while preserving the library's portability and deterministic semantics. Choose the public cache contract and migration behavior.","fixture":"canonical"}

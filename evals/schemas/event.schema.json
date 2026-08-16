@@ -1,0 +1,2 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["schema_version","run_id","scenario_id","sequence","event"],"properties":{"schema_version":{"const":1},"run_id":{"type":"string"},"scenario_id":{"type":"string"},"sequence":{"type":"integer","minimum":0},"event":{"enum":["route","framework_state_created","leaf_started","leaf_completed","post_plan_split","surprise","reentry","reviewer_call","child_created","user_question","proof_attempt","tool_call","metric"]},"data":{"type":"object"}}}
+
