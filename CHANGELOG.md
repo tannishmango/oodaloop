@@ -6,6 +6,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [M5] - 2026-08-16
+
 ### Changed
 - **Default routing inverted**: ordinary agent behavior is now the default. `/oodaloop-start` performs a near-zero-cost preflight before state/bootstrap and may return `NORMAL`; needing a plan, touching multiple files, or being moderately complex no longer routes into OODALOOP.
 - **Complexity reframed** around residual consequential decision load rather than task/file counts or pseudo-numeric entropy scores.
