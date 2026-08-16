@@ -1,0 +1,1 @@
+{"id":"latent-coupling","pair":"surprise","task":"Add a `ne` expression operator as the boolean inverse of `eq`, including tests. Keep this local to expression evaluation.","fixture":"coupled-expression"}

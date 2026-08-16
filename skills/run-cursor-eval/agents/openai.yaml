@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Cursor Evaluation"
+  short_description: "Run isolated behavioral evaluations in Cursor"
+  default_prompt: "Use $run-cursor-eval to run the complete configured Cursor evaluation suite."
