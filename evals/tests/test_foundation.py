@@ -137,6 +137,9 @@ class FoundationTests(unittest.TestCase):
         self.assertIn("evals/runs/", skill)
         self.assertIn("evals/runs/", readme)
         self.assertIn("Never copy suites to `.archive/`", skill)
+        self.assertIn("## Re-run policy", skill)
+        self.assertIn("Do not re-run the full matrix", skill)
+        self.assertIn("could this change alter routing, init", skill)
         self.assertNotIn("Archive under `.archive/", skill)
         self.assertNotIn("Archive under `.archive/", readme)
 

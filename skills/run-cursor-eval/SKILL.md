@@ -28,6 +28,34 @@ defined in `evals/config.json`; do not ask the user to choose scenario IDs.
   Cursor/user configuration constant and disclose it in the report.
 - Record a result vector. Never invent a composite score.
 
+## Re-run policy
+
+The full matrix (6 scenarios × 3 conditions × `config.repetitions`) is a
+**merge / blast-radius bar**, not a tweak loop. Do not re-run the full matrix
+after every tweak.
+
+After a failure or a harness edit, ask: *could this change alter routing, init,
+surprise, leaf-readiness, or the injected `.harness/` surface for scenarios I
+did not touch?* If a "local" fix required editing start/orient/act/surprise
+globally, it was not local.
+
+| Blast radius | What to run |
+|---|---|
+| Foundation-locked wording (route-before-init strings, model slug, `evals/runs/` contract) | `python3 -m unittest discover -s evals/tests -v` only. No agent cells. |
+| One cell or one scenario failed; the fix is local to that task/fixture/oracle | Re-run that scenario across the conditions still under test. Use `repetitions: 1` unless the miss looked like flake (1 of 3 reps). |
+| Only one condition's harness changed (e.g. PR1 skill text) | Re-run that condition's cells. Do not spend host-native or `main` cells. |
+| Cannot bound the blast radius, or the change is global (routing/init order, surprise/Act interrupts, leaf contract, harness export, model pin) | Expand: all scenarios for the affected condition, or the full matrix. |
+| Merge to `main`, or "is this stable?" | Full configured matrix with `repetitions: 3`. |
+
+For a targeted run, temporarily set `evals/config.json` `scenarios` to an id
+list and/or `repetitions` to `1`, then restore `scenarios: "all"` and the
+default repetitions **before committing** unless the commit is itself a
+default-matrix change. Keep the prior `evals/runs/<suite_id>/comparison.json`
+as the baseline; compare new cells to those rows rather than throwing the
+suite away.
+
+Never repair a failing candidate and call that a rerun. Prepare a new cell.
+
 ## 1. Load and validate
 
 Read `evals/config.json`, all `evals/scenarios/public/*.json`, and hidden anchors.
