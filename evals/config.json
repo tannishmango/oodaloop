@@ -4,7 +4,7 @@
   "conditions": [
     {"id": "host-native", "ref": null},
     {"id": "main", "ref": "main"},
-    {"id": "pr1", "ref": "origin/redesign/uncertainty-first"}
+    {"id": "pr1", "ref": "redesign/uncertainty-first"}
   ],
   "model": {
     "id": "grok-4.6",

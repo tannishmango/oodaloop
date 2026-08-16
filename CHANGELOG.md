@@ -28,6 +28,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `docs/UNCERTAINTY-FIRST-REDESIGN.md`: design record capturing the operational failure, source synthesis, architectural reasoning, removed process, and future empirical questions.
 - **Behavioral evaluation foundation**: deterministic relational oracle, independent canonical implementation, six paired Level-1 anchor scenarios, append-only trajectory telemetry, comparison vectors, and stdlib tests under `evals/`.
 - **One-command Cursor evaluator**: `/oodaloop-eval` prepares the full 6×3 matrix, orchestrates isolated fresh-context subagents, and privately grades results with Grok 4.6/high pinned and Fast disabled.
+- `evals/config.json` `pr1` condition now tracks local `redesign/uncertainty-first` instead of `origin/redesign/uncertainty-first`.
 
 ### Removed
 - `agents/assessor.md` tri-mode mandatory assessor architecture (plan / per-task / aggregate).
