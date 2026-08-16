@@ -2,8 +2,6 @@
 transcripts/
 .oodaloop/CYCLES.log
 .archive/
-evals/runs/*
-!evals/runs/README.md
 
 # Python
 __pycache__/

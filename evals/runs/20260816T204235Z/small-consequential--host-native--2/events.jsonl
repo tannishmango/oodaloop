@@ -1,0 +1,2 @@
+{"data":{"route":"NORMAL"},"event":"route","run_id":"small-consequential--host-native--2","scenario_id":"small-consequential","schema_version":1,"sequence":0}
+{"data":{"kind":"visible-or-inline"},"event":"proof_attempt","run_id":"small-consequential--host-native--2","scenario_id":"small-consequential","schema_version":1,"sequence":1}

@@ -1,0 +1,9 @@
+{
+  "cell_id": "small-consequential--pr1--1",
+  "condition": "pr1",
+  "condition_ref": "redesign/uncertainty-first",
+  "condition_sha": "eb341936356fca48ae440927aa53f42351dbdc85",
+  "repetition": 1,
+  "scenario_id": "small-consequential",
+  "workspace": "/tmp/oodaloop-eval-small-consequential--pr1--1-7t16py6j/workspace"
+}

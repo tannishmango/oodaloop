@@ -1,0 +1,6 @@
+{"data":{"route":"OODALOOP"},"event":"route","run_id":"small-consequential--pr1--2","scenario_id":"small-consequential","schema_version":1,"sequence":0}
+{"data":{"operation":"write","path":"candidate/__init__.py"},"event":"tool_call","run_id":"small-consequential--pr1--2","scenario_id":"small-consequential","schema_version":1,"sequence":1}
+{"data":{"operation":"write","path":"candidate/cache.py"},"event":"tool_call","run_id":"small-consequential--pr1--2","scenario_id":"small-consequential","schema_version":1,"sequence":2}
+{"data":{"operation":"write","path":"tests/test_cache.py"},"event":"tool_call","run_id":"small-consequential--pr1--2","scenario_id":"small-consequential","schema_version":1,"sequence":3}
+{"data":{"kind":"visible-or-inline"},"event":"proof_attempt","run_id":"small-consequential--pr1--2","scenario_id":"small-consequential","schema_version":1,"sequence":4}
+{"data":{},"event":"framework_state_created","run_id":"small-consequential--pr1--2","scenario_id":"small-consequential","schema_version":1,"sequence":5}

@@ -1,0 +1,3 @@
+{"data":{"route":"NORMAL"},"event":"route","run_id":"broad-explicit--host-native--2","scenario_id":"broad-explicit","schema_version":1,"sequence":0}
+{"data":{"operation":"write","path":"candidate/miniquery.py"},"event":"tool_call","run_id":"broad-explicit--host-native--2","scenario_id":"broad-explicit","schema_version":1,"sequence":1}
+{"data":{"kind":"visible-or-inline"},"event":"proof_attempt","run_id":"broad-explicit--host-native--2","scenario_id":"broad-explicit","schema_version":1,"sequence":2}

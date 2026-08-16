@@ -1,0 +1,3 @@
+{"data":{"route":"NORMAL"},"event":"route","run_id":"latent-coupling--host-native--1","scenario_id":"latent-coupling","schema_version":1,"sequence":0}
+{"data":{"kind":"visible-or-inline"},"event":"proof_attempt","run_id":"latent-coupling--host-native--1","scenario_id":"latent-coupling","schema_version":1,"sequence":1}
+{"data":{},"event":"surprise","run_id":"latent-coupling--host-native--1","scenario_id":"latent-coupling","schema_version":1,"sequence":2}

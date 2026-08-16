@@ -1,0 +1,9 @@
+{
+  "cell_id": "no-surprise--host-native--2",
+  "condition": "host-native",
+  "condition_ref": null,
+  "condition_sha": null,
+  "repetition": 2,
+  "scenario_id": "no-surprise",
+  "workspace": "/tmp/oodaloop-eval-no-surprise--host-native--2-itluijd4/workspace"
+}

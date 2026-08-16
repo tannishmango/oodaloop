@@ -1,17 +1,20 @@
 # Behavioral evaluation foundation
 
 This directory is neutral Level-1 infrastructure for comparing host-native work,
-current `main`, PR #1, and future harnesses. It has two independent planes:
+current `main`, the last pre-redesign harness, and future harnesses. It has two
+independent planes:
 
 - `spec`, `oracle`, and `seed_project` measure black-box semantic correctness.
 - `scenarios`, `schemas`, and `runner/telemetry.py` record behavioral trajectories.
 
 In Cursor, install the plugin and invoke `/oodaloop-eval` with no arguments. The
 controller reads `config.json`, prepares all six scenarios across host-native,
-`main`, and PR1, launches isolated fresh-context subagents, and grades the resulting
-cells (6 scenarios × 3 conditions × `config.repetitions`). The default model is Grok 4.6 with high reasoning and Fast disabled
+`pre-redesign`, and `main`, launches isolated fresh-context subagents, and grades the
+resulting cells (6 scenarios × 3 conditions × `config.repetitions`). The default model is Grok 4.6 with high reasoning and Fast disabled
 (`cursor-grok-4.6-high` for Cursor Task). The controller stops instead of silently
-substituting `cursor-grok-4.6-xhigh`, Auto, Fast, or another model.
+substituting `cursor-grok-4.6-xhigh`, Auto, Fast, or another model. `pre-redesign`
+is the annotated tag at `b272352` (last init-first `main` before the redesign
+merged).
 
 The full matrix is a merge / blast-radius bar, not a tweak loop. After a
 failure or harness edit, ask whether the change could alter routing, init,
@@ -33,7 +36,7 @@ Grade another implementation by making its module importable and passing
 `--candidate package.module`. Compare saved result documents with:
 
 ```sh
-python3 -m evals.runner.compare result-main.json result-pr1.json
+python3 -m evals.runner.compare result-pre-redesign.json result-main.json
 ```
 
 Telemetry is append-only JSONL. Adapters append only facts they can observe; an
@@ -45,10 +48,11 @@ complexity score.
 
 Graded artifacts (`suite.json`, `comparison.json`, `REPORT.md`, per-cell `cell.json`,
 `events.jsonl`, `result.json`) live under `evals/runs/<suite_id>/`. That tree is
-the durable graded-artifact home: gitignored (`evals/runs/*` with a tracked
-README exception) and **not** cursorignored, so the controller and later agents
-can Read `REPORT.md` and `comparison.json`. Read `REPORT.md` first. `comparison.json`
-is the machine record. Do not add `evals/runs/` to `.cursorignore`.
+the append-only lab notebook: **tracked in git**, not cursorignored. A full 54-cell
+suite is about 1 MB of JSON and markdown. Read `REPORT.md` first.
+`comparison.json` is the machine record. Do not add `evals/runs/` to `.gitignore`
+or `.cursorignore`. Commit a suite after it is graded if it should be a baseline;
+use `--output-dir` for throwaway debugging. See `evals/runs/README.md`.
 
 `.archive/` is a separate human-only drawer (gitignored and cursorignored). The
 eval controller must not copy suites there.

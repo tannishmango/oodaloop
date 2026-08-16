@@ -1,0 +1,9 @@
+{
+  "cell_id": "ready-leaf--host-native--3",
+  "condition": "host-native",
+  "condition_ref": null,
+  "condition_sha": null,
+  "repetition": 3,
+  "scenario_id": "ready-leaf",
+  "workspace": "/tmp/oodaloop-eval-ready-leaf--host-native--3-sd76_utg/workspace"
+}

@@ -1,0 +1,4 @@
+{"data":{"route":"OODALOOP"},"event":"route","run_id":"latent-coupling--pr1--3","scenario_id":"latent-coupling","schema_version":1,"sequence":0}
+{"data":{},"event":"surprise","run_id":"latent-coupling--pr1--3","scenario_id":"latent-coupling","schema_version":1,"sequence":1}
+{"data":{},"event":"framework_state_created","run_id":"latent-coupling--pr1--3","scenario_id":"latent-coupling","schema_version":1,"sequence":2}
+{"data":{"text":"Should ne keep COMPATIBILITY.md null-safe contract or boolean inverse of eq?"},"event":"user_question","run_id":"latent-coupling--pr1--3","scenario_id":"latent-coupling","schema_version":1,"sequence":3}

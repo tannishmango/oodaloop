@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CONDITION_ORDER = ("host-native", "main", "pr1")
+CONDITION_ORDER = ("host-native", "pre-redesign", "pr1", "main")
 SCENARIO_ORDER = ("small-local", "broad-explicit", "small-consequential", "ready-leaf", "no-surprise", "latent-coupling")
 PAIR_ORDER = ("routing", "handoff", "surprise")
 

@@ -3,8 +3,8 @@
   "scenarios": "all",
   "conditions": [
     {"id": "host-native", "ref": null},
-    {"id": "main", "ref": "main"},
-    {"id": "pr1", "ref": "redesign/uncertainty-first"}
+    {"id": "pre-redesign", "ref": "pre-redesign"},
+    {"id": "main", "ref": "main"}
   ],
   "model": {
     "id": "grok-4.6",

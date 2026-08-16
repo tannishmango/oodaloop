@@ -3,6 +3,7 @@ from __future__ import annotations
 import ast
 import importlib.util
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -58,7 +59,29 @@ class FoundationTests(unittest.TestCase):
     def test_cursor_default_matrix_and_model_are_pinned(self):
         config = json.loads((ROOT / "config.json").read_text())
         self.assertEqual(config["scenarios"], "all")
-        self.assertEqual([item["id"] for item in config["conditions"]], ["host-native", "main", "pr1"])
+        self.assertEqual([item["id"] for item in config["conditions"]], ["host-native", "pre-redesign", "main"])
+        self.assertEqual([item["ref"] for item in config["conditions"]], [None, "pre-redesign", "main"])
+        reading_conditions = json.loads((ROOT / "scenarios" / "grading" / "reading.json").read_text())["conditions"]
+        self.assertTrue({item["id"] for item in config["conditions"]}.issubset(reading_conditions))
+        for item in config["conditions"]:
+            if item["ref"] is None:
+                continue
+            resolved = subprocess.run(
+                ["git", "rev-parse", f"{item['ref']}^{{commit}}"],
+                cwd=REPO_ROOT,
+                check=True,
+                text=True,
+                stdout=subprocess.PIPE,
+            ).stdout.strip()
+            self.assertEqual(len(resolved), 40)
+        pre = subprocess.run(
+            ["git", "rev-parse", "pre-redesign^{commit}"],
+            cwd=REPO_ROOT,
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+        ).stdout.strip()
+        self.assertTrue(pre.startswith("b272352"))
         self.assertEqual(config["model"]["id"], "grok-4.6")
         self.assertEqual(config["model"]["reasoning_effort"], "high")
         self.assertFalse(config["model"]["fast_mode"])
@@ -126,10 +149,11 @@ class FoundationTests(unittest.TestCase):
     def test_eval_run_outputs_are_durable_and_agent_readable(self):
         gitignore = (REPO_ROOT / ".gitignore").read_text(encoding="utf-8")
         cursorignore = (REPO_ROOT / ".cursorignore").read_text(encoding="utf-8")
-        self.assertIn("evals/runs/*", gitignore)
-        self.assertIn("!evals/runs/README.md", gitignore)
+        self.assertNotIn("evals/runs", gitignore)
         self.assertNotIn("evals/runs", cursorignore)
         self.assertTrue((REPO_ROOT / "evals" / "runs" / "README.md").is_file())
+        self.assertTrue((REPO_ROOT / "evals" / "runs" / "20260816T204235Z" / "REPORT.md").is_file())
+        self.assertTrue((REPO_ROOT / "evals" / "runs" / "20260816T204235Z" / "comparison.json").is_file())
         prepare = (REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "prepare_suite.py").read_text(encoding="utf-8")
         self.assertIn('ROOT / "evals" / "runs"', prepare)
         self.assertIn("suite_dir = durable_suite_dir(suite_id, args.output_dir)", prepare)
@@ -142,6 +166,8 @@ class FoundationTests(unittest.TestCase):
         self.assertIn("REPORT.md", skill)
         self.assertIn("python3 -m evals.runner.report", skill)
         self.assertIn("lead with that REPORT", skill)
+        self.assertIn("versioned lab notebook", skill)
+        self.assertIn("git add evals/runs/", skill)
         finish = (REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "finish_suite.py").read_text()
         self.assertIn("write_report", finish)
         self.assertIn("## Re-run policy", skill)
@@ -149,6 +175,14 @@ class FoundationTests(unittest.TestCase):
         self.assertIn("could this change alter routing, init", skill)
         self.assertNotIn("Archive under `.archive/", skill)
         self.assertNotIn("Archive under `.archive/", readme)
+
+        comparison = json.loads((REPO_ROOT / "evals" / "runs" / "20260816T204235Z" / "comparison.json").read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as directory:
+            suite_dir = Path(directory)
+            (suite_dir / "comparison.json").write_text(json.dumps(comparison), encoding="utf-8")
+            text = write_report(suite_dir).read_text(encoding="utf-8")
+        self.assertIn("PR1 redesign", text)
+        self.assertIn("| PR1 redesign | 18/18 | 18/18 | 0 |", text)
 
     def test_durable_suite_dir_uses_output_dir_and_keeps_workspaces_in_tempfile(self):
         path = REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "prepare_suite.py"

@@ -4,13 +4,17 @@
       "label": "Host-native",
       "means": "No OODALOOP files. The same coding task with an ordinary agent. This is the baseline for “just write the code.”"
     },
-    "main": {
-      "label": "Current main",
-      "means": "The shipped OODALOOP harness (the `main` branch snapshot). Agents are told to start at `.harness/commands/oodaloop-start.md`."
+    "pre-redesign": {
+      "label": "Pre-redesign",
+      "means": "The last init-first OODALOOP harness, frozen at tag `pre-redesign`. Agents start at `.harness/commands/oodaloop-start.md`. Small tasks historically blocked on `/oodaloop-init`."
     },
     "pr1": {
       "label": "PR1 redesign",
-      "means": "The uncertainty-first redesign. Same start command, different routing: classify the task before creating OODALOOP state."
+      "means": "Historical id: the uncertainty-first redesign as evaluated before merge (branch `redesign/uncertainty-first`). Kept so the 20260816T204235Z suite can still be read."
+    },
+    "main": {
+      "label": "Current main",
+      "means": "The shipped uncertainty-first harness. Route before creating OODALOOP state. Same start command as pre-redesign, different routing."
     }
   },
   "pairs": {

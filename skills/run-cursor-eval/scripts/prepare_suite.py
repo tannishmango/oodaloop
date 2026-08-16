@@ -34,7 +34,13 @@ def init_workspace(path):
 def resolve_ref(ref):
     if ref is None:
         return None
-    return subprocess.run(["git", "rev-parse", ref], cwd=ROOT, check=True, text=True, stdout=subprocess.PIPE).stdout.strip()
+    return subprocess.run(
+        ["git", "rev-parse", f"{ref}^{{commit}}"],
+        cwd=ROOT,
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
 
 
 def iter_matrix(scenarios, conditions, repetitions):

@@ -1,6 +1,6 @@
 ---
 name: run-cursor-eval
-description: Run the complete OODALOOP Level-1 behavioral evaluation in Cursor with one invocation. Use when comparing host-native behavior, current main, PR1, or future harness revisions across the canonical scenario corpus using isolated fresh-context subagents, deterministic semantic grading, observational telemetry, and vector comparison.
+description: Run the complete OODALOOP Level-1 behavioral evaluation in Cursor with one invocation. Use when comparing host-native behavior, current main, the pre-redesign baseline, or future harness revisions across the canonical scenario corpus using isolated fresh-context subagents, deterministic semantic grading, observational telemetry, and vector comparison.
 ---
 
 # Run Cursor eval
@@ -30,6 +30,9 @@ defined in `evals/config.json`; do not ask the user to choose scenario IDs.
 - Every graded suite must have `evals/runs/<suite_id>/REPORT.md`. That file is the
   human meaning of the run. `finish_suite.py` writes it. If it is missing, run
   `python3 -m evals.runner.report SUITE_DIR` before talking to a human.
+- `evals/runs/` is the versioned lab notebook, tracked in git. Do not gitignore it.
+  After a run that should survive as history, `git add evals/runs/<suite_id>` and
+  commit it. Use `prepare_suite.py --output-dir` for throwaway debugging.
 - Whenever you communicate to a human about a run, lead with that REPORT: what a
   cell is, what “code worked” vs “behaved as probed” mean, the scoreboard, and
   every miss in English. Do not paste `comparison.json`, check keys
@@ -50,7 +53,7 @@ globally, it was not local.
 |---|---|
 | Foundation-locked wording (route-before-init strings, model slug, `evals/runs/` contract) | `python3 -m unittest discover -s evals/tests -v` only. No agent cells. |
 | One cell or one scenario failed; the fix is local to that task/fixture/oracle | Re-run that scenario across the conditions still under test. Use `repetitions: 1` unless the miss looked like flake (1 of 3 reps). |
-| Only one condition's harness changed (e.g. PR1 skill text) | Re-run that condition's cells. Do not spend host-native or `main` cells. |
+| Only one condition's harness changed (e.g. `main` skill text) | Re-run that condition's cells. Do not spend host-native or other condition cells. |
 | Cannot bound the blast radius, or the change is global (routing/init order, surprise/Act interrupts, leaf contract, harness export, model pin) | Expand: all scenarios for the affected condition, or the full matrix. |
 | Merge to `main`, or "is this stable?" | Full configured matrix with `repetitions: 3`. |
 
@@ -136,3 +139,21 @@ English*). Point at `evals/runs/<suite_id>/REPORT.md`.
 
 Do not lead with JSON. Do not declare a harness winner from a single run.
 Describe directional evidence in the report's vocabulary.
+
+## 6. Record the suite
+
+`evals/runs/<suite_id>/` is append-only history. A merge-bar run that exists only
+on one machine is a discarded experiment.
+
+After grading a suite that should be a baseline (the full matrix, or a targeted
+run that replaces a comparison row):
+
+```sh
+git add evals/runs/<suite_id>
+```
+
+Commit it with the related harness change, or as its own commit if the run is
+the deliverable. Never rewrite a past suite directory; a new run gets a new id.
+
+Scratch matrices must use `--output-dir` outside `evals/runs/` so they never
+look like baselines.

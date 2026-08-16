@@ -1,0 +1,9 @@
+{
+  "cell_id": "broad-explicit--main--3",
+  "condition": "main",
+  "condition_ref": "main",
+  "condition_sha": "b272352ce81f8befcd878f0e40e47620a5690dda",
+  "repetition": 3,
+  "scenario_id": "broad-explicit",
+  "workspace": "/tmp/oodaloop-eval-broad-explicit--main--3-1oy_ur0u/workspace"
+}

@@ -33,7 +33,7 @@ def grade(candidate_execute):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidate", default="evals.seed_project.miniquery")
-    parser.add_argument("--condition", choices=("host-native", "main", "pr1", "future"), required=True)
+    parser.add_argument("--condition", choices=("host-native", "pre-redesign", "main", "pr1", "future"), required=True)
     parser.add_argument("--scenario", default="semantic-substrate")
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--output")

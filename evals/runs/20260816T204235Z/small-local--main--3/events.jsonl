@@ -1,0 +1,5 @@
+{"data":{"route":"OODALOOP"},"event":"route","run_id":"small-local--main--3","scenario_id":"small-local","schema_version":1,"sequence":0}
+{"data":{"operation":"write","path":"candidate/miniquery.py"},"event":"tool_call","run_id":"small-local--main--3","scenario_id":"small-local","schema_version":1,"sequence":1}
+{"data":{"operation":"write","path":"tests/test_miniquery.py"},"event":"tool_call","run_id":"small-local--main--3","scenario_id":"small-local","schema_version":1,"sequence":2}
+{"data":{"kind":"unittest"},"event":"proof_attempt","run_id":"small-local--main--3","scenario_id":"small-local","schema_version":1,"sequence":3}
+{"data":{},"event":"framework_state_created","run_id":"small-local--main--3","scenario_id":"small-local","schema_version":1,"sequence":4}

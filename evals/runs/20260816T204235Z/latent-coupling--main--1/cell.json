@@ -1,0 +1,9 @@
+{
+  "cell_id": "latent-coupling--main--1",
+  "condition": "main",
+  "condition_ref": "main",
+  "condition_sha": "b272352ce81f8befcd878f0e40e47620a5690dda",
+  "repetition": 1,
+  "scenario_id": "latent-coupling",
+  "workspace": "/tmp/oodaloop-eval-latent-coupling--main--1-wfu2xpwc/workspace"
+}

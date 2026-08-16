@@ -1,0 +1,2 @@
+{"data":{"route":"NORMAL"},"event":"route","run_id":"ready-leaf--host-native--3","scenario_id":"ready-leaf","schema_version":1,"sequence":0}
+{"data":{"kind":"visible-or-inline"},"event":"proof_attempt","run_id":"ready-leaf--host-native--3","scenario_id":"ready-leaf","schema_version":1,"sequence":1}
