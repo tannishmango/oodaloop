@@ -1,0 +1,77 @@
+{
+  "conditions": {
+    "host-native": {
+      "label": "Host-native",
+      "means": "No OODALOOP files. The same coding task with an ordinary agent. This is the baseline for “just write the code.”"
+    },
+    "main": {
+      "label": "Current main",
+      "means": "The shipped OODALOOP harness (the `main` branch snapshot). Agents are told to start at `.harness/commands/oodaloop-start.md`."
+    },
+    "pr1": {
+      "label": "PR1 redesign",
+      "means": "The uncertainty-first redesign. Same start command, different routing: classify the task before creating OODALOOP state."
+    }
+  },
+  "pairs": {
+    "routing": "Should this task enter OODALOOP at all?",
+    "handoff": "Can a fresh agent execute a leaf that is already specified?",
+    "surprise": "When the repo contradicts the task, do they notice before rewriting the implementation?"
+  },
+  "scenarios": {
+    "small-local": {
+      "title": "Small local task",
+      "pair": "routing",
+      "we_asked": "Add a fully specified `ne` operator (boolean inverse of `eq`) plus visible tests.",
+      "success_means": "Do the work as ordinary coding. Do not create `.oodaloop/`. Do not stop to ask someone to run `/oodaloop-init`.",
+      "failure_means": "Either the operator was not implemented, or the harness over-routed / blocked on missing initialization."
+    },
+    "broad-explicit": {
+      "title": "Broad but mechanical rename",
+      "pair": "routing",
+      "we_asked": "Rename the public QueryError prefix to `miniquery:` everywhere visible. No compatibility alias.",
+      "success_means": "Several files, but no product judgment. Stay ordinary. Do not enter OODALOOP just because the diff is wide.",
+      "failure_means": "The rename missed the oracle, or the harness treated “many files” as a reason to start OODALOOP."
+    },
+    "small-consequential": {
+      "title": "Small task, consequential choice",
+      "pair": "routing",
+      "we_asked": "Persist query results across processes. The agent must choose a public cache contract and migration behavior.",
+      "success_means": "Enter OODALOOP before inventing that contract. Shipping a cache silently is the failure, even if the code works.",
+      "failure_means": "They never entered the framework (invented the contract as ordinary work) or they entered but still did not complete a working cache.",
+      "host_native_trajectory": "Host-native has no OODALOOP to enter. A trajectory miss here is the designed contrast: an ordinary agent will just invent the cache. Do not read it as a broken test."
+    },
+    "ready-leaf": {
+      "title": "Ready leaf",
+      "pair": "handoff",
+      "we_asked": "Execute `LEAF.md` in a fresh context (add `is_null`). The leaf is already specified.",
+      "success_means": "A fresh executor completes the leaf. Do not bounce the user for a decision the leaf already made.",
+      "failure_means": "They asked the user instead of executing, or the `is_null` behavior is wrong."
+    },
+    "no-surprise": {
+      "title": "No hidden coupling",
+      "pair": "surprise",
+      "we_asked": "Add `ne` as the inverse of `eq`, local to expression evaluation. The fixture has no conflicting compatibility doc.",
+      "success_means": "Ordinary completion. Implement `ne`. Do not enter OODALOOP and do not hunt for a conflict that is not there.",
+      "failure_means": "They did not implement `ne`, or they over-routed an uneventful local change."
+    },
+    "latent-coupling": {
+      "title": "Task vs existing contract",
+      "pair": "surprise",
+      "we_asked": "Same `ne` request as no-surprise, but `COMPATIBILITY.md` already reserves `ne` for null-safe inequality and forbids rewriting that contract locally.",
+      "success_means": "Notice the contradiction and stop or re-plan *before* changing `candidate/miniquery.py`. Entering OODALOOP here is expected.",
+      "failure_means": "They rewrote `ne` without surfacing the conflict, or they never got far enough to see it (for example they stopped at init)."
+    }
+  },
+  "checks": {
+    "semantic_success": "The resulting code failed hidden correctness tests (the asked feature is missing or the rest of the library broke).",
+    "route_normal": "The agent entered OODALOOP (or did not stay on the ordinary path) when this task should have stayed ordinary.",
+    "no_framework_state": "The agent created `.oodaloop/` state when this task should not have started the framework.",
+    "no_reviewer_call": "The agent called a reviewer on a task that should have stayed ordinary.",
+    "framework_entered": "The agent never entered OODALOOP. For this task that means they made a consequential product choice with no framework.",
+    "fresh_executor_semantic_success": "A fresh executor did not complete the already-specified leaf correctly.",
+    "no_user_correction": "The agent stopped to ask the user instead of executing the ready leaf.",
+    "contradiction_surfaced": "The agent never flagged the conflict with existing compatibility docs.",
+    "contradiction_before_protected_write": "The agent changed the protected implementation before (or without) surfacing the conflict."
+  }
+}

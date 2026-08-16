@@ -9,6 +9,7 @@ from pathlib import Path
 
 from evals.oracle.cases import all_cases, generated_cases
 from evals.oracle.scenario_cases import grade_scenario
+from evals.runner.report import write_report
 from evals.runner.run import grade
 from evals.runner.telemetry import EventWriter
 from evals.runner.trajectory import assess_anchor, read_events, vector
@@ -50,6 +51,8 @@ class FoundationTests(unittest.TestCase):
         grading = json.loads((ROOT / "scenarios" / "grading" / "anchors.json").read_text())
         self.assertEqual(len(public), 6)
         self.assertEqual({item["id"] for item in public}, {item["id"] for item in grading})
+        reading = json.loads((ROOT / "scenarios" / "grading" / "reading.json").read_text())
+        self.assertEqual({item["id"] for item in public}, set(reading["scenarios"]))
         self.assertTrue(all("anchor" not in item and "invariants" not in item for item in public))
 
     def test_cursor_default_matrix_and_model_are_pinned(self):
@@ -136,7 +139,11 @@ class FoundationTests(unittest.TestCase):
         readme = (REPO_ROOT / "evals" / "README.md").read_text(encoding="utf-8")
         self.assertIn("evals/runs/", skill)
         self.assertIn("evals/runs/", readme)
-        self.assertIn("Never copy suites to `.archive/`", skill)
+        self.assertIn("REPORT.md", skill)
+        self.assertIn("python3 -m evals.runner.report", skill)
+        self.assertIn("lead with that REPORT", skill)
+        finish = (REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "finish_suite.py").read_text()
+        self.assertIn("write_report", finish)
         self.assertIn("## Re-run policy", skill)
         self.assertIn("Do not re-run the full matrix", skill)
         self.assertIn("could this change alter routing, init", skill)
@@ -159,6 +166,52 @@ class FoundationTests(unittest.TestCase):
         source = path.read_text(encoding="utf-8")
         self.assertIn("workspace_parent = Path(tempfile.mkdtemp", source)
         self.assertIn("suite_dir = durable_suite_dir", source)
+
+    def test_eval_report_explains_results_in_english(self):
+        comparison = {
+            "suite_id": "fake",
+            "model": {"display_name": "Grok 4.6", "reasoning_effort": "high", "fast_mode": False, "cursor_task_model": "cursor-grok-4.6-high"},
+            "results": [
+                {
+                    "run_id": "small-local--main--1",
+                    "condition": "main",
+                    "scenario_id": "small-local",
+                    "protocol_error": None,
+                    "semantic": {"passed": False, "cases_passed": 30, "cases_total": 31, "cases": [{"name": "scenario-ne-expression", "passed": False}]},
+                    "trajectory": {
+                        "passed": False,
+                        "checks": {"semantic_success": False, "route_normal": True, "no_framework_state": True, "no_reviewer_call": True},
+                        "facts": {"user_questions": 1, "framework_entered": False, "route": "NORMAL"},
+                    },
+                },
+                {
+                    "run_id": "small-consequential--host-native--1",
+                    "condition": "host-native",
+                    "scenario_id": "small-consequential",
+                    "protocol_error": None,
+                    "semantic": {"passed": True, "cases_passed": 30, "cases_total": 30, "cases": []},
+                    "trajectory": {
+                        "passed": False,
+                        "checks": {"semantic_success": True, "framework_entered": False},
+                        "facts": {"user_questions": 0, "framework_entered": False, "route": "NORMAL"},
+                    },
+                },
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            suite_dir = Path(directory)
+            (suite_dir / "comparison.json").write_text(json.dumps(comparison), encoding="utf-8")
+            path = write_report(suite_dir)
+            text = path.read_text(encoding="utf-8")
+        self.assertEqual(path.name, "REPORT.md")
+        self.assertIn("How to read a cell", text)
+        self.assertIn("Code worked (semantic)", text)
+        self.assertIn("Behaved as probed (trajectory)", text)
+        self.assertIn("Stopped to ask the user", text)
+        self.assertIn("`ne` was not implemented", text)
+        self.assertIn("designed contrast", text)
+        self.assertNotIn("no_framework_state", text)
+        self.assertNotIn("route_normal", text)
 
 
 if __name__ == "__main__": unittest.main()

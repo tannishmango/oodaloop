@@ -27,6 +27,13 @@ defined in `evals/config.json`; do not ask the user to choose scenario IDs.
 - Treat host-native as no injected OODALOOP harness. Hold unavoidable ambient
   Cursor/user configuration constant and disclose it in the report.
 - Record a result vector. Never invent a composite score.
+- Every graded suite must have `evals/runs/<suite_id>/REPORT.md`. That file is the
+  human meaning of the run. `finish_suite.py` writes it. If it is missing, run
+  `python3 -m evals.runner.report SUITE_DIR` before talking to a human.
+- Whenever you communicate to a human about a run, lead with that REPORT: what a
+  cell is, what “code worked” vs “behaved as probed” mean, the scoreboard, and
+  every miss in English. Do not paste `comparison.json`, check keys
+  (`no_framework_state`, `route_normal`, …), or cell ids as the explanation.
 
 ## Re-run policy
 
@@ -115,17 +122,17 @@ python3 skills/run-cursor-eval/scripts/finish_suite.py SUITE_DIR
 
 The grader imports each candidate outside the child context, runs the fixed and
 fixed-seed oracle cases, reduces observed events, applies hidden anchor invariants,
-and writes per-cell `result.json` plus `comparison.json`.
+and writes per-cell `result.json`, `comparison.json`, and `REPORT.md`.
 
 Never repair a candidate before grading. A failure, child timeout, unavailable
 metric, or protocol deviation is data and must remain visible.
 
 ## 5. Report
 
-Return the suite ID and exact model configuration; one row per cell with semantic
-cases, anchor result, route, framework entry, surprise/reentry, reviewer calls,
-questions, proof attempts, tools, tokens/cost, and wall time when available;
-directional comparisons by scenario pair; missing telemetry and protocol
-deviations; and paths to the comparison and individual results.
+`finish_suite.py` writes `REPORT.md` next to `comparison.json`. Your user-facing
+message **is** that report (or a close paraphrase of *What this run is*, *How to
+read a cell*, *Scoreboard*, the scenario implications, and *Every miss, in
+English*). Point at `evals/runs/<suite_id>/REPORT.md`.
 
-Do not declare a harness winner from a single run. Describe directional evidence.
+Do not lead with JSON. Do not declare a harness winner from a single run.
+Describe directional evidence in the report's vocabulary.

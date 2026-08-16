@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 
 from evals.oracle.scenario_cases import grade_scenario
+from evals.runner.report import write_report
 from evals.runner.trajectory import assess_anchor, read_events
 
 
@@ -59,7 +60,9 @@ def main():
     output = {"schema_version": 1, "suite_id": suite["suite_id"], "model": suite["model"], "results": results}
     path = args.suite_dir / "comparison.json"
     path.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    report = write_report(args.suite_dir)
     print(path)
+    print(report)
 
 
 if __name__ == "__main__":

@@ -43,11 +43,12 @@ complexity score.
 
 ## Durable run artifacts
 
-Graded artifacts (`suite.json`, `comparison.json`, per-cell `cell.json`,
+Graded artifacts (`suite.json`, `comparison.json`, `REPORT.md`, per-cell `cell.json`,
 `events.jsonl`, `result.json`) live under `evals/runs/<suite_id>/`. That tree is
 the durable graded-artifact home: gitignored (`evals/runs/*` with a tracked
 README exception) and **not** cursorignored, so the controller and later agents
-can Read the results. Do not add `evals/runs/` to `.cursorignore`.
+can Read `REPORT.md` and `comparison.json`. Read `REPORT.md` first. `comparison.json`
+is the machine record. Do not add `evals/runs/` to `.cursorignore`.
 
 `.archive/` is a separate human-only drawer (gitignored and cursorignored). The
 eval controller must not copy suites there.

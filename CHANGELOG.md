@@ -29,6 +29,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - Foundation test `test_start_skill_routes_before_initialization` locks `/oodaloop-start` routing-before-init so the old init-gate cannot return unnoticed.
 - Foundation tests lock `/oodaloop-eval` output under `evals/runs/` (gitignored, not cursorignored) with workspaces in OS tempfile.
+- `/oodaloop-eval` writes `REPORT.md` for every graded suite. That file is the human meaning of the run (what a cell is, what the two scores mean, what we asked, what happened). Agents must lead with it; `comparison.json` is the machine record.
 - `/oodaloop-eval` re-run policy: the full matrix is a merge/blast-radius bar. Tweaks re-run only the affected scenario or condition unless the change can alter routing, init, surprise, leaf-readiness, or the injected harness across other scenarios.
 - `agents/reviewer.md`: optional fresh-context semantic reviewer invoked only when architecture, material surprise, high risk, integration uncertainty, or ambiguous proof makes a second lens informative.
 - `docs/UNCERTAINTY-FIRST-REDESIGN.md`: design record capturing the operational failure, source synthesis, architectural reasoning, removed process, and future empirical questions.

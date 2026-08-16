@@ -92,7 +92,7 @@ Targets: Cursor, Claude Code, OpenCode.
 
 Posture: adequate for eval substrate; weak for live plugin-skill contracts (routing is proven by the Cursor eval, not by unit tests).
 - Strongest eval semantic proof: `python3 -m unittest discover -s evals/tests -v` plus `python3 -m evals.runner.run --condition main` (oracle only; no agent, no scenario extras unless `grade_scenario` is used).
-- Strongest eval behavioral proof: `/oodaloop-eval` (6 scenarios × 3 conditions × `repetitions`). Grades semantic oracle + hidden anchors. Isolated worktrees; no `.oodaloop/` pre-created. Writes `comparison.json` and per-cell results under `evals/runs/<suite_id>/`. Full matrix is a merge/blast-radius bar; tweaks follow the Re-run policy in `skills/run-cursor-eval/SKILL.md`.
+- Strongest eval behavioral proof: `/oodaloop-eval` (6 scenarios × 3 conditions × `repetitions`). Grades semantic oracle + hidden anchors. Isolated worktrees; no `.oodaloop/` pre-created. Writes `comparison.json`, `REPORT.md`, and per-cell results under `evals/runs/<suite_id>/`. Full matrix is a merge/blast-radius bar; tweaks follow the Re-run policy in `skills/run-cursor-eval/SKILL.md`. Human meaning of a run is `REPORT.md`; do not explain runs from raw JSON.
 - Strongest state-hygiene proof: `.githooks/pre-commit` block 4 on staged `tests/fixtures/state-hygiene/valid*.task.md`.
 - Hardest relevant check for routing-before-init: `/oodaloop-eval` cell `small-local` × harness condition. `python3 -m evals.runner.run` cannot reproduce the init-gate failure.
 - CI: none. No sandbox harness. No credentials required for foundation tests. Cursor eval requires the pinned Task slug `cursor-grok-4.6-high`.
@@ -111,3 +111,4 @@ Posture: adequate for eval substrate; weak for live plugin-skill contracts (rout
 - 2026-08-16: `/oodaloop-eval` children must be launched with Cursor Task `model: "cursor-grok-4.6-high"`. That is Grok 4.6 at reasoning effort `high` with Fast off, matching `evals/config.json`. `cursor-grok-4.6-xhigh` is extra-high effort and must not be substituted.
 - 2026-08-16: `/oodaloop-eval` durable artifacts live under `evals/runs/<suite_id>/` (gitignored, not cursorignored) so agents can Read `comparison.json`. Candidate workspaces stay in OS tempfile so children cannot walk into hidden grading data. `.archive/` remains human-only notes.
 - 2026-08-16: `/oodaloop-eval` full matrix is a merge/blast-radius bar. After a tweak, re-run only the affected scenario or condition unless the change can alter routing, init, surprise, leaf-readiness, or the injected harness for other scenarios.
+- 2026-08-16: every graded suite writes `REPORT.md`. That is what humans and later agents read; `comparison.json` is not the user-facing explanation.
