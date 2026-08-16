@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- `/oodaloop-eval` now names the Cursor Task slug `cursor-grok-4.6-high` as the required under-the-hood invocation for Grok 4.6/high with Fast disabled. `cursor-grok-4.6-xhigh` is extra-high effort and is an explicit non-substitute.
+
 ### Added
 - **Behavioral evaluation foundation**: deterministic relational oracle, independent canonical implementation, six paired Level-1 anchor scenarios, append-only trajectory telemetry, comparison vectors, and stdlib tests under `evals/`.
 - **One-command Cursor evaluator**: `/oodaloop-eval` prepares the full 6×3 matrix, orchestrates isolated fresh-context subagents, and privately grades results with Grok 4.6/high pinned and Fast disabled.

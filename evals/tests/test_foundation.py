@@ -59,6 +59,10 @@ class FoundationTests(unittest.TestCase):
         self.assertEqual(config["model"]["reasoning_effort"], "high")
         self.assertFalse(config["model"]["fast_mode"])
         self.assertFalse(config["model"]["allow_auto"])
+        self.assertEqual(config["model"]["cursor_task_model"], "cursor-grok-4.6-high")
+        skill = (REPO_ROOT / "skills" / "run-cursor-eval" / "SKILL.md").read_text()
+        self.assertIn("cursor-grok-4.6-high", skill)
+        self.assertIn("not `cursor-grok-4.6-xhigh`", skill)
         self.assertTrue((REPO_ROOT / "commands" / "oodaloop-eval.md").is_file())
         self.assertTrue((REPO_ROOT / "skills" / "run-cursor-eval" / "SKILL.md").is_file())
 

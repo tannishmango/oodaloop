@@ -11,7 +11,8 @@
     "display_name": "Grok 4.6",
     "reasoning_effort": "high",
     "fast_mode": false,
-    "allow_auto": false
+    "allow_auto": false,
+    "cursor_task_model": "cursor-grok-4.6-high"
   },
   "repetitions": 1,
   "parallelism": 3

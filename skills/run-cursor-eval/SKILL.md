@@ -11,8 +11,13 @@ defined in `evals/config.json`; do not ask the user to choose scenario IDs.
 ## Invariants
 
 - Use Grok 4.6 with high reasoning and Fast disabled for the parent and every child.
-- Refuse to begin if that exact model configuration is unavailable or cannot be
-  verified. Never silently use Auto, Fast, or another model.
+- Under the hood, launch every Cursor Task/subagent with
+  `model: "cursor-grok-4.6-high"` (the value of `evals/config.json`
+  `model.cursor_task_model`). That slug is Grok 4.6 at reasoning effort `high`,
+  Fast off. It is not `cursor-grok-4.6-xhigh` (extra-high effort).
+- Refuse to begin if that exact slug is unavailable or cannot be verified. Never
+  silently substitute Auto, `inherit`, Fast, `cursor-grok-4.6-xhigh`, or another
+  model.
 - Give every run a fresh context and isolated worktree/repository.
 - Give children only the public task, visible fixture territory, and the selected
   condition instructions. Never give them oracle cases, anchors, protected paths,
@@ -52,8 +57,9 @@ repository for each scenario × condition cell, without copying hidden grading d
 
 Launch children in batches up to the configured parallelism. Use Cursor subagents
 with isolated worktrees when available; otherwise use the already isolated repos
-created by the preparation script. Each child receives only its cell's
-`AGENT_TASK.md` and workspace path.
+created by the preparation script. Pass `model: "cursor-grok-4.6-high"` on every
+child Task call. Each child receives only its cell's `AGENT_TASK.md` and
+workspace path.
 
 Require each child to work only in its assigned workspace, solve the task normally
 with the included condition instructions, run the strongest visible proof, and

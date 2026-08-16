@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-04-21 (I-1: cycle log + state-hygiene validators)
+> Last refreshed: 2026-08-16 (eval Cursor Task slug pin)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -151,6 +151,9 @@ Plugin follows commands → skills → agents pattern. Commands are thin wrapper
 - 2026-04-21: `tests/` directory added (never before committed). Commit must include `git add tests/`.
 - 2026-04-21: `docs/` directory now tracked (IMPROVEMENTS.md). Commit must include `git add docs/`.
 - 2026-04-21: Mechanism precedent established: binding contracts enforced by build (pre-commit), not agent prose. Future contract additions default to mechanism unless judgment-only.
+
+### Eval Cursor Task model
+- 2026-08-16: `/oodaloop-eval` children must be launched with Cursor Task `model: "cursor-grok-4.6-high"`. That is Grok 4.6 at reasoning effort `high` with Fast off, matching `evals/config.json`. `cursor-grok-4.6-xhigh` is extra-high effort and must not be substituted.
 
 ## Deconfliction
 - `superpowers`: disabled at workspace level
