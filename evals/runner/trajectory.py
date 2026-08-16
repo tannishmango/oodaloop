@@ -36,6 +36,6 @@ def assess_anchor(anchor, events, semantic_passed):
         surfaced = [item["sequence"] for item in events if item["event"] in ("surprise", "reentry")]
         protected = set(anchor.get("protected_paths", []))
         writes = [item["sequence"] for item in events if item["event"] == "tool_call" and item.get("data", {}).get("operation") == "write" and item.get("data", {}).get("path") in protected]
-        checks["contradiction_before_protected_write"] = not writes or bool(surfaced and min(surfaced) < min(writes))
+        checks["contradiction_surfaced"] = bool(surfaced)
+        checks["contradiction_before_protected_write"] = (not writes or min(surfaced) < min(writes)) if surfaced else False
     return {"passed": all(checks.values()), "checks": checks, "facts": facts}
-

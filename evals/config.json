@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "scenarios": "all",
+  "conditions": [
+    {"id": "host-native", "ref": null},
+    {"id": "main", "ref": "main"},
+    {"id": "pr1", "ref": "origin/redesign/uncertainty-first"}
+  ],
+  "model": {
+    "id": "grok-4.6",
+    "display_name": "Grok 4.6",
+    "reasoning_effort": "high",
+    "fast_mode": false,
+    "allow_auto": false
+  },
+  "repetitions": 1,
+  "parallelism": 3
+}

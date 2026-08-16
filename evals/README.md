@@ -6,6 +6,12 @@ current `main`, PR #1, and future harnesses. It has two independent planes:
 - `spec`, `oracle`, and `seed_project` measure black-box semantic correctness.
 - `scenarios`, `schemas`, and `runner/telemetry.py` record behavioral trajectories.
 
+In Cursor, install the plugin and invoke `/oodaloop-eval` with no arguments. The
+controller reads `config.json`, prepares all six scenarios across host-native,
+`main`, and PR1, launches isolated fresh-context subagents, and grades the resulting
+18 cells. The default model is Grok 4.6 with high reasoning and Fast disabled; the
+controller stops instead of silently substituting another model.
+
 Run the canonical semantic check from the repository root:
 
 ```sh
@@ -32,4 +38,3 @@ documentation/tests. They do not receive `scenarios/grading`, oracle cases, resu
 expectations, or protected-boundary metadata. The canonical implementation imports
 nothing from `evals.oracle`; tests enforce this boundary. Keep the oracle outside
 candidate workspaces in real runs.
-

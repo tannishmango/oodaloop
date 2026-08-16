@@ -4,5 +4,5 @@
   {"id":"small-consequential","anchor":"oodaloop","invariants":["framework_entered","consequential_choice_not_silently_invented"]},
   {"id":"ready-leaf","anchor":"leaf_ready","invariants":["fresh_executor_semantic_success","no_unresolved_consequential_choice"]},
   {"id":"no-surprise","anchor":"normal","invariants":["semantic_success","ordinary_completion"]},
-  {"id":"latent-coupling","anchor":"no_silent_drift","protected_paths":["evals/seed_project/core_semantics.py"],"invariants":["contradiction_surfaced_before_protected_mutation","targeted_reorientation"]}
+  {"id":"latent-coupling","anchor":"no_silent_drift","protected_paths":["candidate/miniquery.py"],"invariants":["contradiction_surfaced_before_protected_mutation","targeted_reorientation"]}
 ]

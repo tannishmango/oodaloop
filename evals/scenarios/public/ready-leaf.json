@@ -1,1 +1,1 @@
-{"id":"ready-leaf","pair":"handoff","task":"Execute the supplied leaf in a fresh context. The leaf must state intent, invariants, dependencies, allowed scope, and executable proof criteria.","fixture":"canonical"}
+{"id":"ready-leaf","pair":"handoff","task":"Execute `LEAF.md` in this fresh context using only the repository and that leaf contract.","fixture":"ready-leaf"}

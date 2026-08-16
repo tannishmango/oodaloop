@@ -14,7 +14,6 @@ Anchors grade invariants, not an exact phase sequence. They deliberately do not
 define a composite score or numeric routing/review thresholds. Consequential cases
 record reviewer use and cost without making reviewer invocation itself a pass.
 
-This first PR supplies the portable contract, data, semantic grader, and telemetry
-writer. Host adapters may invoke Codex, Cursor, Claude Code, or another runner, but
-must keep model, starting fixture, task, and context constant across conditions.
-
+The Cursor controller lives at `skills/run-cursor-eval/` and is invoked through
+`/oodaloop-eval`. Other host adapters may implement the same contract, but must keep
+model, starting fixture, task, and context constant across conditions.
