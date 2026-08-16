@@ -77,6 +77,15 @@ class FoundationTests(unittest.TestCase):
             self.assertEqual(records[0]["data"], {"route": "NORMAL"})
             self.assertEqual(vector(read_events(path))["proof_attempts"], 1)
 
+    def test_start_skill_routes_before_initialization(self):
+        skill = (REPO_ROOT / "skills" / "start" / "SKILL.md").read_text()
+        self.assertIn("Route before touching OODALOOP state", skill)
+        self.assertIn("If either answer is yes, choose **NORMAL**.", skill)
+        self.assertIn("do not recommend `/oodaloop-quick` as a substitute framework path", skill)
+        self.assertIn("Only after choosing OODALOOP", skill)
+        self.assertNotIn("Cannot start OODALOOP flow without initialization.", skill)
+        self.assertNotIn("### 1. Ensure state exists", skill)
+
     def test_surprise_anchor_rejects_silent_protected_write(self):
         anchor = {"anchor": "no_silent_drift", "protected_paths": ["core.py"]}
         silent = [{"sequence": 0, "event": "tool_call", "data": {"operation": "write", "path": "core.py"}}]

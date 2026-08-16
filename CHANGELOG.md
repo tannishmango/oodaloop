@@ -24,6 +24,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Ignore local archive, Python bytecode, venvs, and OS junk in `.gitignore` and `.cursorignore`. The ATG assessment lives in `.archive/` so Git does not track it and Cursor does not index it.
 
 ### Added
+- Foundation test `test_start_skill_routes_before_initialization` locks `/oodaloop-start` routing-before-init so the old init-gate cannot return unnoticed.
 - `agents/reviewer.md`: optional fresh-context semantic reviewer invoked only when architecture, material surprise, high risk, integration uncertainty, or ambiguous proof makes a second lens informative.
 - `docs/UNCERTAINTY-FIRST-REDESIGN.md`: design record capturing the operational failure, source synthesis, architectural reasoning, removed process, and future empirical questions.
 - **Behavioral evaluation foundation**: deterministic relational oracle, independent canonical implementation, six paired Level-1 anchor scenarios, append-only trajectory telemetry, comparison vectors, and stdlib tests under `evals/`.
