@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import importlib.util
 import json
 import tempfile
 import unittest
@@ -93,6 +94,31 @@ class FoundationTests(unittest.TestCase):
         self.assertFalse(assess_anchor(anchor, [], True)["passed"])
         self.assertFalse(assess_anchor(anchor, silent, True)["passed"])
         self.assertTrue(assess_anchor(anchor, surfaced, True)["passed"])
+
+    def test_prepare_suite_multiplies_cells_by_repetitions(self):
+        path = REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "prepare_suite.py"
+        spec = importlib.util.spec_from_file_location("prepare_suite", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        scenarios = [{"id": "alpha"}, {"id": "beta"}]
+        conditions = [{"id": "host"}, {"id": "main"}]
+        once = [f"{scenario['id']}--{condition['id']}--{rep}" for scenario, condition, rep in module.iter_matrix(scenarios, conditions, 1)]
+        self.assertEqual(len(once), 4)
+        self.assertEqual(len(set(once)), 4)
+        self.assertTrue(all(item.endswith("--1") for item in once))
+        thrice = [f"{scenario['id']}--{condition['id']}--{rep}" for scenario, condition, rep in module.iter_matrix(scenarios, conditions, 3)]
+        self.assertEqual(len(thrice), 12)
+        self.assertEqual(len(set(thrice)), 12)
+        for scenario in scenarios:
+            for condition in conditions:
+                copies = [item for item in thrice if item.startswith(f"{scenario['id']}--{condition['id']}--")]
+                self.assertEqual(copies, [f"{scenario['id']}--{condition['id']}--{rep}" for rep in (1, 2, 3)])
+        source = path.read_text(encoding="utf-8")
+        self.assertIn('iter_matrix(scenarios, config["conditions"], config["repetitions"])', source)
+        with self.assertRaises(SystemExit):
+            list(module.iter_matrix(scenarios, conditions, 0))
+        with self.assertRaises(SystemExit):
+            list(module.iter_matrix(scenarios, conditions, -2))
 
 
 if __name__ == "__main__": unittest.main()

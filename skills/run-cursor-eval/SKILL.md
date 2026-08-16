@@ -51,15 +51,16 @@ python3 skills/run-cursor-eval/scripts/prepare_suite.py
 ```
 
 Use its printed suite directory and `suite.json`. It creates one clean candidate
-repository for each scenario × condition cell, without copying hidden grading data.
+repository for each scenario × condition × `repetitions` cell, without copying
+hidden grading data.
 
 ## 3. Launch isolated children
 
-Launch children in batches up to the configured parallelism. Use Cursor subagents
-with isolated worktrees when available; otherwise use the already isolated repos
-created by the preparation script. Pass `model: "cursor-grok-4.6-high"` on every
-child Task call. Each child receives only its cell's `AGENT_TASK.md` and
-workspace path.
+Launch **every** cell listed in `suite.json`, in batches up to the configured
+parallelism. Never hardcode a cell count. Use Cursor subagents with isolated
+worktrees when available; otherwise use the already isolated repos created by
+the preparation script. Pass `model: "cursor-grok-4.6-high"` on every child Task
+call. Each child receives only its cell's `AGENT_TASK.md` and workspace path.
 
 Require each child to work only in its assigned workspace, solve the task normally
 with the included condition instructions, run the strongest visible proof, and

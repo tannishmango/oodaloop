@@ -9,7 +9,7 @@ current `main`, PR #1, and future harnesses. It has two independent planes:
 In Cursor, install the plugin and invoke `/oodaloop-eval` with no arguments. The
 controller reads `config.json`, prepares all six scenarios across host-native,
 `main`, and PR1, launches isolated fresh-context subagents, and grades the resulting
-18 cells. The default model is Grok 4.6 with high reasoning and Fast disabled
+cells (6 scenarios × 3 conditions × `config.repetitions`). The default model is Grok 4.6 with high reasoning and Fast disabled
 (`cursor-grok-4.6-high` for Cursor Task). The controller stops instead of silently
 substituting `cursor-grok-4.6-xhigh`, Auto, Fast, or another model.
 

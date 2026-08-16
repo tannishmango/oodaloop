@@ -36,6 +36,16 @@ def resolve_ref(ref):
     return subprocess.run(["git", "rev-parse", ref], cwd=ROOT, check=True, text=True, stdout=subprocess.PIPE).stdout.strip()
 
 
+def iter_matrix(scenarios, conditions, repetitions):
+    reps = int(repetitions)
+    if reps < 1:
+        raise SystemExit("repetitions must be >= 1")
+    for scenario in scenarios:
+        for condition in conditions:
+            for rep in range(1, reps + 1):
+                yield scenario, condition, rep
+
+
 def main():
     config = json.loads((ROOT / "evals" / "config.json").read_text(encoding="utf-8"))
     public_dir = ROOT / "evals" / "scenarios" / "public"
@@ -46,28 +56,27 @@ def main():
     suite_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     suite_dir = Path(tempfile.mkdtemp(prefix=f"oodaloop-eval-{suite_id}-"))
     cells = []
-    for scenario in scenarios:
-        for condition in config["conditions"]:
-            cell_id = f"{scenario['id']}--{condition['id']}"
-            cell_dir = suite_dir / cell_id
-            workspace = cell_dir / "workspace"
-            workspace.mkdir(parents=True)
-            shutil.copytree(ROOT / "evals" / "seed_project", workspace / "candidate", ignore=shutil.ignore_patterns("__pycache__"))
-            overlay = ROOT / "evals" / "fixtures" / scenario["fixture"]
-            if overlay.is_dir():
-                shutil.copytree(overlay, workspace, dirs_exist_ok=True)
-            elif scenario["fixture"] != "canonical":
-                raise SystemExit(f"missing fixture overlay: {scenario['fixture']}")
-            instructions = ["Complete the following task in this repository.", "", scenario["task"]]
-            if condition["ref"] is not None:
-                export_harness(condition["ref"], workspace / ".harness")
-                instructions += ["", "OODALOOP is the active harness for this condition.", "Start at `.harness/commands/oodaloop-start.md` and follow the referenced harness skills exactly."]
-            (workspace / "AGENT_TASK.md").write_text("\n".join(instructions) + "\n", encoding="utf-8")
-            init_workspace(workspace)
-            (cell_dir / "events.jsonl").touch()
-            cell = {"cell_id": cell_id, "scenario_id": scenario["id"], "condition": condition["id"], "condition_ref": condition["ref"], "condition_sha": resolve_ref(condition["ref"]), "workspace": str(workspace)}
-            (cell_dir / "cell.json").write_text(json.dumps(cell, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-            cells.append(cell)
+    for scenario, condition, rep in iter_matrix(scenarios, config["conditions"], config["repetitions"]):
+        cell_id = f"{scenario['id']}--{condition['id']}--{rep}"
+        cell_dir = suite_dir / cell_id
+        workspace = cell_dir / "workspace"
+        workspace.mkdir(parents=True)
+        shutil.copytree(ROOT / "evals" / "seed_project", workspace / "candidate", ignore=shutil.ignore_patterns("__pycache__"))
+        overlay = ROOT / "evals" / "fixtures" / scenario["fixture"]
+        if overlay.is_dir():
+            shutil.copytree(overlay, workspace, dirs_exist_ok=True)
+        elif scenario["fixture"] != "canonical":
+            raise SystemExit(f"missing fixture overlay: {scenario['fixture']}")
+        instructions = ["Complete the following task in this repository.", "", scenario["task"]]
+        if condition["ref"] is not None:
+            export_harness(condition["ref"], workspace / ".harness")
+            instructions += ["", "OODALOOP is the active harness for this condition.", "Start at `.harness/commands/oodaloop-start.md` and follow the referenced harness skills exactly."]
+        (workspace / "AGENT_TASK.md").write_text("\n".join(instructions) + "\n", encoding="utf-8")
+        init_workspace(workspace)
+        (cell_dir / "events.jsonl").touch()
+        cell = {"cell_id": cell_id, "scenario_id": scenario["id"], "condition": condition["id"], "condition_ref": condition["ref"], "condition_sha": resolve_ref(condition["ref"]), "workspace": str(workspace), "repetition": rep}
+        (cell_dir / "cell.json").write_text(json.dumps(cell, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        cells.append(cell)
     suite = {"schema_version": 1, "suite_id": suite_id, "model": config["model"], "repetitions": config["repetitions"], "parallelism": config["parallelism"], "cells": cells}
     (suite_dir / "suite.json").write_text(json.dumps(suite, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(suite_dir)

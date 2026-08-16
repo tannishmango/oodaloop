@@ -22,6 +22,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Self-context/backlog/improvement tracker curated** to remove old process-hardening goals and focus future work on empirical routing, surprise, leaf-readiness, review economics, and learned model policy.
 - `/oodaloop-eval` now names the Cursor Task slug `cursor-grok-4.6-high` as the required under-the-hood invocation for Grok 4.6/high with Fast disabled. `cursor-grok-4.6-xhigh` is extra-high effort and is an explicit non-substitute.
 - Ignore local archive, Python bytecode, venvs, and OS junk in `.gitignore` and `.cursorignore`. The ATG assessment lives in `.archive/` so Git does not track it and Cursor does not index it.
+- `prepare_suite.py` now materializes `config.repetitions` as distinct cells (`{scenario}--{condition}--{rep}`) instead of copying the count into `suite.json` only.
 
 ### Added
 - Foundation test `test_start_skill_routes_before_initialization` locks `/oodaloop-start` routing-before-init so the old init-gate cannot return unnoticed.
