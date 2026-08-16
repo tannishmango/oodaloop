@@ -32,6 +32,17 @@ absent host metric remains absent rather than guessed. The evaluator never decid
 whether an event deserved to be a surprise or review, and it never creates a
 complexity score.
 
+## Durable run artifacts
+
+Graded artifacts (`suite.json`, `comparison.json`, per-cell `cell.json`,
+`events.jsonl`, `result.json`) live under `evals/runs/<suite_id>/`. That tree is
+the durable graded-artifact home: gitignored (`evals/runs/*` with a tracked
+README exception) and **not** cursorignored, so the controller and later agents
+can Read the results. Do not add `evals/runs/` to `.cursorignore`.
+
+`.archive/` is a separate human-only drawer (gitignored and cursorignored). The
+eval controller must not copy suites there.
+
 ## Leakage boundary
 
 Scenario workspaces receive `scenarios/public`, the fixture, and normal visible
@@ -39,3 +50,7 @@ documentation/tests. They do not receive `scenarios/grading`, oracle cases, resu
 expectations, or protected-boundary metadata. The canonical implementation imports
 nothing from `evals.oracle`; tests enforce this boundary. Keep the oracle outside
 candidate workspaces in real runs.
+
+Candidate workspaces stay outside the repository (OS tempfile) so children cannot
+walk into `evals/scenarios/grading/`. Their absolute paths are stored in each
+`cell.json`. Do not nest workspaces under `evals/runs/`.

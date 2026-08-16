@@ -39,13 +39,13 @@ Obsolete semantic state: `paused` phase, `direct/delegated`, `subagent/in-chat/n
 ## Conventions
 
 ### Git
-Standard git workflow. Commit messages are descriptive/imperative. No branch protection currently recorded. Local-only notes go in `.archive/` (gitignored and cursorignored). Do not commit `__pycache__/`, venvs, or `.DS_Store`.
+Standard git workflow. Commit messages are descriptive/imperative. No branch protection currently recorded. Distinguish two ignored trees: `.archive/` is gitignored AND cursorignored (human-only notes such as the ATG assessment); `evals/runs/<suite_id>/` is gitignored but NOT cursorignored (agent-readable eval artifacts). Candidate eval workspaces stay in OS tempfile, not under `evals/runs/`. Do not commit `__pycache__/`, venvs, or `.DS_Store`.
 
 ### Code quality
 `.githooks/pre-commit` enforces durable factual invariants only:
 - no committed ephemeral `.oodaloop/*.task.md`,
 - command → skill linkage,
-- no deprecated `oodaloop-begin` naming,
+- no deprecated begin kickoff naming,
 - current factual task-state fixture checks (phase/evidence, Waiting fields, parent cycles).
 
 It no longer requires CHANGELOG on every commit and no longer validates obsolete labor/pause/depth vocabulary.
@@ -90,13 +90,13 @@ Targets: Cursor, Claude Code, OpenCode.
 
 ## Proof Infrastructure
 
-Posture: adequate for eval substrate; weak for live plugin-skill contracts (routing is proven by the Cursor 18-cell eval, not by unit tests).
+Posture: adequate for eval substrate; weak for live plugin-skill contracts (routing is proven by the Cursor eval, not by unit tests).
 - Strongest eval semantic proof: `python3 -m unittest discover -s evals/tests -v` plus `python3 -m evals.runner.run --condition main` (oracle only; no agent, no scenario extras unless `grade_scenario` is used).
-- Strongest eval behavioral proof: `/oodaloop-eval` (6 scenarios × 3 conditions × `repetitions`; currently 1, cells not multiplied by `prepare_suite.py`). Grades semantic oracle + hidden anchors. Isolated worktrees; no `.oodaloop/` pre-created.
-- Strongest state-hygiene proof: `.githooks/pre-commit` block #6 on staged `tests/fixtures/state-hygiene/*.task.md`.
+- Strongest eval behavioral proof: `/oodaloop-eval` (6 scenarios × 3 conditions × `repetitions`). Grades semantic oracle + hidden anchors. Isolated worktrees; no `.oodaloop/` pre-created. Writes `comparison.json` and per-cell results under `evals/runs/<suite_id>/`.
+- Strongest state-hygiene proof: `.githooks/pre-commit` block 4 on staged `tests/fixtures/state-hygiene/valid*.task.md`.
 - Hardest relevant check for routing-before-init: `/oodaloop-eval` cell `small-local` × harness condition. `python3 -m evals.runner.run` cannot reproduce the init-gate failure.
 - CI: none. No sandbox harness. No credentials required for foundation tests. Cursor eval requires the pinned Task slug `cursor-grok-4.6-high`.
-- Gaps: `evals/config.json` `repetitions` is metadata-only until `prepare_suite.py` multiplies cells; `user_question` is not a `normal` anchor fail; telemetry is not a trustworthy measure of total tool use/latency/overhead.
+- Gaps: `user_question` is not a `normal` anchor fail; telemetry is not a trustworthy measure of total tool use/latency/overhead.
 
 ## Active decisions
 
@@ -109,3 +109,4 @@ Posture: adequate for eval substrate; weak for live plugin-skill contracts (rout
 
 ### Eval Cursor Task model
 - 2026-08-16: `/oodaloop-eval` children must be launched with Cursor Task `model: "cursor-grok-4.6-high"`. That is Grok 4.6 at reasoning effort `high` with Fast off, matching `evals/config.json`. `cursor-grok-4.6-xhigh` is extra-high effort and must not be substituted.
+- 2026-08-16: `/oodaloop-eval` durable artifacts live under `evals/runs/<suite_id>/` (gitignored, not cursorignored) so agents can Read `comparison.json`. Candidate workspaces stay in OS tempfile so children cannot walk into hidden grading data. `.archive/` remains human-only notes.

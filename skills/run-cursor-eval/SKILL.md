@@ -50,9 +50,11 @@ Run:
 python3 skills/run-cursor-eval/scripts/prepare_suite.py
 ```
 
-Use its printed suite directory and `suite.json`. It creates one clean candidate
-repository for each scenario × condition × `repetitions` cell, without copying
-hidden grading data.
+Use its printed suite directory and `suite.json`. The printed path defaults to
+`evals/runs/<suite_id>/`. Never copy suites to `.archive/`. Candidate workspaces
+remain in OS temp; each `cell.json` stores that absolute workspace path. It
+creates one clean candidate repository for each scenario × condition ×
+`repetitions` cell, without copying hidden grading data.
 
 ## 3. Launch isolated children
 

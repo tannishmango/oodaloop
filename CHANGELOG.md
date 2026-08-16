@@ -23,9 +23,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `/oodaloop-eval` now names the Cursor Task slug `cursor-grok-4.6-high` as the required under-the-hood invocation for Grok 4.6/high with Fast disabled. `cursor-grok-4.6-xhigh` is extra-high effort and is an explicit non-substitute.
 - Ignore local archive, Python bytecode, venvs, and OS junk in `.gitignore` and `.cursorignore`. The ATG assessment lives in `.archive/` so Git does not track it and Cursor does not index it.
 - `prepare_suite.py` now materializes `config.repetitions` as distinct cells (`{scenario}--{condition}--{rep}`) instead of copying the count into `suite.json` only.
+- Durable `/oodaloop-eval` artifacts now live under `evals/runs/` (gitignored, not cursorignored) so agents can Read `comparison.json`. `.archive/` remains human-only notes (ATG assessment unchanged). `prepare_suite.py` no longer puts the suite tree in tempfile.
+- Default `/oodaloop-eval` matrix is 6 scenarios × 3 conditions × 3 repetitions = 54 cells.
 
 ### Added
 - Foundation test `test_start_skill_routes_before_initialization` locks `/oodaloop-start` routing-before-init so the old init-gate cannot return unnoticed.
+- Foundation tests lock `/oodaloop-eval` output under `evals/runs/` (gitignored, not cursorignored) with workspaces in OS tempfile.
 - `agents/reviewer.md`: optional fresh-context semantic reviewer invoked only when architecture, material surprise, high risk, integration uncertainty, or ambiguous proof makes a second lens informative.
 - `docs/UNCERTAINTY-FIRST-REDESIGN.md`: design record capturing the operational failure, source synthesis, architectural reasoning, removed process, and future empirical questions.
 - **Behavioral evaluation foundation**: deterministic relational oracle, independent canonical implementation, six paired Level-1 anchor scenarios, append-only trajectory telemetry, comparison vectors, and stdlib tests under `evals/`.

@@ -120,5 +120,42 @@ class FoundationTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             list(module.iter_matrix(scenarios, conditions, -2))
 
+    def test_eval_run_outputs_are_durable_and_agent_readable(self):
+        gitignore = (REPO_ROOT / ".gitignore").read_text(encoding="utf-8")
+        cursorignore = (REPO_ROOT / ".cursorignore").read_text(encoding="utf-8")
+        self.assertIn("evals/runs/*", gitignore)
+        self.assertIn("!evals/runs/README.md", gitignore)
+        self.assertNotIn("evals/runs", cursorignore)
+        self.assertTrue((REPO_ROOT / "evals" / "runs" / "README.md").is_file())
+        prepare = (REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "prepare_suite.py").read_text(encoding="utf-8")
+        self.assertIn('ROOT / "evals" / "runs"', prepare)
+        self.assertIn("suite_dir = durable_suite_dir(suite_id, args.output_dir)", prepare)
+        self.assertNotIn("oodaloop-eval-{suite_id}-", prepare)
+        self.assertNotIn(".archive", prepare)
+        skill = (REPO_ROOT / "skills" / "run-cursor-eval" / "SKILL.md").read_text(encoding="utf-8")
+        readme = (REPO_ROOT / "evals" / "README.md").read_text(encoding="utf-8")
+        self.assertIn("evals/runs/", skill)
+        self.assertIn("evals/runs/", readme)
+        self.assertIn("Never copy suites to `.archive/`", skill)
+        self.assertNotIn("Archive under `.archive/", skill)
+        self.assertNotIn("Archive under `.archive/", readme)
+
+    def test_durable_suite_dir_uses_output_dir_and_keeps_workspaces_in_tempfile(self):
+        path = REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "prepare_suite.py"
+        spec = importlib.util.spec_from_file_location("prepare_suite", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory)
+            first = module.durable_suite_dir("suite", parent)
+            self.assertEqual(first, parent / "suite")
+            self.assertTrue(first.is_dir())
+            second = module.durable_suite_dir("suite", parent)
+            self.assertEqual(second, parent / "suite-2")
+            self.assertTrue(second.is_dir())
+        source = path.read_text(encoding="utf-8")
+        self.assertIn("workspace_parent = Path(tempfile.mkdtemp", source)
+        self.assertIn("suite_dir = durable_suite_dir", source)
+
 
 if __name__ == "__main__": unittest.main()

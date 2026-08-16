@@ -14,6 +14,6 @@
     "allow_auto": false,
     "cursor_task_model": "cursor-grok-4.6-high"
   },
-  "repetitions": 1,
+  "repetitions": 3,
   "parallelism": 3
 }
