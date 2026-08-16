@@ -1,9 +1,0 @@
-{
-  "cell_id": "ready-leaf--main--3",
-  "condition": "main",
-  "condition_ref": "main",
-  "condition_sha": "b272352ce81f8befcd878f0e40e47620a5690dda",
-  "repetition": 3,
-  "scenario_id": "ready-leaf",
-  "workspace": "/tmp/oodaloop-eval-ready-leaf--main--3-30nxilgp/workspace"
-}

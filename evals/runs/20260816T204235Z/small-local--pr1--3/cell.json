@@ -1,9 +1,0 @@
-{
-  "cell_id": "small-local--pr1--3",
-  "condition": "pr1",
-  "condition_ref": "redesign/uncertainty-first",
-  "condition_sha": "eb341936356fca48ae440927aa53f42351dbdc85",
-  "repetition": 3,
-  "scenario_id": "small-local",
-  "workspace": "/tmp/oodaloop-eval-small-local--pr1--3-gdrckug2/workspace"
-}

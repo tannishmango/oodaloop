@@ -3,6 +3,13 @@ transcripts/
 .oodaloop/CYCLES.log
 .archive/
 
+# Eval working files (local /tmp pointers and per-cell scratch).
+# Published history is REPORT.md + comparison.json per suite.
+evals/runs/**/suite.json
+evals/runs/**/cell.json
+evals/runs/**/events.jsonl
+evals/runs/**/result.json
+
 # Python
 __pycache__/
 *.py[cod]

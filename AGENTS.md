@@ -33,6 +33,7 @@ Gotchas:
   `evals/runs/<suite_id>/REPORT.md` — that is the human meaning of the run. If it is
   missing, generate it with `python3 -m evals.runner.report SUITE_DIR` before
   explaining results to anyone.
-- Eval run artifacts belong under `evals/runs/` (tracked in git, not cursorignored).
-  That tree is the append-only lab notebook. Do not add `evals/runs/` to
-  `.gitignore` or `.cursorignore`. After a baseline run, commit `evals/runs/<suite_id>/`.
+- Eval run artifacts belong under `evals/runs/`. Git tracks `REPORT.md` and
+  `comparison.json` per suite. Working files (`suite.json`, per-cell dirs) are
+  gitignored. Do not add `evals/runs/` to `.cursorignore`. After a baseline run,
+  commit `evals/runs/<suite_id>/` (gitignore strips the scratch).

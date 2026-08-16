@@ -1,9 +1,0 @@
-{
-  "cell_id": "latent-coupling--host-native--2",
-  "condition": "host-native",
-  "condition_ref": null,
-  "condition_sha": null,
-  "repetition": 2,
-  "scenario_id": "latent-coupling",
-  "workspace": "/tmp/oodaloop-eval-latent-coupling--host-native--2-ay8f9sb1/workspace"
-}

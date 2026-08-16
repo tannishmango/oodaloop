@@ -23,13 +23,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `/oodaloop-eval` now names the Cursor Task slug `cursor-grok-4.6-high` as the required under-the-hood invocation for Grok 4.6/high with Fast disabled. `cursor-grok-4.6-xhigh` is extra-high effort and is an explicit non-substitute.
 - Ignore local archive, Python bytecode, venvs, and OS junk in `.gitignore` and `.cursorignore`. The ATG assessment lives in `.archive/` so Git does not track it and Cursor does not index it.
 - `prepare_suite.py` now materializes `config.repetitions` as distinct cells (`{scenario}--{condition}--{rep}`) instead of copying the count into `suite.json` only.
-- Durable `/oodaloop-eval` artifacts live under `evals/runs/` as an append-only lab notebook **tracked in git**. Candidate workspaces stay in OS tempfile. `.archive/` remains human-only notes. Scratch runs use `--output-dir` outside `evals/runs/`.
+- Durable `/oodaloop-eval` artifacts live under `evals/runs/` as an append-only lab notebook. Git tracks `REPORT.md` and `comparison.json` per suite. Working files (`suite.json`, per-cell dirs with `/tmp` paths) are gitignored. Candidate workspaces stay in OS tempfile. `.archive/` remains human-only notes. Scratch runs use `--output-dir` outside `evals/runs/`.
 - Default `/oodaloop-eval` matrix is 6 scenarios × 3 conditions × 3 repetitions = 54 cells.
 - After the redesign merge, default eval conditions are `host-native`, `pre-redesign` (tag at last init-first main), and current `main`. Historical `pr1` remains a readable condition id for recorded suites.
 
 ### Added
 - Foundation test `test_start_skill_routes_before_initialization` locks `/oodaloop-start` routing-before-init so the old init-gate cannot return unnoticed.
-- Foundation tests lock `/oodaloop-eval` output under `evals/runs/` (tracked in git, not cursorignored) with workspaces in OS tempfile.
+- Foundation tests lock `/oodaloop-eval` published output under `evals/runs/` (`REPORT.md` + `comparison.json`, not cursorignored) with workspaces in OS tempfile.
 - `/oodaloop-eval` writes `REPORT.md` for every graded suite. That file is the human meaning of the run (what a cell is, what the two scores mean, what we asked, what happened). Agents must lead with it; `comparison.json` is the machine record.
 - `/oodaloop-eval` re-run policy: the full matrix is a merge/blast-radius bar. Tweaks re-run only the affected scenario or condition unless the change can alter routing, init, surprise, leaf-readiness, or the injected harness across other scenarios.
 - `agents/reviewer.md`: optional fresh-context semantic reviewer invoked only when architecture, material surprise, high risk, integration uncertainty, or ambiguous proof makes a second lens informative.

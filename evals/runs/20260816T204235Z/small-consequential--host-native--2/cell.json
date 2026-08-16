@@ -1,9 +1,0 @@
-{
-  "cell_id": "small-consequential--host-native--2",
-  "condition": "host-native",
-  "condition_ref": null,
-  "condition_sha": null,
-  "repetition": 2,
-  "scenario_id": "small-consequential",
-  "workspace": "/tmp/oodaloop-eval-small-consequential--host-native--2-ak_acrqj/workspace"
-}

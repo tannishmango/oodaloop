@@ -1,37 +1,38 @@
 # Eval run artifacts
 
-`/oodaloop-eval` writes graded suite output here:
+`/oodaloop-eval` writes a suite under `evals/runs/<suite_id>/`. Only the published
+record is tracked in git:
 
 ```text
 evals/runs/<suite_id>/
-  suite.json
-  comparison.json
-  REPORT.md
-  <cell_id>/
-    cell.json
-    events.jsonl
-    result.json
+  REPORT.md          tracked — human meaning of the run
+  comparison.json    tracked — machine scoreboard, harness SHAs, failed oracle cases
 ```
 
-This tree is the **eval lab notebook**: append-only and tracked in git. Each
-timestamped directory is one experiment. Do not rewrite a past suite; a new run
-gets a new `suite_id`. Read `REPORT.md` first. `comparison.json` is the machine
-record.
+Working files stay local and are gitignored (`suite.json`, per-cell `cell.json`,
+`events.jsonl`, `result.json`). They hold `/tmp` workspace paths and live
+telemetry. Do not commit them.
 
-Do not add `evals/runs/` to `.cursorignore` or `.gitignore`.
+This tree is append-only. Each timestamped directory is one experiment. Do not
+rewrite a past `REPORT.md`; a new run gets a new `suite_id`. Read `REPORT.md`
+first.
 
-Candidate workspaces stay in OS tempfile, outside this repository. Those copies
-are large and ephemeral; their absolute paths are stored in each `cell.json`.
-Do not nest workspaces under `evals/runs/` — a child could walk up into
+Do not add `evals/runs/` to `.cursorignore`. After a merge-bar or other run that
+should survive as history:
+
+```sh
+git add evals/runs/<suite_id>
+```
+
+gitignore keeps the working files out. Scratch matrices must use
+`prepare_suite.py --output-dir` outside this directory.
+
+Candidate workspaces stay in OS tempfile, outside this repository. Do not nest
+workspaces under `evals/runs/` — a child could walk up into
 `evals/scenarios/grading/`.
 
-Scratch or debug matrices must use `prepare_suite.py --output-dir` outside this
-directory so they never look like baselines. After a merge-bar or other run that
-should survive as history, `git add evals/runs/<suite_id>` and commit it.
-
-Keep structured grading records here (reports, scoreboards, per-cell results,
-observational events). If a future run starts capturing full child transcripts,
-screenshots, or other bulky blobs, those go to object storage — not this tree.
+If a future run starts capturing full child transcripts, screenshots, or other
+bulky blobs, those go to object storage — not this tree.
 
 `.archive/` remains a human-only drawer (gitignored and cursorignored). The eval
 skill must not copy suites there.

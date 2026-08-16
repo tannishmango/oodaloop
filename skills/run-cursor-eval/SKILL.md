@@ -30,9 +30,11 @@ defined in `evals/config.json`; do not ask the user to choose scenario IDs.
 - Every graded suite must have `evals/runs/<suite_id>/REPORT.md`. That file is the
   human meaning of the run. `finish_suite.py` writes it. If it is missing, run
   `python3 -m evals.runner.report SUITE_DIR` before talking to a human.
-- `evals/runs/` is the versioned lab notebook, tracked in git. Do not gitignore it.
-  After a run that should survive as history, `git add evals/runs/<suite_id>` and
-  commit it. Use `prepare_suite.py --output-dir` for throwaway debugging.
+- `evals/runs/` is the versioned lab notebook. Git tracks `REPORT.md` and
+  `comparison.json` per suite. Working files (`suite.json`, per-cell dirs) are
+  gitignored because they hold `/tmp` workspace paths. After a run that should
+  survive as history, `git add evals/runs/<suite_id>` and commit it. Use
+  `prepare_suite.py --output-dir` for throwaway debugging.
 - Whenever you communicate to a human about a run, lead with that REPORT: what a
   cell is, what “code worked” vs “behaved as probed” mean, the scoreboard, and
   every miss in English. Do not paste `comparison.json`, check keys
@@ -90,7 +92,8 @@ python3 skills/run-cursor-eval/scripts/prepare_suite.py
 
 Use its printed suite directory and `suite.json`. The printed path defaults to
 `evals/runs/<suite_id>/`. Never copy suites to `.archive/`. Candidate workspaces
-remain in OS temp; each `cell.json` stores that absolute workspace path. It
+remain in OS temp; each working `cell.json` stores that absolute workspace path
+(gitignored). It
 creates one clean candidate repository for each scenario × condition ×
 `repetitions` cell, without copying hidden grading data.
 
@@ -142,8 +145,8 @@ Describe directional evidence in the report's vocabulary.
 
 ## 6. Record the suite
 
-`evals/runs/<suite_id>/` is append-only history. A merge-bar run that exists only
-on one machine is a discarded experiment.
+Git history is `REPORT.md` plus `comparison.json`. A merge-bar run that exists
+only on one machine is a discarded experiment.
 
 After grading a suite that should be a baseline (the full matrix, or a targeted
 run that replaces a comparison row):
@@ -152,8 +155,10 @@ run that replaces a comparison row):
 git add evals/runs/<suite_id>
 ```
 
-Commit it with the related harness change, or as its own commit if the run is
-the deliverable. Never rewrite a past suite directory; a new run gets a new id.
+gitignore excludes `suite.json` and the per-cell working dirs. Commit the two
+published files with the related harness change, or as their own commit if the
+run is the deliverable. Never rewrite a past `REPORT.md`; a new run gets a new
+id.
 
 Scratch matrices must use `--output-dir` outside `evals/runs/` so they never
 look like baselines.

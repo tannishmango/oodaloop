@@ -1,9 +1,0 @@
-{
-  "cell_id": "ready-leaf--pr1--3",
-  "condition": "pr1",
-  "condition_ref": "redesign/uncertainty-first",
-  "condition_sha": "eb341936356fca48ae440927aa53f42351dbdc85",
-  "repetition": 3,
-  "scenario_id": "ready-leaf",
-  "workspace": "/tmp/oodaloop-eval-ready-leaf--pr1--3-sz60sc1g/workspace"
-}

@@ -37,6 +37,24 @@ def factual_events(cell_dir, workspace):
     return events
 
 
+def published_conditions(cells):
+    ordered = []
+    seen = set()
+    for cell in cells:
+        key = cell["condition"]
+        if key in seen:
+            continue
+        seen.add(key)
+        ordered.append({"id": key, "ref": cell.get("condition_ref"), "sha": cell.get("condition_sha")})
+    return ordered
+
+
+def published_result(result):
+    semantic = dict(result["semantic"])
+    semantic["cases"] = [case for case in semantic.get("cases") or [] if not case.get("passed")]
+    return {**result, "semantic": semantic}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("suite_dir", type=Path)
@@ -56,8 +74,14 @@ def main():
         trajectory = assess_anchor(anchors[cell["scenario_id"]], factual_events(cell_dir, workspace), semantic["passed"])
         result = {"schema_version": 1, "run_id": cell["cell_id"], "condition": cell["condition"], "scenario_id": cell["scenario_id"], "semantic": semantic, "trajectory": trajectory, "protocol_error": protocol_error}
         (cell_dir / "result.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        results.append(result)
-    output = {"schema_version": 1, "suite_id": suite["suite_id"], "model": suite["model"], "results": results}
+        results.append(published_result(result))
+    output = {
+        "schema_version": 1,
+        "suite_id": suite["suite_id"],
+        "model": suite["model"],
+        "conditions": published_conditions(suite["cells"]),
+        "results": results,
+    }
     path = args.suite_dir / "comparison.json"
     path.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     report = write_report(args.suite_dir)

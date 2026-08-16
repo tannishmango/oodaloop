@@ -1,9 +1,0 @@
-{
-  "cell_id": "small-local--host-native--3",
-  "condition": "host-native",
-  "condition_ref": null,
-  "condition_sha": null,
-  "repetition": 3,
-  "scenario_id": "small-local",
-  "workspace": "/tmp/oodaloop-eval-small-local--host-native--3-1isbdxf2/workspace"
-}

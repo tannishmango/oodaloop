@@ -1,9 +1,0 @@
-{
-  "cell_id": "broad-explicit--host-native--1",
-  "condition": "host-native",
-  "condition_ref": null,
-  "condition_sha": null,
-  "repetition": 1,
-  "scenario_id": "broad-explicit",
-  "workspace": "/tmp/oodaloop-eval-broad-explicit--host-native--1-mitw3prq/workspace"
-}

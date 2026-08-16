@@ -1,6 +1,0 @@
-{"data":{"route":"OODALOOP"},"event":"route","run_id":"latent-coupling--pr1--2","scenario_id":"latent-coupling","schema_version":1,"sequence":0}
-{"data":{},"event":"surprise","run_id":"latent-coupling--pr1--2","scenario_id":"latent-coupling","schema_version":1,"sequence":1}
-{"data":{"operation":"write","path":"candidate/miniquery.py"},"event":"tool_call","run_id":"latent-coupling--pr1--2","scenario_id":"latent-coupling","schema_version":1,"sequence":2}
-{"data":{"operation":"write","path":"candidate/test_expressions.py"},"event":"tool_call","run_id":"latent-coupling--pr1--2","scenario_id":"latent-coupling","schema_version":1,"sequence":3}
-{"data":{},"event":"framework_state_created","run_id":"latent-coupling--pr1--2","scenario_id":"latent-coupling","schema_version":1,"sequence":4}
-{"data":{"kind":"unittest"},"event":"proof_attempt","run_id":"latent-coupling--pr1--2","scenario_id":"latent-coupling","schema_version":1,"sequence":5}

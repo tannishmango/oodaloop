@@ -149,11 +149,17 @@ class FoundationTests(unittest.TestCase):
     def test_eval_run_outputs_are_durable_and_agent_readable(self):
         gitignore = (REPO_ROOT / ".gitignore").read_text(encoding="utf-8")
         cursorignore = (REPO_ROOT / ".cursorignore").read_text(encoding="utf-8")
-        self.assertNotIn("evals/runs", gitignore)
+        self.assertIn("evals/runs/**/suite.json", gitignore)
+        self.assertIn("evals/runs/**/cell.json", gitignore)
+        self.assertIn("evals/runs/**/events.jsonl", gitignore)
+        self.assertIn("evals/runs/**/result.json", gitignore)
         self.assertNotIn("evals/runs", cursorignore)
         self.assertTrue((REPO_ROOT / "evals" / "runs" / "README.md").is_file())
-        self.assertTrue((REPO_ROOT / "evals" / "runs" / "20260816T204235Z" / "REPORT.md").is_file())
-        self.assertTrue((REPO_ROOT / "evals" / "runs" / "20260816T204235Z" / "comparison.json").is_file())
+        published = REPO_ROOT / "evals" / "runs" / "20260816T204235Z"
+        self.assertEqual({path.name for path in published.iterdir()}, {"REPORT.md", "comparison.json"})
+        comparison = json.loads((published / "comparison.json").read_text(encoding="utf-8"))
+        self.assertIn("conditions", comparison)
+        self.assertTrue(all(not any(case.get("passed") for case in item["semantic"].get("cases") or []) for item in comparison["results"]))
         prepare = (REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "prepare_suite.py").read_text(encoding="utf-8")
         self.assertIn('ROOT / "evals" / "runs"', prepare)
         self.assertIn("suite_dir = durable_suite_dir(suite_id, args.output_dir)", prepare)
@@ -170,6 +176,8 @@ class FoundationTests(unittest.TestCase):
         self.assertIn("git add evals/runs/", skill)
         finish = (REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "finish_suite.py").read_text()
         self.assertIn("write_report", finish)
+        self.assertIn("published_result", finish)
+        self.assertIn("published_conditions", finish)
         self.assertIn("## Re-run policy", skill)
         self.assertIn("Do not re-run the full matrix", skill)
         self.assertIn("could this change alter routing, init", skill)
@@ -183,6 +191,33 @@ class FoundationTests(unittest.TestCase):
             text = write_report(suite_dir).read_text(encoding="utf-8")
         self.assertIn("PR1 redesign", text)
         self.assertIn("| PR1 redesign | 18/18 | 18/18 | 0 |", text)
+
+    def test_published_comparison_drops_passing_cases_and_keeps_harness_shas(self):
+        path = REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "finish_suite.py"
+        spec = importlib.util.spec_from_file_location("finish_suite", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        result = {
+            "run_id": "small-local--main--1",
+            "semantic": {
+                "passed": False,
+                "cases_passed": 30,
+                "cases_total": 31,
+                "cases": [{"name": "generated-00", "passed": True}, {"name": "scenario-ne-expression", "passed": False}],
+            },
+        }
+        published = module.published_result(result)
+        self.assertEqual(published["semantic"]["cases"], [{"name": "scenario-ne-expression", "passed": False}])
+        self.assertEqual(published["semantic"]["cases_total"], 31)
+        cells = [
+            {"condition": "host-native", "condition_ref": None, "condition_sha": None, "workspace": "/tmp/gone"},
+            {"condition": "main", "condition_ref": "main", "condition_sha": "abc", "workspace": "/tmp/gone"},
+            {"condition": "main", "condition_ref": "main", "condition_sha": "abc", "workspace": "/tmp/other"},
+        ]
+        self.assertEqual(
+            module.published_conditions(cells),
+            [{"id": "host-native", "ref": None, "sha": None}, {"id": "main", "ref": "main", "sha": "abc"}],
+        )
 
     def test_durable_suite_dir_uses_output_dir_and_keeps_workspaces_in_tempfile(self):
         path = REPO_ROOT / "skills" / "run-cursor-eval" / "scripts" / "prepare_suite.py"

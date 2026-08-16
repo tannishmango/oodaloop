@@ -46,13 +46,13 @@ complexity score.
 
 ## Durable run artifacts
 
-Graded artifacts (`suite.json`, `comparison.json`, `REPORT.md`, per-cell `cell.json`,
-`events.jsonl`, `result.json`) live under `evals/runs/<suite_id>/`. That tree is
-the append-only lab notebook: **tracked in git**, not cursorignored. A full 54-cell
-suite is about 1 MB of JSON and markdown. Read `REPORT.md` first.
-`comparison.json` is the machine record. Do not add `evals/runs/` to `.gitignore`
-or `.cursorignore`. Commit a suite after it is graded if it should be a baseline;
-use `--output-dir` for throwaway debugging. See `evals/runs/README.md`.
+Each graded suite lives under `evals/runs/<suite_id>/`. Git tracks two files per
+run: `REPORT.md` (human) and `comparison.json` (machine scoreboard, harness SHAs,
+failed oracle cases). Working files (`suite.json`, per-cell directories) hold
+`/tmp` workspace paths and live telemetry; they are gitignored. Read `REPORT.md`
+first. Do not add `evals/runs/` to `.cursorignore`. After a baseline run,
+`git add evals/runs/<suite_id>` — gitignore strips the scratch. Use `--output-dir`
+for throwaway debugging. See `evals/runs/README.md`.
 
 `.archive/` is a separate human-only drawer (gitignored and cursorignored). The
 eval controller must not copy suites there.
@@ -66,5 +66,6 @@ nothing from `evals.oracle`; tests enforce this boundary. Keep the oracle outsid
 candidate workspaces in real runs.
 
 Candidate workspaces stay outside the repository (OS tempfile) so children cannot
-walk into `evals/scenarios/grading/`. Their absolute paths are stored in each
-`cell.json`. Do not nest workspaces under `evals/runs/`.
+walk into `evals/scenarios/grading/`. Those absolute paths live only in the
+gitignored `suite.json` / `cell.json` working files. Do not nest workspaces under
+`evals/runs/`.

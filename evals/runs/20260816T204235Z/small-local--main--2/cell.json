@@ -1,9 +1,0 @@
-{
-  "cell_id": "small-local--main--2",
-  "condition": "main",
-  "condition_ref": "main",
-  "condition_sha": "b272352ce81f8befcd878f0e40e47620a5690dda",
-  "repetition": 2,
-  "scenario_id": "small-local",
-  "workspace": "/tmp/oodaloop-eval-small-local--main--2-ppq_avo9/workspace"
-}

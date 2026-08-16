@@ -1,4 +1,0 @@
-{"data":{"route":"NORMAL"},"event":"route","run_id":"no-surprise--host-native--3","scenario_id":"no-surprise","schema_version":1,"sequence":0}
-{"data":{"operation":"write","path":"candidate/miniquery.py"},"event":"tool_call","run_id":"no-surprise--host-native--3","scenario_id":"no-surprise","schema_version":1,"sequence":1}
-{"data":{"operation":"write","path":"candidate/test_miniquery.py"},"event":"tool_call","run_id":"no-surprise--host-native--3","scenario_id":"no-surprise","schema_version":1,"sequence":2}
-{"data":{"kind":"visible-or-inline"},"event":"proof_attempt","run_id":"no-surprise--host-native--3","scenario_id":"no-surprise","schema_version":1,"sequence":3}
