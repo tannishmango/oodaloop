@@ -16,14 +16,17 @@ substituting `cursor-grok-4.6-xhigh`, Auto, Fast, or another model. `pre-redesig
 is the annotated tag at `b272352` (last init-first `main` before the redesign
 merged).
 
-The full matrix is a merge / blast-radius bar, not a tweak loop. After a
-failure or harness edit, ask whether the change could alter routing, init,
-surprise, leaf-readiness, or the injected `.harness/` surface for scenarios you
-did not touch. If not, re-run only the affected scenario or condition (usually
-with `repetitions: 1`). If you cannot bound that, or the change is global,
-expand. Foundation tests cover wording contracts with no agent cells. See
-`skills/run-cursor-eval/SKILL.md` **Re-run policy**. Restore `config.json`
-`scenarios: "all"` and default repetitions before committing a targeted run.
+The full matrix is a protocol-change bar, not a tweak loop and not a post-merge
+ritual. Run it when the user invokes `/oodaloop-eval`, or once before landing an
+architectural / protocol / process change. Do not run or propose it after merging
+a change that already has a `REPORT.md`, or for cleanup, release, docs, or
+ordinary commits. After a failure or harness edit, ask whether the change could
+alter routing, init, surprise, leaf-readiness, or the injected `.harness/`
+surface for scenarios you did not touch. If not, re-run only the affected
+scenario or condition (usually with `repetitions: 1`). Foundation tests cover
+wording contracts with no agent cells. See `skills/run-cursor-eval/SKILL.md`
+**When to run** and **Re-run policy**. Restore `config.json` `scenarios: "all"`
+and default repetitions before committing a targeted run.
 
 Run the canonical semantic check from the repository root:
 

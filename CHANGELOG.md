@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- `/oodaloop-eval` is a protocol-change bar: run it when the user invokes it, or once before landing an architectural / protocol / process change. Do not run or propose it after merging a change that already has a REPORT, or for cleanup, release, docs, or ordinary commits.
+
 ## [M5] - 2026-08-16
 
 ### Changed

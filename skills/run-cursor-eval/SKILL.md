@@ -1,9 +1,14 @@
 ---
 name: run-cursor-eval
-description: Run the complete OODALOOP Level-1 behavioral evaluation in Cursor with one invocation. Use when comparing host-native behavior, current main, the pre-redesign baseline, or future harness revisions across the canonical scenario corpus using isolated fresh-context subagents, deterministic semantic grading, observational telemetry, and vector comparison.
+description: Run the complete OODALOOP Level-1 behavioral evaluation in Cursor with one invocation. Use only when the user invoked `/oodaloop-eval`, or when landing an architectural / protocol / process change that needs a new behavioral bar. Do not use after merging a change that already has a REPORT, or for cleanup, release, docs, or ordinary commits.
 ---
 
 # Run Cursor eval
+
+Run this skill only when the user invoked `/oodaloop-eval`, or when you are
+about to land an architectural, protocol, or process change that needs a new
+behavioral bar. Do not invoke it as leftover work after a merge, cleanup,
+release, or ordinary commit.
 
 Act as the evaluation controller. With no user arguments, run the complete suite
 defined in `evals/config.json`; do not ask the user to choose scenario IDs.
@@ -40,24 +45,38 @@ defined in `evals/config.json`; do not ask the user to choose scenario IDs.
   every miss in English. Do not paste `comparison.json`, check keys
   (`no_framework_state`, `route_normal`, …), or cell ids as the explanation.
 
+## When to run
+
+The full matrix (6 scenarios × 3 conditions × `config.repetitions`) is expensive.
+It is a **protocol-change bar**, not a tweak loop and not a post-merge ritual.
+
+Run it when:
+- the user invoked `/oodaloop-eval` or explicitly asked for the suite
+- the change itself is architectural: routing, init order, surprise/Act
+  interrupts, leaf contract, harness protocol/process, or another global
+  behavioral surface — **once, before that change lands**, not again after merge
+
+Do **not** run it, and do **not** propose it, for:
+- merging a change that already passed this bar (the recorded `REPORT.md` is
+  the bar; merging does not create a new experiment)
+- cleanup, release-cut, changelog, docs, eval recording format, condition retarget
+- "anything else to do?", "new state", "is this stable?", ordinary commits
+- every change or update
+
 ## Re-run policy
 
-The full matrix (6 scenarios × 3 conditions × `config.repetitions`) is a
-**merge / blast-radius bar**, not a tweak loop. Do not re-run the full matrix
-after every tweak.
-
-After a failure or a harness edit, ask: *could this change alter routing, init,
-surprise, leaf-readiness, or the injected `.harness/` surface for scenarios I
-did not touch?* If a "local" fix required editing start/orient/act/surprise
-globally, it was not local.
+Do not re-run the full matrix after every tweak. After a failure or a harness
+edit, ask: *could this change alter routing, init, surprise, leaf-readiness, or
+the injected `.harness/` surface for scenarios I did not touch?* If a "local"
+fix required editing start/orient/act/surprise globally, it was not local.
 
 | Blast radius | What to run |
 |---|---|
 | Foundation-locked wording (route-before-init strings, model slug, `evals/runs/` contract) | `python3 -m unittest discover -s evals/tests -v` only. No agent cells. |
 | One cell or one scenario failed; the fix is local to that task/fixture/oracle | Re-run that scenario across the conditions still under test. Use `repetitions: 1` unless the miss looked like flake (1 of 3 reps). |
 | Only one condition's harness changed (e.g. `main` skill text) | Re-run that condition's cells. Do not spend host-native or other condition cells. |
-| Cannot bound the blast radius, or the change is global (routing/init order, surprise/Act interrupts, leaf contract, harness export, model pin) | Expand: all scenarios for the affected condition, or the full matrix. |
-| Merge to `main`, or "is this stable?" | Full configured matrix with `repetitions: 3`. |
+| Architectural / protocol / process / global harness change | Full configured matrix with `repetitions: 3`, once, before merge. |
+| Merge of an already-eval'd change, cleanup, docs, release, ordinary commit | Nothing. Point at the existing `REPORT.md`. Do not propose a new suite. |
 
 For a targeted run, temporarily set `evals/config.json` `scenarios` to an id
 list and/or `repetitions` to `1`, then restore `scenarios: "all"` and the

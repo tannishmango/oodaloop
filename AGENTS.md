@@ -28,9 +28,12 @@ Gotchas:
   own `core.hooksPath`**. Avoid running `install.sh` in the cloud VM; if you do,
   restore the platform value afterward (it looks like
   `~/.cursor/agent-hooks/<id>`) so platform git hooks keep working.
-- The full `/oodaloop-eval` matrix is a merge/blast-radius bar; see
-  `skills/run-cursor-eval/SKILL.md`. After grading, read
-  `evals/runs/<suite_id>/REPORT.md` — that is the human meaning of the run. If it is
+- `/oodaloop-eval` is a protocol-change bar, not a post-merge ritual. Do not run
+  or propose it after merging a change that already has a `REPORT.md`, or for
+  cleanup, release, docs, or "anything else to do?". Run it when the user
+  invokes it, or once before landing an architectural / protocol / process
+  change. See `skills/run-cursor-eval/SKILL.md`. After a graded run, read
+  `evals/runs/<suite_id>/REPORT.md` — that is the human meaning. If it is
   missing, generate it with `python3 -m evals.runner.report SUITE_DIR` before
   explaining results to anyone.
 - Eval run artifacts belong under `evals/runs/`. Git tracks `REPORT.md` and
