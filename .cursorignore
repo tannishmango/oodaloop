@@ -1,0 +1,8 @@
+.archive/
+**/__pycache__/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+transcripts/
+.oodaloop/CYCLES.log

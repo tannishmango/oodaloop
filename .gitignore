@@ -1,3 +1,14 @@
 # Local
 transcripts/
 .oodaloop/CYCLES.log
+.archive/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# OS
+.DS_Store

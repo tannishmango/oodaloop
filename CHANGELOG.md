@@ -8,6 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - `/oodaloop-eval` now names the Cursor Task slug `cursor-grok-4.6-high` as the required under-the-hood invocation for Grok 4.6/high with Fast disabled. `cursor-grok-4.6-xhigh` is extra-high effort and is an explicit non-substitute.
+- Ignore local archive, Python bytecode, venvs, and OS junk in `.gitignore` and `.cursorignore`. The ATG assessment lives in `.archive/` so Git does not track it and Cursor does not index it.
 
 ### Added
 - **Behavioral evaluation foundation**: deterministic relational oracle, independent canonical implementation, six paired Level-1 anchor scenarios, append-only trajectory telemetry, comparison vectors, and stdlib tests under `evals/`.

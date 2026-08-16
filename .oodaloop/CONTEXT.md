@@ -1,6 +1,6 @@
 # Context: oodaloop
 
-> Last refreshed: 2026-08-16 (eval Cursor Task slug pin)
+> Last refreshed: 2026-08-16 (local archive + ignore junk)
 
 ## Objective
 Build OODALOOP into a functional plugin that orchestrates project delivery using an adaptive OODA loop. The plugin builds itself -- each milestone improves the tooling used to execute the next milestone.
@@ -8,7 +8,7 @@ Build OODALOOP into a functional plugin that orchestrates project delivery using
 ## Conventions
 
 ### Git
-Standard git workflow. No branch protection. Commit messages are descriptive, imperative mood. No `.gitattributes`. No `CONTRIBUTING.md`.
+Standard git workflow. No branch protection. Commit messages are descriptive, imperative mood. No `.gitattributes`. No `CONTRIBUTING.md`. Local-only notes go in `.archive/` (gitignored and cursorignored). Do not commit `__pycache__/`, venvs, or `.DS_Store`.
 
 ### Code Quality
 Pre-commit hook at `.githooks/pre-commit` enforces: sync to local Cursor install, blocks committing ephemeral `.oodaloop/*.task.md` files, validates command→skill linkage, blocks deprecated naming, requires `CHANGELOG.md` in staged files (bypass with `SKIP_CHANGELOG=1`), validates `tests/fixtures/state-hygiene/*.task.md` for Mode vocabulary, Paused completeness, phase↔section pairing, and Parent depth/DAG (block #6). No linters or formatters (plugin is pure markdown/declarative).
